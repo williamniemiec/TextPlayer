@@ -1,20 +1,16 @@
 package gui;
 
-import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import java.awt.Button;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JMenu;
-import java.awt.CardLayout;
-import javax.swing.SwingConstants;
-import javax.swing.AbstractAction;
-import java.awt.event.ActionEvent;
-import javax.swing.Action;
+import javax.swing.JPanel;
 
 public class TextPlayer extends JFrame {
 
@@ -23,6 +19,8 @@ public class TextPlayer extends JFrame {
 	final static String HOMEPANEL = "HOME";
 	final static int WIDTH = 600;
 	final static int HEIGHT = 400;
+	final static int X = 100;
+	final static int Y = 100;
 	
 	/**
 	 * Launch the application.
@@ -44,11 +42,12 @@ public class TextPlayer extends JFrame {
 	 * Create the frame.
 	 */
 	public TextPlayer() {
-		setResizable(false);
+		setOpacity(1.0f);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		
 		setBounds(100, 100, WIDTH, HEIGHT);
+		setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		
 		JMenuBar mb = new JMenuBar();
 		setJMenuBar(mb);
@@ -91,7 +90,6 @@ public class TextPlayer extends JFrame {
 		
 		//contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		//contentPane.setLayout(new BorderLayout(0, 0));
-		setContentPane(contentPane);
 		this.setTitle("Text Player");
 		
 		homePanel homePanel_ = new homePanel();
@@ -101,13 +99,23 @@ public class TextPlayer extends JFrame {
 		MusicPlayer mp = new MusicPlayer();
 		contentPane.add(mp, MUSICPANEL);
 		
+		
+		setContentPane(contentPane);
+		
 		// Troca card
 		CardLayout cl = (CardLayout)contentPane.getLayout();
 		//cl.show(contentPane, HOMEPANEL);
-		cl.show(contentPane, MUSICPANEL);
+		//cl.show(contentPane, MUSICPANEL);
 		
 		// Sera util para redimencionar logos
 		System.out.println(this.getWidth());
 		System.out.println(this.getHeight());
+		
+		this.addComponentListener(new ComponentAdapter() {
+			public void componentResized(ComponentEvent componentEvent) {
+				System.out.println(componentEvent.getComponent().getWidth());
+				System.out.println(componentEvent.getComponent().getHeight());
+		    }
+		});
 	}
 }

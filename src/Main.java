@@ -5,6 +5,9 @@ import javax.sound.midi.Sequence;
 import org.jfugue.player.ManagedPlayer;
 import org.jfugue.player.Player;
 
+import controllers.Controller;
+import controllers.HomeController;
+
 
 /**
  * Main class. Responsible for running the application.
@@ -13,9 +16,12 @@ public class Main
 {
 	public static void main(String[] args) 
 	{
-		/*Controller c = new HomeController();
+		Controller c = new HomeController();
 		c.run();
-		*/
+		
+		
+		
+		/*
 		Player player = new Player();
 	    //player.play("C D E F G A B");
 		Sequence sequence = player.getSequence("C D E F G A B");
@@ -34,7 +40,7 @@ public class Main
 			
 		} catch (InvalidMidiDataException | MidiUnavailableException e) {
 			e.printStackTrace();
-		}
+		}*/
 	    
 	}
 }
