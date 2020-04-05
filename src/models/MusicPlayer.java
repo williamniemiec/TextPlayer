@@ -1,6 +1,13 @@
 package models;
 
-public class MusicPlayer {
+import views.View;
+
+public class MusicPlayer implements Model {
+	// attach  view
+	public void attach(View view) {}
+	public void detach(View view) {}
+	public void notifyViews() {}
+	
 	private String musicalNotes;
 	
 	public MusicPlayer(String musicalNotes)

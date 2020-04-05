@@ -99,6 +99,10 @@ public class TextPlayer extends JFrame {
 		MusicPlayer mp = new MusicPlayer();
 		contentPane.add(mp, MUSICPANEL);
 		
+		contentPane.add(mp, MUSICPANEL);
+		contentPane.add(mp, MUSICPANEL);
+		contentPane.add(mp, MUSICPANEL);
+		
 		
 		setContentPane(contentPane);
 		

@@ -6,6 +6,8 @@ import java.awt.FileDialog;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -21,45 +23,79 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import controllers.Controller;
 import controllers.HomeController;
+import models.Model;
+import models.MusicPlayer;
 
 
 /**
  * View associated with HomeController. It will be responsible for program's 
  * main screen view.
  */
-public class HomeView extends JPanel implements View 
+public class HomeView extends JPanel implements View
 {
+	private JLabel home_background;
+	private BufferedImage home_background_file;
+	
+	public void update(Model model, Object data) {
+		//homeController.updateMenuBar();
+		System.out.println("update");
+	}
+	
 	//-----------------------------------------------------------------------
 	//		Attributes
 	//-----------------------------------------------------------------------
 	@SuppressWarnings("unused")
 	private HomeController homeController;
-	private JFrame frame;
-	private JPanel contentPane;
+	private JFrame mainFrame;
 	private JMenuBar mb;
+	//private JPanel contentPane;
+	final static int MAIN_FRAME_WIDTH = 600;
+	final static int MAIN_FRAME_HEIGHT = 400;
+	final static int MAIN_FRAME_X = 100;
+	final static int MAIN_FRAME_Y = 100;
 	
 	//-----------------------------------------------------------------------
-	//		Controller
+	//		Constructor
 	//-----------------------------------------------------------------------
-	public HomeView(HomeController homeController, JPanel contentPane, JFrame frame)
+	public HomeView(HomeController homeController, JFrame mainFrame)
 	{
 		this.homeController = homeController;
-		this.contentPane = contentPane;
-		this.frame = frame;
+		//this.contentPane = contentPane;
+		this.mainFrame = mainFrame;
 		
 		
-		make_frame();
+		make_mainFrame();
 		make_home();
 		
-		setVisible(true);
-		//contentPane.add(this, "HomeView");
+		this.addComponentListener(new ComponentListener() {
+			@Override
+			public void componentShown(ComponentEvent e) {
+				homeController.updateMenuBar();
+			}
+			
+			@Override
+			public void componentResized(ComponentEvent e) {
+				resize_background(mainFrame.getWidth(), mainFrame.getHeight());
+			}
+
+			@Override
+			public void componentMoved(ComponentEvent e) { }
+
+			@Override
+			public void componentHidden(ComponentEvent e) { }
+		});
+		
+		mainFrame.setVisible(true);
+		
 	}
 	
 	
 	//-----------------------------------------------------------------------
 	//		Methods
 	//-----------------------------------------------------------------------
+	
 	@Override
 	public void close() 
 	{
@@ -67,13 +103,13 @@ public class HomeView extends JPanel implements View
 	}
 	
 	
-	private void make_frame()
+	private void make_mainFrame()
 	{
-		frame.setOpacity(1.0f);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setBounds(View.FRAME_X, View.FRAME_Y, View.FRAME_WIDTH, View.FRAME_HEIGHT);
-		frame.setMinimumSize(new Dimension(View.FRAME_WIDTH, View.FRAME_HEIGHT));
-		frame.setTitle("Text Player");
+		mainFrame.setOpacity(1.0f);
+		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		mainFrame.setBounds(MAIN_FRAME_X, MAIN_FRAME_Y, MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT);
+		mainFrame.setMinimumSize(new Dimension(MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT));
+		mainFrame.setTitle("Text Player");
 
 		make_menuBar();
 	}
@@ -81,7 +117,7 @@ public class HomeView extends JPanel implements View
 	private void make_menuBar()
 	{
 		mb = new JMenuBar();
-		frame.setJMenuBar(mb);
+		mainFrame.setJMenuBar(mb);
 		
 		make_mn_file();
 		make_mn_controller();
@@ -106,30 +142,39 @@ public class HomeView extends JPanel implements View
 		mb_file.add(mb_file_close);
 		mb_file_close.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				homeController.changeView("HomeView");
+				Controller.changeView("HomeView");
 			}
 		});
+		homeController.addMainFrameComponent("mb_file_close", mb_file_close);
 		
-		JMenuItem btn_exit = new JMenuItem("Sair");
-		mb_file.add(btn_exit);
+		JMenuItem btn_file_exit = new JMenuItem("Sair");
+		mb_file.add(btn_file_exit);
+		btn_file_exit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				mainFrame.dispose();
+			}
+		});
 	}
 	
 	private void make_mn_controller()
 	{
-		JMenu mnNewMenu = new JMenu("Controles");
-		mb.add(mnNewMenu);
+		JMenu mn_ctrl = new JMenu("Controles");
+		mb.add(mn_ctrl);
 		
-		JMenuItem mb_crl_play = new JMenuItem("Play");
-		mb_crl_play.setEnabled(false);
-		mnNewMenu.add(mb_crl_play);
+		JMenuItem mb_ctrl_play = new JMenuItem("Play");
+		mb_ctrl_play.setEnabled(false);
+		mn_ctrl.add(mb_ctrl_play);
+		homeController.addMainFrameComponent("mb_ctrl_play", mb_ctrl_play);
 		
-		JMenuItem mb_crl_pause = new JMenuItem("Pause");
-		mb_crl_pause.setEnabled(false);
-		mnNewMenu.add(mb_crl_pause);
+		JMenuItem mb_ctrl_pause = new JMenuItem("Pause");
+		mb_ctrl_pause.setEnabled(false);
+		mn_ctrl.add(mb_ctrl_pause);
+		homeController.addMainFrameComponent("mb_ctrl_pause", mb_ctrl_pause);
 		
-		JMenuItem mb_crl_stop = new JMenuItem("Stop");
-		mb_crl_stop.setEnabled(false);
-		mnNewMenu.add(mb_crl_stop);
+		JMenuItem mb_ctrl_stop = new JMenuItem("Stop");
+		mb_ctrl_stop.setEnabled(false);
+		mn_ctrl.add(mb_ctrl_stop);
+		homeController.addMainFrameComponent("mb_ctrl_stop", mb_ctrl_stop);
 	}
 	
 	private void make_mn_about()
@@ -150,7 +195,7 @@ public class HomeView extends JPanel implements View
 	public void show_about()
 	{
 		JOptionPane.showMessageDialog(
-				frame,
+				mainFrame,
 				"Versão 1.0\n\nFeito por:\n"
 				+ "-> Matheus Hiroyuki Suwa Moura \n"
 				+ "-> William Niemiec", "Sobre",
@@ -162,7 +207,7 @@ public class HomeView extends JPanel implements View
 	{
 		Object[] options = {"GUI", "Texto"};
 		int op = JOptionPane.showOptionDialog(
-			frame, "Como você deseja abrir o arquivo?","Abrir arquivo", 
+			mainFrame, "Como você deseja abrir o arquivo?","Abrir arquivo", 
 			-1, JOptionPane.QUESTION_MESSAGE, null, options, options[0]
 		);
 		
@@ -177,7 +222,7 @@ public class HomeView extends JPanel implements View
 		String filepath = JOptionPane.showInputDialog("Digite o caminho do arquivo");
 		
 		while (filepath != null && !fileExists(filepath)) {
-			JOptionPane.showMessageDialog(frame, "Erro! Arquivo não encontrado :/","Error",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(mainFrame, "Erro! Arquivo não encontrado :/","Error",JOptionPane.ERROR_MESSAGE);
 			filepath = JOptionPane.showInputDialog("Digite o caminho do arquivo");
 		}
 		
@@ -188,13 +233,13 @@ public class HomeView extends JPanel implements View
 	private void open_file_gui()
 	{
 		
-		FileDialog fd = new FileDialog(frame, "Escolha um arquivo", FileDialog.LOAD);
-		//fd.setDirectory(".");
+		FileDialog fd = new FileDialog(mainFrame, "Escolha um arquivo", FileDialog.LOAD);
+		fd.setDirectory(".");
 		fd.setFile("*.txt");
 		fd.setVisible(true);
 		String filepath = fd.getDirectory()+fd.getFile();
 		
-		System.out.println(filepath);
+		//System.out.println(filepath);
 		
 		homeController.parseFile(new File(filepath));
 	}
@@ -216,11 +261,17 @@ public class HomeView extends JPanel implements View
 	private void make_background()
 	{
 		try {
-			BufferedImage myPicture = ImageIO.read(new File(System.getProperty("user.dir")+"/src/content/images/home/logo.jpg"));
-			JLabel picLabel = new JLabel(new ImageIcon(myPicture.getScaledInstance(View.FRAME_WIDTH, View.FRAME_HEIGHT, Image.SCALE_FAST)));
-			add(picLabel);
-		} catch (IOException e1) { }
+			home_background_file = ImageIO.read(new File(System.getProperty("user.dir")+"/src/content/images/home/logo.jpg"));
+			home_background = new JLabel(new ImageIcon(home_background_file.getScaledInstance(MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT, Image.SCALE_FAST)));
+			add(home_background);
+		} catch (IOException e1) { e1.printStackTrace();}
 	}
+	
+	private void resize_background(int w, int h)
+	{
+		home_background.setIcon(new ImageIcon(home_background_file.getScaledInstance(w, h, Image.SCALE_FAST)));
+	}
+	
 	
 	private void make_btn_openFile()
 	{

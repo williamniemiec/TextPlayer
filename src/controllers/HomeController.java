@@ -1,6 +1,7 @@
 package controllers;
 
 import java.awt.CardLayout;
+import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,9 +9,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 import models.MusicParser;
+import models.MusicPlayer;
 import models.Parser;
 import views.HomeView;
 
@@ -18,7 +22,7 @@ import views.HomeView;
 /**
  * Main controller. It will be responsible for program's main screen behavior.
  */
-public class HomeController implements Controller 
+public class HomeController extends Controller 
 {
 	//-----------------------------------------------------------------------
 	//		Attributes
@@ -26,8 +30,8 @@ public class HomeController implements Controller
 	@SuppressWarnings("unused")
 	private HomeView homeView;
 	private TextPlayerController textPlayerController;
-	private JPanel contentPane;
-	private JFrame frame;
+	
+	//private JPanel contentPane;
 	
 	
 	//-----------------------------------------------------------------------
@@ -36,22 +40,20 @@ public class HomeController implements Controller
 	@Override
 	public void run()
 	{
-		frame = new JFrame();
-		
 		// Init content pane
-		contentPane = new JPanel(new CardLayout());
-		homeView = new HomeView(this, contentPane, frame);
-		contentPane.add(homeView, "HomeView");
+		//contentPane = new JPanel(new CardLayout());
+		homeView = new HomeView(this, mainFrame);
+		//contentPane.add(homeView, "HomeView");
 		
-		frame.setContentPane(contentPane);
-		frame.setVisible(true);
+		//mainFrame.setContentPane(contentPane);
+		addView("HomeView", homeView);
+		mainFrame.setVisible(true);
 		
 	}
 
-	public void changeView(String viewName)
+	public void addMainFrameComponent(String name, Component component)
 	{
-		CardLayout cl = (CardLayout)contentPane.getLayout();
-		cl.show(contentPane, viewName);
+		addComponent(name, component);
 	}
 	
 	public void parseFile(File file)
@@ -65,8 +67,9 @@ public class HomeController implements Controller
 		
 		textPlayerController = new TextPlayerController(this, parsedFile, text, file.getName());
 		textPlayerController.run();
-		// Dará problema - e se ja tiver adicionado?!
-		contentPane.add(textPlayerController.getView(), "TextPlayerView");
+		
+		//contentPane.add(textPlayerController.getView(), "TextPlayerView");
+		//addView("TextPlayerView", textPlayerController.getView());
 		changeView("TextPlayerView");
 	}
 	
@@ -82,7 +85,17 @@ public class HomeController implements Controller
 			e1.printStackTrace();
 		}
 		
-		
 		return text;
+	}
+	
+	public void updateMenuBar()
+	{	
+		((JMenuItem)getComponent("mb_ctrl_play")).setEnabled(false);
+		((JMenuItem)getComponent("mb_ctrl_pause")).setEnabled(false);
+		((JMenuItem)getComponent("mb_ctrl_stop")).setEnabled(false);
+		((JMenuItem)getComponent("mb_file_close")).setEnabled(false);
+		//((JMenuItem)getComponent("mb_ctrl_play")).setEnabled(!mp.isPlaying());
+		//((JMenuItem)getComponent("mb_ctrl_pause")).setEnabled(!mp.isPaused());
+		//((JMenuItem)getComponent("mb_ctrl_stop")).setEnabled(!mp.isStopped());
 	}
 }
