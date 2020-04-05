@@ -1,12 +1,25 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import views.View;
 
 public class MusicPlayer implements Model {
+	private List<View> views = new ArrayList<>();
+	
 	// attach  view
-	public void attach(View view) {}
-	public void detach(View view) {}
-	public void notifyViews() {}
+	public void attach(View view) {
+		views.add(view);
+	}
+	public void detach(View view) {
+		views.remove(view);
+	}
+	public void notifyViews() {
+		for (View view : views) {
+			view.update(this, null);
+		}
+	}
 	
 	private String musicalNotes;
 	

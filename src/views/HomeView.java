@@ -50,11 +50,11 @@ public class HomeView extends JPanel implements View
 	private HomeController homeController;
 	private JFrame mainFrame;
 	private JMenuBar mb;
-	//private JPanel contentPane;
 	final static int MAIN_FRAME_WIDTH = 600;
 	final static int MAIN_FRAME_HEIGHT = 400;
 	final static int MAIN_FRAME_X = 100;
 	final static int MAIN_FRAME_Y = 100;
+	
 	
 	//-----------------------------------------------------------------------
 	//		Constructor
@@ -62,9 +62,7 @@ public class HomeView extends JPanel implements View
 	public HomeView(HomeController homeController, JFrame mainFrame)
 	{
 		this.homeController = homeController;
-		//this.contentPane = contentPane;
 		this.mainFrame = mainFrame;
-		
 		
 		make_mainFrame();
 		make_home();
@@ -86,23 +84,14 @@ public class HomeView extends JPanel implements View
 			@Override
 			public void componentHidden(ComponentEvent e) { }
 		});
-		
+				
 		mainFrame.setVisible(true);
-		
 	}
 	
 	
 	//-----------------------------------------------------------------------
 	//		Methods
 	//-----------------------------------------------------------------------
-	
-	@Override
-	public void close() 
-	{
-		
-	}
-	
-	
 	private void make_mainFrame()
 	{
 		mainFrame.setOpacity(1.0f);

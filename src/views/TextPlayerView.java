@@ -47,12 +47,6 @@ public class TextPlayerView extends JPanel implements View
 	}
 	
 	
-	@Override
-	public void close() 
-	{
-		
-	}
-	
 	private void make_panel()
 	{
 		setBorder(null);
@@ -228,13 +222,13 @@ public class TextPlayerView extends JPanel implements View
 		MusicPlayer mp = (MusicPlayer) model;
 		
 		// Atualiza update bar
-		//mp.getMusicLength();
-		//mp.getMusicPosition();
+		mp.getMusicLength();
+		mp.getMusicPosition();
 		
 		// Atualiza botoes de controle
-		//btn_ctrl_play.setEnabled(!mp.isPlaying());
-		//btn_ctrl_pause.setEnabled(!mp.isPaused());
-		//btn_ctrl_stop.setEnabled(!mp.isStopped());
+		btn_ctrl_play.setEnabled(!mp.isPlaying());
+		btn_ctrl_pause.setEnabled(!mp.isPaused());
+		btn_ctrl_stop.setEnabled(!mp.isStopped());
 		
 		// Atualiza barra menu main frame
 		textPlayerController.updateMenuBar(mp);
