@@ -6,7 +6,11 @@ import models.MusicPlayer;
 import views.TextPlayerView;
 
 
-public class TextPlayerController extends Controller {
+public class TextPlayerController extends Controller 
+{
+	//-----------------------------------------------------------------------
+	//		Attributes
+	//-----------------------------------------------------------------------
 	private String musicalText;
 	private HomeController homeController;
 	private TextPlayerView textPlayerView;
@@ -14,6 +18,10 @@ public class TextPlayerController extends Controller {
 	private String originalText;
 	private String filename;
 	
+
+	//-----------------------------------------------------------------------
+	//		Constructor
+	//-----------------------------------------------------------------------
 	public TextPlayerController(HomeController homeController, String musicalText, String originalText, String filename)
 	{
 		this.homeController = homeController;
@@ -23,29 +31,19 @@ public class TextPlayerController extends Controller {
 		
 	}
 	
+	
+	//-----------------------------------------------------------------------
+	//		Methods
+	//-----------------------------------------------------------------------
 	@Override
-	public void run() {
+	public void run() 
+	{
 		textPlayerView = new TextPlayerView(this, mainFrame);
 		
 		((JMenuItem)getComponent("mb_file_close")).setEnabled(true);
 		((JMenuItem)getComponent("mb_ctrl_play")).setEnabled(true);
 		
 		addView("TextPlayerView", textPlayerView);
-	}
-	
-	public String getText()
-	{
-		return this.originalText;
-	}
-	
-	public TextPlayerView getView()
-	{
-		return textPlayerView;
-	}
-	
-	public String getFilename()
-	{
-		return filename;
 	}
 	
 	
@@ -76,4 +74,22 @@ public class TextPlayerController extends Controller {
 		//((JMenuItem)getComponent("mb_ctrl_stop")).setEnabled(!mp.isStopped());
 	}
 	
+	
+	//-----------------------------------------------------------------------
+	//		Getters
+	//-----------------------------------------------------------------------
+	public String getText()
+	{
+		return this.originalText;
+	}
+	
+	public TextPlayerView getView()
+	{
+		return textPlayerView;
+	}
+	
+	public String getFilename()
+	{
+		return filename;
+	}
 }

@@ -35,14 +35,6 @@ import models.MusicPlayer;
  */
 public class HomeView extends JPanel implements View
 {
-	private JLabel home_background;
-	private BufferedImage home_background_file;
-	
-	public void update(Model model, Object data) {
-		//homeController.updateMenuBar();
-		System.out.println("update");
-	}
-	
 	//-----------------------------------------------------------------------
 	//		Attributes
 	//-----------------------------------------------------------------------
@@ -50,6 +42,8 @@ public class HomeView extends JPanel implements View
 	private HomeController homeController;
 	private JFrame mainFrame;
 	private JMenuBar mb;
+	private JLabel home_background;
+	private BufferedImage home_background_file;
 	final static int MAIN_FRAME_WIDTH = 600;
 	final static int MAIN_FRAME_HEIGHT = 400;
 	final static int MAIN_FRAME_X = 100;
@@ -92,6 +86,13 @@ public class HomeView extends JPanel implements View
 	//-----------------------------------------------------------------------
 	//		Methods
 	//-----------------------------------------------------------------------
+	@Override
+	public void update(Model model, Object data) 
+	{
+		//homeController.updateMenuBar();
+		System.out.println("update");
+	}
+	
 	private void make_mainFrame()
 	{
 		mainFrame.setOpacity(1.0f);

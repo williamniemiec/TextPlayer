@@ -28,6 +28,9 @@ import models.MusicPlayer;
 
 public class TextPlayerView extends JPanel implements View 
 {
+	//-----------------------------------------------------------------------
+	//		Attributes
+	//-----------------------------------------------------------------------
 	@SuppressWarnings("unused")
 	private TextPlayerController textPlayerController;
 	private JFrame frame;
@@ -35,6 +38,10 @@ public class TextPlayerView extends JPanel implements View
 	private JButton btn_ctrl_pause;
 	private JButton btn_ctrl_stop;
 	
+
+	//-----------------------------------------------------------------------
+	//		Constructor
+	//-----------------------------------------------------------------------
 	public TextPlayerView(TextPlayerController textPlayerController, JFrame frame)
 	{
 		this.textPlayerController = textPlayerController;
@@ -46,6 +53,26 @@ public class TextPlayerView extends JPanel implements View
 		make_centralPanel();
 	}
 	
+	
+	//-----------------------------------------------------------------------
+	//		Methods
+	//-----------------------------------------------------------------------
+	@Override
+	public void update(Model model, Object data) {
+		MusicPlayer mp = (MusicPlayer) model;
+		
+		// Atualiza update bar
+		mp.getMusicLength();
+		mp.getMusicPosition();
+		
+		// Atualiza botoes de controle
+		btn_ctrl_play.setEnabled(!mp.isPlaying());
+		btn_ctrl_pause.setEnabled(!mp.isPaused());
+		btn_ctrl_stop.setEnabled(!mp.isStopped());
+		
+		// Atualiza barra menu main frame
+		textPlayerController.updateMenuBar(mp);
+	}
 	
 	private void make_panel()
 	{
@@ -211,26 +238,16 @@ public class TextPlayerView extends JPanel implements View
 	{
 		JButton btn_changeFile = new JButton("Change file");
 		btn_changeFile.setEnabled(true);
+		btn_changeFile.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				textPlayerController.changeFile();
+			}
+		});
 		
-		//pnl_center_center.add(btn_changeFile, BorderLayout.NORTH);
 		panel.add(btn_changeFile, constraints);
 	}
 
 
-	@Override
-	public void update(Model model, Object data) {
-		MusicPlayer mp = (MusicPlayer) model;
-		
-		// Atualiza update bar
-		mp.getMusicLength();
-		mp.getMusicPosition();
-		
-		// Atualiza botoes de controle
-		btn_ctrl_play.setEnabled(!mp.isPlaying());
-		btn_ctrl_pause.setEnabled(!mp.isPaused());
-		btn_ctrl_stop.setEnabled(!mp.isStopped());
-		
-		// Atualiza barra menu main frame
-		textPlayerController.updateMenuBar(mp);
-	}
+	
 }
