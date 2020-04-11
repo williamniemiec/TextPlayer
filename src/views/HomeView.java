@@ -44,10 +44,10 @@ public class HomeView extends JPanel implements View
 	private JMenuBar mb;
 	private JLabel home_background;
 	private BufferedImage home_background_file;
-	final static int MAIN_FRAME_WIDTH = 800;
-	final static int MAIN_FRAME_HEIGHT = 500;
-	final static int MAIN_FRAME_X = 100;
-	final static int MAIN_FRAME_Y = 100;
+	private final static int MAIN_FRAME_WIDTH = 800;
+	private final static int MAIN_FRAME_HEIGHT = 500;
+	private final static int MAIN_FRAME_X = 100;
+	private final static int MAIN_FRAME_Y = 100;
 	
 	
 	//-----------------------------------------------------------------------
@@ -182,7 +182,7 @@ public class HomeView extends JPanel implements View
 		});
 	}
 	
-	public void show_about()
+	private void show_about()
 	{
 		JOptionPane.showMessageDialog(
 				mainFrame,
