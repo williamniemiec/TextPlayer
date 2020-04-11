@@ -2,6 +2,7 @@ package views;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FileDialog;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
@@ -37,6 +38,9 @@ public class TextPlayerView extends JPanel implements View
 	private JButton btn_ctrl_play;
 	private JButton btn_ctrl_pause;
 	private JButton btn_ctrl_stop;
+	private JTextArea textArea;
+	private JLabel lbl_filename_name;
+	private JProgressBar pb_music;
 	
 
 	//-----------------------------------------------------------------------
@@ -56,14 +60,16 @@ public class TextPlayerView extends JPanel implements View
 	
 	//-----------------------------------------------------------------------
 	//		Methods
-	//-----------------------------------------------------------------------
+	//-----------------------------------------------------------------------	
 	@Override
 	public void update(Model model, Object data) {
 		MusicPlayer mp = (MusicPlayer) model;
 		
 		// Atualiza update bar
-		mp.getMusicLength();
-		mp.getMusicPosition();
+		long musicLength = mp.getMusicLength();
+		long musicPosition = mp.getMusicPosition();
+		
+		pb_music.setValue((int)(musicPosition/musicLength));
 		
 		// Atualiza botoes de controle
 		btn_ctrl_play.setEnabled(!mp.isPlaying());
@@ -72,6 +78,11 @@ public class TextPlayerView extends JPanel implements View
 		
 		// Atualiza barra menu main frame
 		textPlayerController.updateMenuBar(mp);
+	}
+	
+	public void updateFileContent() {
+		textArea.setText(textPlayerController.getText());
+		lbl_filename_name.setText(textPlayerController.getFilename());
 	}
 	
 	private void make_panel()
@@ -203,7 +214,7 @@ public class TextPlayerView extends JPanel implements View
 		lbl_filename_title.setFont(new Font("Tahoma", Font.BOLD, 15));
 		pnl_filename.add(lbl_filename_title, BorderLayout.WEST);
 		
-		JLabel lbl_filename_name = new JLabel(textPlayerController.getFilename());
+		lbl_filename_name = new JLabel(textPlayerController.getFilename());
 		lbl_filename_name.setHorizontalAlignment(SwingConstants.CENTER);
 		lbl_filename_name.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		pnl_filename.add(lbl_filename_name, BorderLayout.CENTER);
@@ -215,7 +226,7 @@ public class TextPlayerView extends JPanel implements View
 	{
 		JScrollPane scrollPane = new JScrollPane();
 		
-		JTextArea textArea = new JTextArea();
+		textArea = new JTextArea();
 		scrollPane.setViewportView(textArea);		
 		textArea.setLineWrap(false);
 		textArea.setText(textPlayerController.getText());
@@ -226,7 +237,7 @@ public class TextPlayerView extends JPanel implements View
 	
 	private void make_progressBar(JPanel panel, Object constraints)
 	{
-		JProgressBar pb_music = new JProgressBar();
+		pb_music = new JProgressBar();
 		pb_music.setStringPainted(true);
 		
 		pb_music.setForeground(new Color(238,90,9));
@@ -241,13 +252,22 @@ public class TextPlayerView extends JPanel implements View
 		btn_changeFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				textPlayerController.changeFile();
+				open_file();
 			}
 		});
 		
 		panel.add(btn_changeFile, constraints);
 	}
 
-
-	
+	private void open_file()
+	{
+		FileDialog fd = new FileDialog(frame, "Escolha um arquivo", FileDialog.LOAD);
+		fd.setDirectory(".");
+		fd.setFile("*.txt");
+		fd.setVisible(true);
+		String filepath = fd.getDirectory()+fd.getFile();
+		
+		if (filepath != null)
+			textPlayerController.changeFile(filepath);
+	}
 }

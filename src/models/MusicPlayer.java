@@ -1,98 +1,70 @@
 package models;
 
-import java.util.ArrayList;
-import java.util.List;
 
-import views.View;
-
-public class MusicPlayer implements Model 
+public interface MusicPlayer 
 {
-	//-----------------------------------------------------------------------
-	//		Attributes
-	//-----------------------------------------------------------------------
-	private List<View> views = new ArrayList<>();
-	private String musicalNotes;
+	/**
+	 * Plays current music.
+	 * 
+	 * @return Itself to allow chain calls
+	 */
+	public abstract MusicPlayer play();
 	
+	/**
+	 * Pauses current music.
+	 * 
+	 * @return Itself to allow chain calls
+	 */
+	public abstract MusicPlayer pause();
 	
-	//-----------------------------------------------------------------------
-	//		Constructor
-	//-----------------------------------------------------------------------
-	public MusicPlayer(String musicalNotes)
-	{
-		this.musicalNotes = musicalNotes;
-	}
+	/**
+	 * Stops current music.
+	 * 
+	 * @return Itself to allow chain calls
+	 */
+	public abstract MusicPlayer stop();
 	
+	/**
+	 * Changes current music, loading a new file.
+	 * 
+	 * @param text New text that will be loaded in the player
+	 * @return Itself to allow chain calls
+	 */
+	public abstract MusicPlayer change(String text);
 	
-	//-----------------------------------------------------------------------
-	//		Methods
-	//-----------------------------------------------------------------------
-	@Override
-	public void attach(View view) 
-	{
-		views.add(view);
-	}
+	/**
+	 * Returns total length of the current music.
+	 * 
+	 * @return Total length of the current music
+	 */
+	public abstract long getMusicLength();
 	
-	@Override
-	public void detach(View view) 
-	{
-		views.remove(view);
-	}
+	/**
+	 * Returns how many of the length of the music was played.
+	 * 
+	 * @return Music length of the music that was played
+	 */
+	public abstract long getMusicPosition();
 	
-	@Override
-	public void notifyViews() 
-	{
-		for (View view : views) {
-			view.update(this, null);
-		}
-	}
+	/**
+	 * Checks if the player is playing a music.
+	 * 
+	 * @return If the player is playing a music.
+	 */
+	public abstract boolean isPlaying();
 	
+	/**
+	 * Checks if the player is paused.
+	 * 
+	 * @return If the player is paused.
+	 */
+	public abstract boolean isPaused();
 	
-	public MusicPlayer play()
-	{
-		notifyViews();
-		return this;
-	}
-	
-	public MusicPlayer pause()
-	{
-		notifyViews();
-		return this;
-	}
-	
-	public MusicPlayer stop()
-	{
-		notifyViews();
-		return this;
-	}
-	
-	public long getMusicLength()
-	{
-		
-	}
-	
-	public long getMusicPosition()
-	{
-		
-	}
-	
-	public boolean isPlaying()
-	{
-		
-	}
-	
-	public boolean isPaused()
-	{
-		
-	}
-	
-	public boolean isStopped()
-	{
-		
-	}
-	
-	public MusicPlayer change(String musicalNotes)
-	{
-		
-	}
+	/**
+	 * Checks if the player is stopped.
+	 * 
+	 * @return If the player is stopped.
+	 */
+	public abstract boolean isStopped();
 	
 }

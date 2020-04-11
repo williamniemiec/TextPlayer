@@ -20,7 +20,7 @@ public class Parser implements Model
 	private File file;
 	private ParseType parseType;
 	private String parsedText;
-	private List<View> views = new ArrayList<>();
+	private List<View> views;
 	
 	
 	//-----------------------------------------------------------------------
@@ -29,6 +29,8 @@ public class Parser implements Model
 	public Parser(ParseType parseType)
 	{
 		this.parseType = parseType;
+		
+		views = new ArrayList<>();
 	}
 	
 	
@@ -59,21 +61,22 @@ public class Parser implements Model
 	public Parser open(File file)
 	{
 		this.file = file;
+		
 		return this;
 	}
 	
 	public Parser open(String filename)
 	{
 		this.file = new File(filename);
+		
 		return this;
 	}
 	
 	public Parser parse()
 	{
-		
-		
-		
+		parsedText = parseType.parseFile(file);
 		notifyViews();
+		
 		return this;
 	}
 	

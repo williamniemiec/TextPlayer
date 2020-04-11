@@ -44,8 +44,8 @@ public class HomeView extends JPanel implements View
 	private JMenuBar mb;
 	private JLabel home_background;
 	private BufferedImage home_background_file;
-	final static int MAIN_FRAME_WIDTH = 600;
-	final static int MAIN_FRAME_HEIGHT = 400;
+	final static int MAIN_FRAME_WIDTH = 800;
+	final static int MAIN_FRAME_HEIGHT = 500;
 	final static int MAIN_FRAME_X = 100;
 	final static int MAIN_FRAME_Y = 100;
 	
@@ -132,7 +132,7 @@ public class HomeView extends JPanel implements View
 		mb_file.add(mb_file_close);
 		mb_file_close.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				Controller.changeView("HomeView");
+				Controller.loadView("HomeView");
 			}
 		});
 		homeController.addMainFrameComponent("mb_file_close", mb_file_close);
@@ -222,14 +222,14 @@ public class HomeView extends JPanel implements View
 	
 	private void open_file_gui()
 	{
-		
 		FileDialog fd = new FileDialog(mainFrame, "Escolha um arquivo", FileDialog.LOAD);
-		fd.setDirectory(".");
+		fd.setDirectory("./");
 		fd.setFile("*.txt");
 		fd.setVisible(true);
-		String filepath = fd.getDirectory()+fd.getFile();
 		
-		//System.out.println(filepath);
+		if (fd.getFile() == null) { return; }
+		
+		String filepath = fd.getDirectory()+fd.getFile();
 		
 		homeController.parseFile(new File(filepath));
 	}
