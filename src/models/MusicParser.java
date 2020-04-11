@@ -16,6 +16,9 @@ import java.util.regex.Pattern;
 
 public class MusicParser implements ParseType
 {
+	//-----------------------------------------------------------------------
+	//		Attributes
+	//-----------------------------------------------------------------------
 	private Map<String, String> dictionary = new HashMap<>();
 	private Map<Integer, String> bpm_jfugue = new HashMap<>(); // sera inicializado via arquivo
 	private int bpm = 120;
@@ -28,63 +31,56 @@ public class MusicParser implements ParseType
 	//-----------------------------------------------------------------------
 	//		Methods
 	//-----------------------------------------------------------------------
+	/**
+	 * Realiza o processamento da linha para o caso dos símbolos O+ | O- | o+ | o-.
+	 * Será aumentada uma oitava se o símbolo for O+ | o+ e será diminuída uma oitava
+	 * se o símbolo for O- | o-.
+	 * 
+	 * @param line Linha do texto a ser processada
+	 * @return Linha processada
+	 */
 	private String parseOPlusMinus(String line)
 	{
-		Pattern p = Pattern.compile("[A-z]((O|o)\\+|(O|o)\\-)");
+		Pattern p = Pattern.compile("[A-Ga-g]((O|o)\\+|(O|o)\\-)+");
 		Matcher m = p.matcher(line);
 		Pattern p2;
 		Matcher m2;
 		int positiveOctaves, negativeOctaves;
 		char letter;
 		
-		// fica enquanto houver o+ / o- na linha
+		// fica enquanto houver o+ / o- na linha COM UMA LETRA ANTES
+		// Tem q fazer contagem para ver qts o+ e qts o- tem para saber tam total da oitava
 		while (m.find()) {
+			System.out.println(m.group());
+			
 			// Conta o+
 			p2 = Pattern.compile("(O|o)\\+");
 			m2 = p2.matcher(m.group());
-			System.out.println(m.start());
-			System.out.println(m.end());
 			positiveOctaves = (int) m2.results().count();
 			
 			// Conta o-
 			p2 = Pattern.compile("(O|o)\\-");
 			m2 = p2.matcher(m.group());
-			negativeOctaves = (int) m2.results().count();
+			negativeOctaves = (int) m2.results().count();		
 			
-			// Pega letra da esq
-			p2 = Pattern.compile("[A-z]");
-			m2 = p2.matcher(m.group());
+			letter = m.group().charAt(0);
 			
-			if (m2.find()) {
-				letter = m2.group().charAt(0); // PROBLEMA: PD TER o+ / o- sem letra nenhuma
-				//line = line.replaceFirst("[A-z](O|o)\\+", setOctave(letter, positiveOctaves-negativeOctaves));
-				String[] aux = line.split("[A-z]((O|o)\\+|(O|o)\\-)");
-				StringBuilder sb = new StringBuilder();
-				
-				//System.out.println(letter+String.valueOf(setOctave(positiveOctaves-negativeOctaves)));
-				sb.append(aux[0]);
-				sb.append(letter+String.valueOf(setOctave(positiveOctaves-negativeOctaves)));
-				
-				
-				for (int i=1; i<aux.length; i++) {
-					sb.append(aux[i]);
-				}
-				/*
-				for (var item : aux) {
-					sb.append(item);
-				}*/
-				
-				line = sb.toString();
-				//line = String.copyValueOf(lineChar);// replaceFirst("[A-z](O|o)\\+", setOctave(letter, positiveOctaves-negativeOctaves));
-			//} else {
-			//	return line;
-			}
-		}
+			line = line.replaceFirst("[A-Ga-g]((O|o)\\+|(O|o)\\-)+", setOctave(letter, positiveOctaves-negativeOctaves));	
+		}	
+		
 		
 		return line;
 	}
 	
 	
+	/**
+	 * Realiza o processamento da linha para o caso dos símbolos B+ | B- | b+ | b-.
+	 * Será aumentado o BPM em 50 unidades se o símbolo for B+ | b+ e será diminuído
+	 * também em 50 unidades se o símbolo for B- | b-.
+	 * 
+	 * @param line Linha do texto a ser processada
+	 * @return Linha processada
+	 */
 	private String parseBPlusMinus(String line)
 	{
 		// Tem que ser em sequencia
@@ -98,48 +94,54 @@ public class MusicParser implements ParseType
 			line = line.replaceFirst("((B|b)\\+)", increaseBPM());
 			line = line.replaceFirst("((B|b)\\-)", decreaseBPM());
 		}
-		/*
-		Pattern p2 = Pattern.compile("((B|b)\\+)");
-		Matcher m2 = p.matcher(line);
 		
-		while (m.find()) {
-			line = line.replaceFirst("((B|b)\\+)", increaseBPM());
-		}
-		
-		p = Pattern.compile("((B|b)\\-)");
-		m = p.matcher(line);
-		
-		while (m.find()) {
-			line = line.replaceFirst("((B|b)\\-)", decreaseBPM());
-		}
-		*/
 		return line;
 	}
 	
+	/**
+	 * Realiza o processamento da linha para o caso dos símbolos . e ?. Ao 
+	 * encontrar esses símbolos, será tocada uma nota aleatoriamente.
+	 * 
+	 * @param line Linha do texto a ser processada
+	 * @return Linha processada
+	 */
 	private String parseDotInterrogationMark(String line)
 	{
 		Pattern p = Pattern.compile("\\.|\\?");
 		Matcher m = p.matcher(line);
 		
 		while (m.find()) {
-			line = line.replaceFirst("\\.|\\?", randomNote());
+			line = line.replaceFirst("\\.|\\?", "_"+randomNote()+"_");
 		}
 		
 		return line;
 	}
 	
-	private String removeAccentuation(String line)
+	/**
+	 * Remove todos os acentos de uma string.
+	 * 
+	 * @param str String que terá os acentos removidos
+	 * @return String sem acentuação
+	 */
+	private String removeAccentuation(String str)
 	{
-		line = line.replaceAll("[ÃãÀàÁáÂâ]", "a");
-		line = line.replaceAll("[ÊêÈèÉé]", "e");
-		line = line.replaceAll("[ÍíÌìÎî]", "i");
-		line = line.replaceAll("[ÕôÓóÒòÕõ]", "o");
-		line = line.replaceAll("[ÛûÚúÙù]", "u");
+		str = str.replaceAll("[ÃãÀàÁáÂâ]", "a");
+		str = str.replaceAll("[ÊêÈèÉé]", "e");
+		str = str.replaceAll("[ÍíÌìÎî]", "i");
+		str = str.replaceAll("[ÕôÓóÒòÕõ]", "o");
+		str = str.replaceAll("[ÛûÚúÙù]", "u");
 		
-		return line;
+		return str;
 	}
 	
-	
+	/**
+	 * Realiza o processamento da linha para o caso dos símbolos + e -. Ao 
+	 * encontrar + será aumentado o volume em 50 unidades. Por outro lado,
+	 * se achar - o volume será decrescido de 50 unidades.
+	 * 
+	 * @param line Linha do texto a ser processada
+	 * @return Linha processada
+	 */
 	private String parsePlusMinus(String line)
 	{
 		// Tem que ser em sequencia
@@ -157,90 +159,124 @@ public class MusicParser implements ParseType
 		return line;
 	}
 	
-	private String parsePlus(String line)
-	{
-		Pattern p = Pattern.compile("\\+");
-		Matcher m = p.matcher(line);
-		
-		while (m.find()) {
-			line = line.replaceFirst("\\+", increaseVolume());
-		}
-		
-		return line;
-	}
-	
-	private String parseMinus(String line)
-	{
-		Pattern p = Pattern.compile("\\-");
-		Matcher m = p.matcher(line);
-		
-		while (m.find()) {
-			line = line.replaceFirst("\\-", decreaseVolume());
-		}
-		
-		return line;
-	}
-	
 	/**
-	 * Retorna se um caracter é uma vogal.
+	 * Retorna se um caracter é uma vogal e não é uma nota musical, isto é,
+	 * se o caracter é 'I' ou 'O' ou 'U'.
 	 * 
 	 * @implNote Não considera acentos
 	 * @param letter Letra a ser verificada
-	 * @return Se a letra é vogal
+	 * @return Se a letra é vogal e não é uma nota musical
 	 */
-	private boolean isVowel(char letter) 
+	private boolean isVowelAndNotNote(char letter) 
 	{
 		letter = Character.toUpperCase(letter);
 		
-		return (letter == 'A' || letter == 'E' || letter == 'I' || letter == 'O' || letter == 'U');
+		return (letter == 'I' || letter == 'O' || letter == 'U');
 	}
 	
+	/**
+	 * Realiza o processamento da linha para o caso dos símbolos 'I', 'O' e 'U'.
+	 * Ao encontrar esses símbolos, se o caracter anterior for uma nota musical,
+	 * duplica esta; senão, realiza uma breve pausa / interrupção.
+	 * 
+	 * @param line Linha do texto a ser processada
+	 * @return Linha processada
+	 */
 	private String parseVogals(String line)
 	{
+		StringBuilder sb = new StringBuilder();
 		char[] lineChar = line.toCharArray();
 		
-		for (int i=0; i<line.length(); i++) {
+		
+		for (int i=0; i<lineChar.length; i++) {
 			// Ignora conchetes e tudo que tem dentro deles
-			if (lineChar[i] == '[') {
-				while (lineChar[i] != ']' && i<line.length()) {
+			if (lineChar[i] == '_') {
+				sb.append(lineChar[i]);
+				i++;
+				
+				while (i<lineChar.length && lineChar[i] != '_') {
+					sb.append(lineChar[i]);
 					i++;
 				}
-			}
-			
-			if (i > 0 && isVowel(lineChar[i]) && isNote(lineChar[i-1])) {
-				lineChar[i] = lineChar[i-1];
-			}
-		}
-		
-		return String.copyValueOf(lineChar);
-	}
-	
-	private String spaceLetters(String line)
-	{
-		StringBuilder sb = new StringBuilder();
-		char[] dividedLine = line.toCharArray();
-		int length = dividedLine.length;
-		char character;
-		
-		for (int i=0; i<length; i++) {
-			character = dividedLine[i];
-			
-			if (character >= 'A' && character <= 'G' || character >= 'a' && character <= 'g') {
-				sb.append(character+" ");
-			} else if (character == ' ') {
-				sb.append(putDelay()+" ");
-			} else if(character == '_') {
-				do {
-					i++;
-				} while (dividedLine[i] != '_');
 				
+				if (i<lineChar.length) {
+					sb.append(lineChar[i]);
+				}
 			} else {
-				sb.append(character+" ");
+				
+				if (isVowelAndNotNote(lineChar[i])) {
+					if (isNote(lineChar[i-1])) {
+						sb.append(lineChar[i-1]);
+						sb.append(lineChar[i-1]);
+					}
+					
+					else
+						sb.append(putDelay());	// Coloca pausa
+				} else if (i<lineChar.length)
+					sb.append(lineChar[i]);
+				}
 			}
-		}
-		
+
 		return sb.toString();
 	}
+	
+	/**
+	 * Realiza o processamento da linha para o caso de espaços no texto. Ao 
+	 * encontrar um espaço será feita uma breve pausa / interrupção.
+	 * 
+	 * @param line Linha do texto a ser processada
+	 * @return Linha processada
+	 */
+	private String parseSpaces(String line)
+	{
+		return line.replaceAll(" ", putDelay());
+	}
+	
+	/**
+	 * Dada uma linha já processada, realiza o espaçamento dos termos dela, onde
+	 * os termos representam comandos do JFugue.
+	 * 
+	 * @param line Linha do texto a ser processada
+	 * @return Linha processada
+	 */
+	private String spaceTerms(String line)
+	{
+		char[] lineChar = line.toCharArray();
+		StringBuilder sb = new StringBuilder();
+		
+		if (line.length() <= 1) { return line; }
+		
+		// SE ACHAR _, SÓ CONTINUAR PROCURANDO APÓS ACHAR OUTRO (IGNORA TUDO ENTRE _)
+		for (int i=0; i<lineChar.length-1; i++) {
+			if (lineChar[i] == '_') {
+				i++;
+				
+				while (i<lineChar.length && lineChar[i] != '_') {
+					sb.append(lineChar[i]);
+					i++;
+				}
+				
+				sb.append(" ");
+				//i--;	// Pq vai ser incrementado no for
+			} else {
+				sb.append(lineChar[i]+" ");
+			}
+		}
+
+		return sb.toString();
+	}
+	
+	/**
+	 * Remove todos os numeros de uma string.
+	 * 
+	 * @param str String que terá todos os seus números removidos
+	 * @return String sem acentuação
+	 */
+	private String removeNumbers(String str) 
+	{
+		return str.replaceAll("[0-9]", " ");
+	}
+	
 	
 	@Override
 	public String parseFile(File file) 
@@ -266,12 +302,17 @@ public class MusicParser implements ParseType
 			while ((line = br.readLine()) != null) {
 				// Problema: pode continuar na proxima linha
 				// pega letra anterior ao o+ / o- tb para aumentar / diminuir ela
-				// Tem q fazer contagem para ver qts o+ e qts o- tem para saber tam total da oitava
+				
 				
 				// Remove numeros
+				line = removeNumbers(line);
 				
 				// Remove acentos
 				line = removeAccentuation(line);
+				
+				// Separa as letras
+				// _ INDICARÁ QUE FOI ADD ALGO NA LINHA (METODOS ANTERIORES. SE ACHAR _, SÓ CONTINUAR PROCURANDO APÓS ACHAR OUTRO)
+				line = parseSpaces(line);
 				
 				// O+ | O-
 				line = parseOPlusMinus(line);
@@ -286,19 +327,15 @@ public class MusicParser implements ParseType
 				line = parseVogals(line);
 
 				// + | -
-				//line = parsePlus(line);
-				//line = parseMinus(line);
 				line = parsePlusMinus(line);
 
+				// Space terms
+				line = spaceTerms(line);
 				
-				// Separa as letras
-				// _ INDICARÁ QUE FOI ADD ALGO NA LINHA (METODOS ANTERIORES. SE ACHAR _, SÓ CONTINUAR PROCURANDO APÓS ACHAR OUTRO)
-				//line = spaceLetters(line);
+				// New line
+				line = line + changeInstrument();
 				
-				// NL
-				//line = line + changeInstrument();
-				
-				// Salva linha resultante
+				// Saves parsed line
 				parsedFile.append(line);
 			}
 		} catch (FileNotFoundException e) {
@@ -310,6 +347,11 @@ public class MusicParser implements ParseType
 		return parsedFile.toString();
 	}
 	
+	/**
+	 * Gera uma nota musical aleatória qualquer.
+	 * 
+	 * @return Nota musical
+	 */
 	private String randomNote()
 	{
 		int index = (int) (Math.random()*notes.length);
@@ -317,22 +359,34 @@ public class MusicParser implements ParseType
 		return "I["+notes[index]+"]";
 	}
 	
-	private int setOctave(int amountOctaves)
+	/**
+	 * Gera comando do JFugue para mudar oitava de uma nota musical dependendo 
+	 * da quantidade enviada.
+	 * 
+	 * @param note Letra musical que terá aumento de oitava
+	 * @param amountOctaves Numero de oitavas
+	 * @return Termo do JFugue com as oitavas enviadas
+	 */
+	private String setOctave(char note, int amountOctaves)
 	{
 		int defaultOctave = 5;
 		amountOctaves = defaultOctave + amountOctaves;
+		String response = "_"+note+amountOctaves+"_";
 		
 		if (defaultOctave >= 10) {
-			return 10;
+			response = "_"+note+"10"+"_";
 		}
 		
 		if (defaultOctave <= 0) {
-			return 0;
+			response = "_"+note+"0"+"_";
 		}
 		
-		return amountOctaves;
+		return response;
 	}
 	
+	/**
+	 * Carrega os instrumentos disponíveis na aplicação.
+	 */
 	private void initInstruments()
 	{
 		File file_inst = new File("config/instruments.tp");
@@ -343,24 +397,28 @@ public class MusicParser implements ParseType
 				instruments.add(line);
 			}
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	
+	/**
+	 * Verifica se uma letra é uma nota musical.
+	 * 
+	 * @implNote Não considera acentos
+	 * @param letter Letra a ser verificada
+	 * @return Se a letra é uma nota musical
+	 */
 	private boolean isNote(char letter)
 	{
-		//System.out.println("l: "+letter);
 		return letter >= 'A' && letter <= 'G' || letter >= 'a' && letter <= 'g';
 	}
 	
 	/**
-	 * Aumenta BPM de 50 em 50 unidades
-	 * @return
+	 * Aumenta BPM de 50 em 50 unidades.
+	 * 
+	 * @return Comando do JFugue para aumentar BPM 
 	 */
 	private String increaseBPM()
 	{
@@ -375,9 +433,14 @@ public class MusicParser implements ParseType
 			bpm = 120;
 		}
 		
-		return "T["+bpm_constant+"]";
+		return "_T["+bpm_constant+"]_";
 	}
 	
+	/**
+	 * Diminui BPM de 50 em 50 unidades.
+	 * 
+	 * @return Comando do JFugue para diminuir BPM 
+	 */
 	private String decreaseBPM()
 	{
 		String bpm_constant = "";
@@ -391,40 +454,53 @@ public class MusicParser implements ParseType
 			bpm = 120;
 		}
 		
-		return "T["+bpm_constant+"]";
+		return "_T["+bpm_constant+"]_";
 	}
 	
+	/**
+	 * Aumenta volume dobrando o volume atual.
+	 * 
+	 * @return Comando do JFugue para aumentar o volume
+	 */
 	private String increaseVolume()
 	{
-		//System.out.println("volume aum antes: "+volume);
 		if (2*volume >= 100)
 			volume = 100;
 		else
 			volume *= 2;
-		//System.out.println("volume aum dps: "+volume);
-		return ":CON(7, "+volume+")";
+		
+		return "_:CON(7, "+volume+")_";
 	}
 	
+	/**
+	 * Diminui volume dividindo o volume atual pela metade.
+	 * 
+	 * @return Comando do JFugue para diminuir o volume
+	 */
 	private String decreaseVolume()
 	{
-		//System.out.println("volume dim antes: "+volume);
 		if (volume == 0 || volume/2 <= 1)
 			volume = 1;
 		else
 			volume /= 2;
-		//System.out.println("volume dim dps: "+volume);
-		return ":CON(7, "+volume+")";
+		
+		return "_:CON(7, "+volume+")_";
 	}
 	
+	/**
+	 * Gera uma pausa / interrupção temporária no JFugue.
+	 * 
+	 * @return Comando do JFugue para gerar uma pausa / interrupção
+	 */
 	private String putDelay()
 	{
-		return "@1";
+		return "_@1_";
 	}
 	
 	/**
 	 * Gera um instrumento aleatório.
 	 * 
-	 * @return Instrumento musical
+	 * @return Comando do JFugue para tocar o instrumento musical gerado
 	 */
 	private String changeInstrument()
 	{
