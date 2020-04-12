@@ -252,7 +252,7 @@ public class HomeView extends JPanel implements View
 	private void make_background()
 	{
 		try {
-			home_background_file = ImageIO.read(new File(System.getProperty("user.dir")+"/src/content/images/home/logo.jpg"));
+			home_background_file = ImageIO.read(new File(System.getProperty("user.dir")+"/src/assets/images/home/logo.jpg"));
 			home_background = new JLabel(new ImageIcon(home_background_file.getScaledInstance(MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT, Image.SCALE_FAST)));
 			add(home_background);
 		} catch (IOException e1) { e1.printStackTrace();}

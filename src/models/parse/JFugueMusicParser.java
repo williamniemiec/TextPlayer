@@ -392,7 +392,7 @@ public class JFugueMusicParser implements ParseType
 	 */
 	private void initInstruments()
 	{
-		File file_inst = new File("config/instruments.tp");
+		File file_inst = new File("src/assets/files/instruments.tp");
 		String line;
 		
 		try (BufferedReader br = new BufferedReader(new FileReader(file_inst))) {

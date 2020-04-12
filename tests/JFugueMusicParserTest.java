@@ -15,7 +15,7 @@ public class JFugueMusicParserTest
 	public void test() 
 	{
 		JFugueMusicParser mp = new JFugueMusicParser();
-		File f = new File("text_small.txt");
+		File f = new File("tests/files/text_small.txt");
 		
 		String result = mp.parseFile(f);
 		//String expectedResult = "C y b b r p u n k @1 2 0 7 7 @1 t e m @1 m a a s @1 d d @1 7 0 @1 m i s s o e s @1 s e c c n d d r i a s ";

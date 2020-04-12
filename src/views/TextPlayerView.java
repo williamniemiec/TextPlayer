@@ -104,7 +104,7 @@ public class TextPlayerView extends JPanel implements View
 		// Logo
 		try {
 			BufferedImage myPicture;
-			myPicture = ImageIO.read(new File(System.getProperty("user.dir")+"/src/content/images/musicPlayer/header_logo.jpg"));
+			myPicture = ImageIO.read(new File(System.getProperty("user.dir")+"/src/assets/images/musicPlayer/header_logo.jpg"));
 			
 			JLabel lbl_musicPlayer = new JLabel();
 			pnl_top.add(lbl_musicPlayer, BorderLayout.NORTH);
@@ -160,12 +160,12 @@ public class TextPlayerView extends JPanel implements View
 	
 	private JButton make_btn_pause(JPanel panel)
 	{
-		return make_btn_ctrl(panel, System.getProperty("user.dir")+"/src/content/images/musicPlayer/pause.png");
+		return make_btn_ctrl(panel, System.getProperty("user.dir")+"/src/assets/images/musicPlayer/pause.png");
 	}
 	
 	private JButton make_btn_stop(JPanel panel)
 	{
-		return make_btn_ctrl(panel, System.getProperty("user.dir")+"/src/content/images/musicPlayer/stop.png");
+		return make_btn_ctrl(panel, System.getProperty("user.dir")+"/src/assets/images/musicPlayer/stop.png");
 	}
 	
 	private JButton make_btn_ctrl(JPanel panel, String filepath)
