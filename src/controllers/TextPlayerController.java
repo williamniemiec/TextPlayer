@@ -4,11 +4,12 @@ import java.io.File;
 
 import javax.swing.JMenuItem;
 
+import core.Controller;
 import models.IOManager;
-import models.JFugueMusicParser;
-import models.JFugueMusicPlayer;
-import models.MusicPlayer;
-import models.Parser;
+import models.musicPlayer.JFugueMusicPlayer;
+import models.musicPlayer.MusicPlayer;
+import models.parse.JFugueMusicParser;
+import models.parse.Parser;
 import views.TextPlayerView;
 
 

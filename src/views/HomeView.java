@@ -23,10 +23,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import controllers.Controller;
 import controllers.HomeController;
-import models.Model;
-import models.MusicPlayer;
+import core.Controller;
+import core.Model;
+import core.View;
+import models.musicPlayer.MusicPlayer;
 
 
 /**

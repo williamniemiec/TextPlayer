@@ -24,8 +24,9 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 import controllers.TextPlayerController;
-import models.Model;
-import models.MusicPlayer;
+import core.Model;
+import core.View;
+import models.musicPlayer.MusicPlayer;
 
 public class TextPlayerView extends JPanel implements View 
 {

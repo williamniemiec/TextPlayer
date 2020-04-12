@@ -6,7 +6,7 @@ import java.io.File;
 
 import org.junit.Test;
 
-import models.JFugueMusicParser;
+import models.parse.JFugueMusicParser;
 
 
 public class JFugueMusicParserTest 
