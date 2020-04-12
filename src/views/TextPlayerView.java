@@ -155,7 +155,7 @@ public class TextPlayerView extends JPanel implements View
 	
 	private JButton make_btn_play(JPanel panel)
 	{
-		return make_btn_ctrl(panel, System.getProperty("user.dir")+"/src/content/images/musicPlayer/play.png");
+		return make_btn_ctrl(panel, System.getProperty("user.dir")+"/src/assets/images/musicPlayer/play.png");
 	}
 	
 	private JButton make_btn_pause(JPanel panel)
@@ -242,13 +242,13 @@ public class TextPlayerView extends JPanel implements View
 		pb_music.setStringPainted(true);
 		
 		pb_music.setForeground(new Color(238,90,9));
-		pb_music.setValue(60);
+		pb_music.setValue(0);
 		panel.add(pb_music, constraints);
 	}
 	
 	private void make_btn_change(JPanel panel, Object constraints)
 	{
-		JButton btn_changeFile = new JButton("Change file");
+		JButton btn_changeFile = new JButton("Escolher outro arquivo");
 		btn_changeFile.setEnabled(true);
 		btn_changeFile.addActionListener(new ActionListener() {
 			@Override
