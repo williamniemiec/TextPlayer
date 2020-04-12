@@ -15,7 +15,7 @@ Esse é um projeto feito em Java cujo objetivo consiste em gerar sons a partir d
 ...
 
 ## Organização do projeto
-![uml](https://github.com/williamniemiec/TextPlayer/tree/master/media/uml/uml.jpg?raw=true)
+![uml](https://github.com/williamniemiec/TextPlayer/blob/master/media/uml/uml.png?raw=true)
 
 ## Classes e interfaces
 
