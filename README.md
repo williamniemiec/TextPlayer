@@ -90,3 +90,11 @@ Dentro da pasta src encontra-se todo o conteúdo referente à aplicação.
 ### /tests
 |Name| Type| Function
 |------- | --- | ----
+
+## Imagens da aplicação
+
+#### Home
+![home](https://github.com/williamniemiec/TextPlayer/blob/master/media/app/home.png?raw=true)
+
+#### MusicPlayer
+![musicPlayer](https://github.com/williamniemiec/TextPlayer/blob/master/media/app/musicPlayer.png?raw=true)
