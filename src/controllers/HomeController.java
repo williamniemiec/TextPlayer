@@ -2,13 +2,7 @@ package controllers;
 
 import java.awt.Component;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.swing.JMenuItem;
-
 import core.Controller;
 import models.IOManager;
 import models.parse.JFugueMusicParser;
@@ -17,35 +11,48 @@ import views.HomeView;
 
 
 /**
- * Main controller. It will be responsible for program's main screen behavior.
+ * Controlador principal. Será o responsável pelo comportamento da tela inicial do programa.
  */
 public class HomeController extends Controller 
 {
 	//-----------------------------------------------------------------------
-	//		Attributes
+	//		Atributos
 	//-----------------------------------------------------------------------
-	@SuppressWarnings("unused")
 	private HomeView homeView;
 	private TextPlayerController textPlayerController;
 	
 	
 	//-----------------------------------------------------------------------
-	//		Methods
+	//		Métodos
 	//-----------------------------------------------------------------------
 	@Override
 	public void run()
 	{
+		// Inicializa HomeView
 		homeView = new HomeView(this, mainFrame);
 		addView("HomeView", homeView);
 		
+		// Deixa janela do programa visível
 		mainFrame.setVisible(true);
 	}
 
+	/**
+	 * Adiciona um {@link Component componente} na janela principal. 
+	 * 
+	 * @param name Nome do componente (é recomendado usar o mesmo nome da variável)
+	 * @param component Componente a ser adicionado
+	 */
 	public void addMainFrameComponent(String name, Component component)
 	{
 		addComponent(name, component);
 	}
 	
+	/**
+	 * Realiza o processamento de um arquivo e manda-o para o {@link TextPlayerController}.
+	 * Após a execução desse método, será aberta a view {@link TextPlayerView}.
+	 * 
+	 * @param file Arquivo a ser processado
+	 */
 	public void parseFile(File file)
 	{
 		String parsedFile;
@@ -60,6 +67,9 @@ public class HomeController extends Controller
 		textPlayerController.run();
 	}
 	
+	/**
+	 * Atualiza os botões do menu que fica no topo da janela.
+	 */
 	public void updateMenuBar()
 	{	
 		((JMenuItem)getComponent("mb_ctrl_play")).setEnabled(false);
