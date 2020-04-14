@@ -98,3 +98,7 @@ Dentro da pasta src encontra-se todo o conteúdo referente à aplicação.
 
 #### MusicPlayer
 ![musicPlayer](https://github.com/williamniemiec/TextPlayer/blob/master/media/app/musicPlayer.png?raw=true)
+
+## Referências
+- Freeman, Eric, Elisabeth Robson, Kathy Sierra, and Bert Bates. 2004. Head First design patterns. Sebastopol, CA: O'Reilly. 
+- Beck, K. Implementation Patterns, Addison-Wesley, 2008.
