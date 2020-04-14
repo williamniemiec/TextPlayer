@@ -34,6 +34,7 @@ import models.musicPlayer.MusicPlayer;
  * View associated with HomeController. It will be responsible for program's 
  * main screen view.
  */
+@SuppressWarnings("serial")
 public class HomeView extends JPanel implements View
 {
 	//-----------------------------------------------------------------------
