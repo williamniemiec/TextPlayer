@@ -5,6 +5,7 @@ Funcionais (o que a app faz)
 	Permitir que usuário forneça outro arquivo sem ser necessário fechar programa e abrir novamente
 	Permitir que usuário aumente / diminua volume
 	Exibe qual texto está sendo processado, destacando o mesmo
+	Multilinguagem
 	
 
 Não-funcionais (requisitos relacionados ao uso da aplicação em termos de desempenho, usabilidade, confiabilidade, segurança, disponibilidade, manutenção e tecnologias envolvidas.)
@@ -14,7 +15,3 @@ Não-funcionais (requisitos relacionados ao uso da aplicação em termos de dese
 	[Matunenibilidade] Deve ser estruturado de forma que sistema fique bem modularizado
 	[Matunenibilidade] Sempre que possível utilizar interfaces ao invés de classes concretas
 	[Portabilidade] Permitir que app seja reproduzido em vários sistemas operacionais, como Windows, Ubuntu e MacOS
-
-
-MVC
-V - interfaces graficas
