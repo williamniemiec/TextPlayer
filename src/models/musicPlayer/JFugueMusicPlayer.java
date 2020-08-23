@@ -3,10 +3,15 @@ package models.musicPlayer;
 import java.util.ArrayList;
 import java.util.List;
 
-import core.Model;
 import core.View;
 
 
+/**
+ * Responsible for representing JFugue music player.
+ *
+ * @version		1.0.0
+ * @since		1.0.0
+ */
 public class JFugueMusicPlayer implements MusicPlayer
 {
 	//-----------------------------------------------------------------------
@@ -26,7 +31,7 @@ public class JFugueMusicPlayer implements MusicPlayer
 	/**
 	 * Music player that will play with JFugue.
 	 * 
-	 * @param musicalNotes Text with JFugue commands.
+	 * @param		musicalNotes Text with JFugue commands.
 	 */
 	public JFugueMusicPlayer(String musicalNotes)
 	{
@@ -39,18 +44,30 @@ public class JFugueMusicPlayer implements MusicPlayer
 	//-----------------------------------------------------------------------
 	//		Methods
 	//-----------------------------------------------------------------------
+	/**
+	 * {@inheritDoc}
+	 * @see		MusicPlayer#attach(View)
+	 */
 	@Override
 	public void attach(View view) 
 	{
 		views.add(view);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see		MusicPlayer#detach(View)
+	 */
 	@Override
 	public void detach(View view) 
 	{
 		views.remove(view);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see		MusicPlayer#notifyViews()
+	 */
 	@Override
 	public void notifyViews() 
 	{
@@ -60,6 +77,11 @@ public class JFugueMusicPlayer implements MusicPlayer
 	}
 	//---------------------------------------------------------------------
 	
+	/**
+	 * {@inheritDoc}
+	 * @see		MusicPlayer#play()
+	 */
+	@Override
 	public MusicPlayer play()
 	{
 		notifyViews();
@@ -69,6 +91,11 @@ public class JFugueMusicPlayer implements MusicPlayer
 		return this;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see		MusicPlayer#pause()
+	 */
+	@Override
 	public MusicPlayer pause()
 	{
 		notifyViews();
@@ -78,6 +105,11 @@ public class JFugueMusicPlayer implements MusicPlayer
 		return this;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see		MusicPlayer#stop()
+	 */
+	@Override
 	public MusicPlayer stop()
 	{
 		notifyViews();
@@ -87,6 +119,11 @@ public class JFugueMusicPlayer implements MusicPlayer
 		return this;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see		MusicPlayer#change(String)
+	 */
+	@Override
 	public MusicPlayer change(String musicalNotes)
 	{
 		//...
@@ -96,26 +133,51 @@ public class JFugueMusicPlayer implements MusicPlayer
 		return this;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see		MusicPlayer#getMusicLength()
+	 */
+	@Override
 	public long getMusicLength()
 	{
 		
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see		MusicPlayer#getMusicPosition()
+	 */
+	@Override
 	public long getMusicPosition()
 	{
 		
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see		MusicPlayer#isPlaying()
+	 */
+	@Override
 	public boolean isPlaying()
 	{
 		
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see		MusicPlayer#isPaused()
+	 */
+	@Override
 	public boolean isPaused()
 	{
 		
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @see		MusicPlayer#isStopped()
+	 */
+	@Override
 	public boolean isStopped()
 	{
 		

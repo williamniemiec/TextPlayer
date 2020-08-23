@@ -7,40 +7,45 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+/**
+ * Responsible for processing text files in a format that JFugue accepts.
+ * 
+ * @version		1.0.0
+ * @since		1.0.0
+ */
 public class JFugueMusicParser implements ParseType
 {
-	//-----------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	//		Attributes
-	//-----------------------------------------------------------------------
-	//private Map<String, String> dictionary = new HashMap<>();
-	//private Map<Integer, String> bpm_jfugue = new HashMap<>(); // sera inicializado via arquivo
+	//-------------------------------------------------------------------------
 	private int bpm = 120;
 	private int volume = 50;
 	private List<String> instruments = new ArrayList<>();
 	private final char[] notes = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
+
 	
-	
-	{
-		instruments = new ArrayList<>();
-	}
-	
-	//-----------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	//		Methods
-	//-----------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	/**
-	 * Realiza o processamento da linha para o caso dos símbolos O+ | O- | o+ | o-.
-	 * Será aumentada uma oitava se o símbolo for O+ | o+ e será diminuída uma oitava
-	 * se o símbolo for O- | o-.
+	 * Performs line processing for the case of the following symbols:
+	 * <ul>
+	 * 	<li>O+</li>
+	 * 	<li>O-</li>
+	 * 	<li>o+</li>
+	 * 	<li>o-</li>
+	 * </ul>
+	 * An octave will be increased if the symbol is O+ or o+ and will be 
+	 * decreased by one octave if the symbol is O- or o-.
 	 * 
-	 * @param line Linha do texto a ser processada
-	 * @return Linha processada
+	 * @param		line Line to be processed
+	 * 
+	 * @return		Processed line
 	 */
 	private String parseOPlusMinus(String line)
 	{
@@ -50,6 +55,7 @@ public class JFugueMusicParser implements ParseType
 		Matcher m2;
 		int positiveOctaves, negativeOctaves;
 		char letter;
+		
 		
 		// fica enquanto houver o+ / o- na linha COM UMA LETRA ANTES
 		// Tem q fazer contagem para ver qts o+ e qts o- tem para saber tam total da oitava
@@ -75,23 +81,29 @@ public class JFugueMusicParser implements ParseType
 		return line;
 	}
 	
-	
 	/**
-	 * Realiza o processamento da linha para o caso dos símbolos B+ | B- | b+ | b-.
-	 * Será aumentado o BPM em 50 unidades se o símbolo for B+ | b+ e será diminuído
-	 * também em 50 unidades se o símbolo for B- | b-.
+	 * Performs line processing for the case of the following symbols:
+	 * <ul>
+	 * 	<li>B+</li>
+	 * 	<li>B-</li>
+	 * 	<li>b+</li>
+	 * 	<li>b-</li>
+	 * </ul>
+	 * BPM will be increased by 50 units if the symbol is B+ or b+ and will 
+	 * also be decreased by 50 units if the symbol is B- or b-.
 	 * 
-	 * @param line Linha do texto a ser processada
-	 * @return Linha processada
+	 * @param		line Line to be processed
+	 * 
+	 * @return		Processed line
 	 */
 	private String parseBPlusMinus(String line)
 	{
 		// Tem que ser em sequencia
 		Pattern p = Pattern.compile("((B|b)\\+|(B|b)\\-)");
 		Matcher m = p.matcher(line);
-		
 		Pattern bPlus = Pattern.compile("((B|b)\\+)");
 		Pattern bMinus = Pattern.compile("((B|b)\\-)");
+		
 		
 		while (m.find()) {
 			line = line.replaceFirst("((B|b)\\+)", increaseBPM());
@@ -102,16 +114,22 @@ public class JFugueMusicParser implements ParseType
 	}
 	
 	/**
-	 * Realiza o processamento da linha para o caso dos símbolos . e ?. Ao 
-	 * encontrar esses símbolos, será tocada uma nota aleatoriamente.
+	 * Performs line processing for the case of the following symbols:
+	 * <ul>
+	 * 	<li>.</li>
+	 * 	<li>?</li>
+	 * </ul>
+	 * When one of these symbols is found, it will be replaced by a random note.
 	 * 
-	 * @param line Linha do texto a ser processada
-	 * @return Linha processada
+	 * @param		line Line to be processed
+	 * 
+	 * @return		Processed line
 	 */
 	private String parseDotInterrogationMark(String line)
 	{
 		Pattern p = Pattern.compile("\\.|\\?");
 		Matcher m = p.matcher(line);
+		
 		
 		while (m.find()) {
 			line = line.replaceFirst("\\.|\\?", "_"+randomNote()+"_");
@@ -121,10 +139,11 @@ public class JFugueMusicParser implements ParseType
 	}
 	
 	/**
-	 * Remove todos os acentos de uma string.
+	 * Removes all accents from a String.
 	 * 
-	 * @param str String que terá os acentos removidos
-	 * @return String sem acentuação
+	 * @param		str String that will have its accents removed
+	 * 
+	 * @return		String without accentuation
 	 */
 	private String removeAccentuation(String str)
 	{
@@ -138,12 +157,17 @@ public class JFugueMusicParser implements ParseType
 	}
 	
 	/**
-	 * Realiza o processamento da linha para o caso dos símbolos + e -. Ao 
-	 * encontrar + será aumentado o volume em 50 unidades. Por outro lado,
-	 * se achar - o volume será decrescido de 50 unidades.
+	 * Performs line processing for the case of the following symbols:
+	 * <ul>
+	 * 	<li>+</li>
+	 * 	<li>-</li>
+	 * </ul>
+	 * Volume will be increased by 50 units when the symbol + is found. On the 
+	 * other hand it will be decreased by 50 units if the symbol - is found.
 	 * 
-	 * @param line Linha do texto a ser processada
-	 * @return Linha processada
+	 * @param		line Line to be processed
+	 * 
+	 * @return		Processed lineLinha processada
 	 */
 	private String parsePlusMinus(String line)
 	{
@@ -163,12 +187,13 @@ public class JFugueMusicParser implements ParseType
 	}
 	
 	/**
-	 * Retorna se um caracter é uma vogal e não é uma nota musical, isto é,
-	 * se o caracter é 'I' ou 'O' ou 'U'.
+	 * Checks if a character is a vowel and not a musical note.
 	 * 
-	 * @implNote Não considera acentos
-	 * @param letter Letra a ser verificada
-	 * @return Se a letra é vogal e não é uma nota musical
+	 * @param		letter Character to be analyzed
+	 * 
+	 * @return		If character is not 'I', 'O' or 'U'
+	 * 
+	 * @implNote	It does not consider accents
 	 */
 	private boolean isVowelAndNotNote(char letter) 
 	{
@@ -178,12 +203,18 @@ public class JFugueMusicParser implements ParseType
 	}
 	
 	/**
-	 * Realiza o processamento da linha para o caso dos símbolos 'I', 'O' e 'U'.
-	 * Ao encontrar esses símbolos, se o caracter anterior for uma nota musical,
-	 * duplica esta; senão, realiza uma breve pausa / interrupção.
+	 * Performs line processing for the case of the following symbols:
+	 * <ul>
+	 * 	<li>I</li>
+	 * 	<li>O</li>
+	 * 	<li>U</li>
+	 * </ul>
+	 * If some of these symbols is found, if the previous character is a musical
+	 * note, duplicate it; otherwise, perform a brief pause / interruption.
 	 * 
-	 * @param line Linha do texto a ser processada
-	 * @return Linha processada
+	 * @param		line Line to be processed
+	 * 
+	 * @return		Processed line
 	 */
 	private String parseVogals(String line)
 	{
@@ -205,7 +236,8 @@ public class JFugueMusicParser implements ParseType
 				if (i<lineChar.length) {
 					sb.append(lineChar[i]);
 				}
-			} else {
+			} 
+			else {
 				
 				if (i > 0 && isVowelAndNotNote(lineChar[i])) {
 					if (isNote(lineChar[i-1])) {
@@ -215,7 +247,8 @@ public class JFugueMusicParser implements ParseType
 					
 					else
 						sb.append(putDelay());	// Coloca pausa
-				} else if (i<lineChar.length)
+				} 
+				else if (i<lineChar.length)
 					sb.append(lineChar[i]);
 				}
 			}
@@ -224,11 +257,12 @@ public class JFugueMusicParser implements ParseType
 	}
 	
 	/**
-	 * Realiza o processamento da linha para o caso de espaços no texto. Ao 
-	 * encontrar um espaço será feita uma breve pausa / interrupção.
+	 * Performs line processing for the case of spaces. When a space is found,
+	 * there will be a brief pause / interruption.
 	 * 
-	 * @param line Linha do texto a ser processada
-	 * @return Linha processada
+	 * @param		line Line to be processed
+	 * 
+	 * @return		Processed line
 	 */
 	private String parseSpaces(String line)
 	{
@@ -236,16 +270,18 @@ public class JFugueMusicParser implements ParseType
 	}
 	
 	/**
-	 * Dada uma linha já processada, realiza o espaçamento dos termos dela, onde
-	 * os termos representam comandos do JFugue.
+	 * Given a processed line, performs the spacing of its terms, where the 
+	 * terms represent JFugue commands.
 	 * 
-	 * @param line Linha do texto a ser processada
-	 * @return Linha processada
+	 * @param		line Line to be processed
+	 * 
+	 * @return		Processed line
 	 */
 	private String spaceTerms(String line)
 	{
 		char[] lineChar = line.toCharArray();
 		StringBuilder sb = new StringBuilder();
+		
 		
 		if (line.length() <= 1) { return line; }
 		
@@ -261,7 +297,8 @@ public class JFugueMusicParser implements ParseType
 				
 				sb.append(" ");
 				//i--;	// Pq vai ser incrementado no for
-			} else {
+			} 
+			else {
 				sb.append(lineChar[i]+" ");
 			}
 		}
@@ -270,20 +307,27 @@ public class JFugueMusicParser implements ParseType
 	}
 	
 	/**
-	 * Remove todos os numeros de uma string.
+	 * Removes all numbers from a string.
 	 * 
-	 * @param str String que terá todos os seus números removidos
-	 * @return String sem acentuação
+	 * @param		str String that will be its numbers removed
+	 * 
+	 * @return		String without numbers
 	 */
 	private String removeNumbers(String str) 
 	{
 		return str.replaceAll("[0-9]", " ");
 	}
 	
-	
+	/**
+	 * {@inheritDoc}
+	 * @see		ParseType#parseFile(File)
+	 */
 	@Override
-	public String parseFile(File file) 
+	public String parseFile(File file) throws IllegalArgumentException
 	{
+		if (file == null)
+			throw new IllegalArgumentException("File cannot be empty");
+		
 		String regex1Char = "[a-g\\s\\+\\-iou\\?\\n]+";
 		String regex2Char = "((o\\+|o\\-|b\\+|b\\-)+)?";
 		String line;
@@ -298,8 +342,8 @@ public class JFugueMusicParser implements ParseType
 		String letter;
 		StringBuilder parsedFile = new StringBuilder();
 		
-		initInstruments();
 		
+		initInstruments();
 		
 		try (BufferedReader br = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
 			while ((line = br.readLine()) != null) {
@@ -341,9 +385,11 @@ public class JFugueMusicParser implements ParseType
 				// Saves parsed line
 				parsedFile.append(line);
 			}
-		} catch (FileNotFoundException e) {
+		} 
+		catch (FileNotFoundException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
+		} 
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 		
@@ -351,9 +397,9 @@ public class JFugueMusicParser implements ParseType
 	}
 	
 	/**
-	 * Gera uma nota musical aleatória qualquer.
+	 * Generates a random musical note.
 	 * 
-	 * @return Nota musical
+	 * @return		Musical note
 	 */
 	private String randomNote()
 	{
@@ -363,18 +409,22 @@ public class JFugueMusicParser implements ParseType
 	}
 	
 	/**
-	 * Gera comando do JFugue para mudar oitava de uma nota musical dependendo 
-	 * da quantidade enviada.
+	 * Generates JFugue command to change octave of a musical note depending on
+	 * the amount sent.
 	 * 
-	 * @param note Letra musical que terá aumento de oitava
-	 * @param amountOctaves Numero de oitavas
-	 * @return Termo do JFugue com as oitavas enviadas
+	 * @param		note Musical note that will have its octave increased
+	 * @param		amountOctaves Number of octaves
+	 * 
+	 * @return		JFugue command
 	 */
 	private String setOctave(char note, int amountOctaves)
 	{
+		String response;
 		int defaultOctave = 5;
+		
+		
 		amountOctaves = defaultOctave + amountOctaves;
-		String response = "_"+note+amountOctaves+"_";
+		response = "_"+note+amountOctaves+"_";
 		
 		if (defaultOctave >= 10) {
 			response = "_"+note+"10"+"_";
@@ -388,30 +438,35 @@ public class JFugueMusicParser implements ParseType
 	}
 	
 	/**
-	 * Carrega os instrumentos disponíveis na aplicação.
+	 * Loads all available instruments.
 	 */
 	private void initInstruments()
 	{
 		File file_inst = new File("src/assets/files/instruments.tp");
 		String line;
 		
+		
 		try (BufferedReader br = new BufferedReader(new FileReader(file_inst))) {
 			while ((line = br.readLine()) != null) {
 				instruments.add(line);
 			}
-		} catch (FileNotFoundException e) {
+		} 
+		catch (FileNotFoundException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
+		} 
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	/**
-	 * Verifica se uma letra é uma nota musical.
+	 * Checks whether a letter is a musical note.
 	 * 
-	 * @implNote Não considera acentos
-	 * @param letter Letra a ser verificada
-	 * @return Se a letra é uma nota musical
+	 * @param		letter Letter to be analyzed
+	 * 
+	 * @return		If the letter is a musical note
+	 * 
+	 * @implNote	It does not consider accents
 	 */
 	private boolean isNote(char letter)
 	{
@@ -419,13 +474,14 @@ public class JFugueMusicParser implements ParseType
 	}
 	
 	/**
-	 * Aumenta BPM de 50 em 50 unidades.
+	 * Increases BPM every 50 units.
 	 * 
-	 * @return Comando do JFugue para aumentar BPM 
+	 * @return		JFugue command
 	 */
 	private String increaseBPM()
 	{
 		String bpm_constant = "";
+		
 		
 		if (bpm >= 120) {
 			bpm_constant = "Presto";
@@ -440,13 +496,14 @@ public class JFugueMusicParser implements ParseType
 	}
 	
 	/**
-	 * Diminui BPM de 50 em 50 unidades.
+	 * Decreases BPM every 50 units.
 	 * 
-	 * @return Comando do JFugue para diminuir BPM 
+	 * @return		JFugue command 
 	 */
 	private String decreaseBPM()
 	{
 		String bpm_constant = "";
+		
 		
 		if (bpm <= 120) {
 			bpm_constant = "Andante";
@@ -461,9 +518,9 @@ public class JFugueMusicParser implements ParseType
 	}
 	
 	/**
-	 * Aumenta volume dobrando o volume atual.
+	 * Increases volume by doubling the current volume.
 	 * 
-	 * @return Comando do JFugue para aumentar o volume
+	 * @return		JFugue command
 	 */
 	private String increaseVolume()
 	{
@@ -476,9 +533,9 @@ public class JFugueMusicParser implements ParseType
 	}
 	
 	/**
-	 * Diminui volume dividindo o volume atual pela metade.
+	 * Decreases volume by dividing the current volume in half.
 	 * 
-	 * @return Comando do JFugue para diminuir o volume
+	 * @return		JFugue command
 	 */
 	private String decreaseVolume()
 	{
@@ -491,9 +548,9 @@ public class JFugueMusicParser implements ParseType
 	}
 	
 	/**
-	 * Gera uma pausa / interrupção temporária no JFugue.
+	 * Generates a brief break / interruption.
 	 * 
-	 * @return Comando do JFugue para gerar uma pausa / interrupção
+	 * @return		JFugue command
 	 */
 	private String putDelay()
 	{
@@ -501,13 +558,14 @@ public class JFugueMusicParser implements ParseType
 	}
 	
 	/**
-	 * Gera um instrumento aleatório.
+	 * Selects a random instrument.
 	 * 
-	 * @return Comando do JFugue para tocar o instrumento musical gerado
+	 * @return		JFugue command
 	 */
 	private String changeInstrument()
 	{
 		int num = (int) (Math.random()*instruments.size());
+		
 		
 		return "I["+instruments.get(num)+"]";
 	}

@@ -14,9 +14,9 @@ import javax.swing.JPanel;
  */
 public abstract class Controller 
 {	
-	//-----------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	//		Attributes
-	//-----------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	/**
 	 * Main window of the program.
 	 */
@@ -34,9 +34,9 @@ public abstract class Controller
 	private static final Map<String,Component> mainFrameComponents = new HashMap<>();
 	
 	
-	//-----------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	//		Initialization blocks
-	//-----------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	/**
 	 * Puts views viewer in the main window.
 	 */
@@ -45,9 +45,9 @@ public abstract class Controller
 	}
 	
 	
-	//-----------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	//		Methods
-	//-----------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	/**
 	 * Executes controller and associated view with it.
 	 */
@@ -57,8 +57,8 @@ public abstract class Controller
 	/**
 	 * Adds a view in main frame.
 	 * 
-	 * @param viewName Name of the view
-	 * @param view View to be added
+	 * @param		viewName Name of the view
+	 * @param		view View to be added
 	 */
 	public static final void addView(String viewName, View view)
 	{
@@ -68,7 +68,7 @@ public abstract class Controller
 	/**
 	 * Loads a view in main frame.
 	 * 
-	 * @param viewName Name of the view
+	 * @param		viewName Name of the view
 	 */
 	public static final void loadView(String viewName)
 	{
@@ -79,8 +79,8 @@ public abstract class Controller
 	/**
 	 * Adds a new component in the list of main frame's components.
 	 * 
-	 * @param name Name of the component
-	 * @param component Component to be added
+	 * @param		name Name of the component
+	 * @param		component Component to be added
 	 */
 	public static final void addComponent(String name, Component component)
 	{
@@ -90,7 +90,7 @@ public abstract class Controller
 	/**
 	 * Removes a component from the list of main frame's components.
 	 * 
-	 * @param name Name of the component
+	 * @param		name Name of the component
 	 */
 	public static final void removeComponent(String name)
 	{
@@ -100,8 +100,9 @@ public abstract class Controller
 	/**
 	 * Returns an added component in the list of main frame's components
 	 * 
-	 * @param name Name of the component
-	 * @return Component with the provided name or null if it is not in the list
+	 * @param		name Name of the component
+	 * 
+	 * @return		Component with the provided name or null if it is not in the list
 	 */
 	public static final Component getComponent(String name)
 	{

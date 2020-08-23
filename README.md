@@ -1,5 +1,5 @@
 # TextPlayer
-![](https://github.com/williamniemiec/TextPlayer/blob/master/media/logo/logo.jpg?raw=true)
+![](https://github.com/williamniemiec/TextPlayer/blob/master/docs/logo/logo.jpg?raw=true)
 
 Esse é um projeto feito em Java cujo objetivo consiste em gerar sons a partir de um texto qualquer. Ele utiliza o padrão de projeto MVC, utilizando a framework [MVC-in-Java](https://github.com/williamniemiec/MVC-in-Java).
 
@@ -15,7 +15,7 @@ Esse é um projeto feito em Java cujo objetivo consiste em gerar sons a partir d
 ...
 
 ## Organização do projeto
-![uml](https://github.com/williamniemiec/TextPlayer/blob/master/media/uml/uml.png?raw=true)
+![uml](https://github.com/williamniemiec/TextPlayer/blob/master/docs/uml/uml.png?raw=true)
 
 ## Classes e interfaces
 
@@ -94,10 +94,10 @@ Dentro da pasta src encontra-se todo o conteúdo referente à aplicação.
 ## Imagens da aplicação
 
 #### Home
-![home](https://github.com/williamniemiec/TextPlayer/blob/master/media/app/home.png?raw=true)
+![home](https://github.com/williamniemiec/TextPlayer/blob/master/docs/app/home.png?raw=true)
 
 #### MusicPlayer
-![musicPlayer](https://github.com/williamniemiec/TextPlayer/blob/master/media/app/musicPlayer.png?raw=true)
+![musicPlayer](https://github.com/williamniemiec/TextPlayer/blob/master/docs/app/musicPlayer.png?raw=true)
 
 ## Referências
 - Freeman, Eric, Elisabeth Robson, Kathy Sierra, and Bert Bates. 2004. Head First design patterns. Sebastopol, CA: O'Reilly. 

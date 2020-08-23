@@ -27,20 +27,21 @@ import controllers.HomeController;
 import core.Controller;
 import core.Model;
 import core.View;
-import models.musicPlayer.MusicPlayer;
 
 
 /**
  * View associated with HomeController. It will be responsible for program's 
  * main screen view.
+ * 
+ * @version		1.0.0
+ * @since		1.0.0
  */
 @SuppressWarnings("serial")
 public class HomeView extends JPanel implements View
 {
-	//-----------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	//		Attributes
-	//-----------------------------------------------------------------------
-	@SuppressWarnings("unused")
+	//-------------------------------------------------------------------------
 	private HomeController homeController;
 	private JFrame mainFrame;
 	private JMenuBar mb;
@@ -52,9 +53,15 @@ public class HomeView extends JPanel implements View
 	private final static int MAIN_FRAME_Y = 100;
 	
 	
-	//-----------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	//		Constructor
-	//-----------------------------------------------------------------------
+	//-------------------------------------------------------------------------
+	/**
+	 * Creates a representation of home view.
+	 * 
+	 * @param		homeController Controller responsible for the view
+	 * @param		mainFrame Main application frame
+	 */
 	public HomeView(HomeController homeController, JFrame mainFrame)
 	{
 		this.homeController = homeController;
@@ -85,9 +92,13 @@ public class HomeView extends JPanel implements View
 	}
 	
 	
-	//-----------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	//		Methods
-	//-----------------------------------------------------------------------
+	//-------------------------------------------------------------------------
+	/**
+	 * {@inheritDoc}
+	 * @see		View#update(Model, Object)
+	 */
 	@Override
 	public void update(Model model, Object data) 
 	{
@@ -95,6 +106,9 @@ public class HomeView extends JPanel implements View
 		System.out.println("update");
 	}
 	
+	/**
+	 * Creates maion frame of the application.
+	 */
 	private void make_mainFrame()
 	{
 		mainFrame.setOpacity(1.0f);
@@ -106,6 +120,9 @@ public class HomeView extends JPanel implements View
 		make_menuBar();
 	}
 	
+	/**
+	 * Creates top bar.
+	 */
 	private void make_menuBar()
 	{
 		mb = new JMenuBar();
@@ -116,12 +133,17 @@ public class HomeView extends JPanel implements View
 		make_mn_about();		
 	}
 	
+	/**
+	 * Creates the 'Arquivo' menu in the top bar.
+	 */
 	private void make_mn_file()
 	{
+		JMenuItem mb_file_open, mb_file_close, btn_file_exit;
 		JMenu mb_file = new JMenu("Arquivo");
 		mb.add(mb_file);
 		
-		JMenuItem mb_file_open = new JMenuItem("Abrir");
+		// Creates 'Abrir' button
+		mb_file_open = new JMenuItem("Abrir");
 		mb_file.add(mb_file_open);
 		mb_file_open.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
@@ -129,7 +151,8 @@ public class HomeView extends JPanel implements View
 			}
 		});
 		
-		JMenuItem mb_file_close = new JMenuItem("Fechar");
+		// Creates 'Fechar' button
+		mb_file_close = new JMenuItem("Fechar");
 		mb_file_close.setEnabled(false);
 		mb_file.add(mb_file_close);
 		mb_file_close.addActionListener(new ActionListener() {
@@ -139,7 +162,8 @@ public class HomeView extends JPanel implements View
 		});
 		homeController.addMainFrameComponent("mb_file_close", mb_file_close);
 		
-		JMenuItem btn_file_exit = new JMenuItem("Sair");
+		// Creates 'Sair' button
+		btn_file_exit = new JMenuItem("Sair");
 		mb_file.add(btn_file_exit);
 		btn_file_exit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
@@ -148,30 +172,42 @@ public class HomeView extends JPanel implements View
 		});
 	}
 	
+	/**
+	 * Creates the 'Controles' menu in the top bar.
+	 */
 	private void make_mn_controller()
 	{
+		JMenuItem mb_ctrl_play, mb_ctrl_pause, mb_ctrl_stop;
 		JMenu mn_ctrl = new JMenu("Controles");
 		mb.add(mn_ctrl);
 		
-		JMenuItem mb_ctrl_play = new JMenuItem("Play");
+		// Creates 'Play' button
+		mb_ctrl_play = new JMenuItem("Play");
 		mb_ctrl_play.setEnabled(false);
 		mn_ctrl.add(mb_ctrl_play);
 		homeController.addMainFrameComponent("mb_ctrl_play", mb_ctrl_play);
 		
-		JMenuItem mb_ctrl_pause = new JMenuItem("Pause");
+		// Creates 'Pause' button
+		mb_ctrl_pause = new JMenuItem("Pause");
 		mb_ctrl_pause.setEnabled(false);
 		mn_ctrl.add(mb_ctrl_pause);
 		homeController.addMainFrameComponent("mb_ctrl_pause", mb_ctrl_pause);
 		
-		JMenuItem mb_ctrl_stop = new JMenuItem("Stop");
+		// Creates 'Stop' button
+		mb_ctrl_stop = new JMenuItem("Stop");
 		mb_ctrl_stop.setEnabled(false);
 		mn_ctrl.add(mb_ctrl_stop);
 		homeController.addMainFrameComponent("mb_ctrl_stop", mb_ctrl_stop);
 	}
 	
+	/**
+	 * Creates the 'About' menu in the top bar.
+	 */
 	private void make_mn_about()
 	{
 		JButton mn_about = new JButton("Sobre");
+		
+		
 		mn_about.setOpaque(true);
 		mn_about.setContentAreaFilled(false);
 		mn_about.setBorderPainted(false);
@@ -184,6 +220,9 @@ public class HomeView extends JPanel implements View
 		});
 	}
 	
+	/**
+	 * Open about screen.
+	 */
 	private void show_about()
 	{
 		JOptionPane.showMessageDialog(
@@ -195,6 +234,9 @@ public class HomeView extends JPanel implements View
 		);
 	}
 	
+	/**
+	 * Opens open file dialog.
+	 */
 	private void ask_file_open()
 	{
 		Object[] options = {"GUI", "Texto"};
@@ -203,15 +245,20 @@ public class HomeView extends JPanel implements View
 			-1, JOptionPane.QUESTION_MESSAGE, null, options, options[0]
 		);
 		
+		
 		if (op == 0)
 			open_file_gui();
 		else if (op == 1)
 			open_file_text();
 	}
 	
+	/**
+	 * Opens open file dialog by text.
+	 */
 	private void open_file_text()
 	{
 		String filepath = JOptionPane.showInputDialog("Digite o caminho do arquivo");
+		
 		
 		while (filepath != null && !fileExists(filepath)) {
 			JOptionPane.showMessageDialog(mainFrame, "Erro! Arquivo não encontrado :/","Error",JOptionPane.ERROR_MESSAGE);
@@ -222,6 +269,9 @@ public class HomeView extends JPanel implements View
 			homeController.parseFile(new File(filepath));
 	}
 	
+	/**
+	 * Opens open file dialog by GUI.
+	 */
 	private void open_file_gui()
 	{
 		FileDialog fd = new FileDialog(mainFrame, "Escolha um arquivo", FileDialog.LOAD);
@@ -236,12 +286,21 @@ public class HomeView extends JPanel implements View
 		homeController.parseFile(new File(filepath));
 	}
 	
+	/**
+	 * Checks if a file exists or not.
+	 * 
+	 * @param		filepath File
+	 * 
+	 * @return		If file exists
+	 */
 	private boolean fileExists(String filepath)
 	{
 		return new File(filepath).exists();
 	}
 	
-	
+	/**
+	 * Creates main screen.
+	 */
 	private void make_home()
 	{
 		setLayout(new BorderLayout(0, 0));
@@ -250,24 +309,38 @@ public class HomeView extends JPanel implements View
 		make_btn_openFile();
 	}
 	
+	/**
+	 * Sets main screen background.
+	 */
 	private void make_background()
 	{
 		try {
 			home_background_file = ImageIO.read(new File(System.getProperty("user.dir")+"/src/assets/images/home/logo.jpg"));
 			home_background = new JLabel(new ImageIcon(home_background_file.getScaledInstance(MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT, Image.SCALE_FAST)));
 			add(home_background);
-		} catch (IOException e1) { e1.printStackTrace();}
+		} 
+		catch (IOException e1) { e1.printStackTrace();}
 	}
 	
+	/**
+	 * Sets dimensions of main screen background.
+	 * 
+	 * @param		w Background width
+	 * @param		h Background height
+	 */
 	private void resize_background(int w, int h)
 	{
 		home_background.setIcon(new ImageIcon(home_background_file.getScaledInstance(w, h, Image.SCALE_FAST)));
 	}
 	
-	
+	/**
+	 * Creates open file button.
+	 */
 	private void make_btn_openFile()
 	{
 		JButton btn_openFile = new JButton("Abrir arquivo");
+		
+		
 		add(btn_openFile, BorderLayout.SOUTH);
 		btn_openFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

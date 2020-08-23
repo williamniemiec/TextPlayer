@@ -30,14 +30,17 @@ import models.musicPlayer.MusicPlayer;
 
 
 /**
- * Responsável pela view do player de música da aplicação.
+ * Responsible for music player view.
+ * 
+ * @version		1.0.0
+ * @since		1.0.0
  */
 @SuppressWarnings("serial")
 public class TextPlayerView extends JPanel implements View 
 {
-	//-----------------------------------------------------------------------
-	//		Atributos
-	//-----------------------------------------------------------------------
+	//-------------------------------------------------------------------------
+	//		Attributes
+	//-------------------------------------------------------------------------
 	private TextPlayerController textPlayerController;
 	private JFrame frame;
 	private JLabel lbl_filename_name;
@@ -48,14 +51,14 @@ public class TextPlayerView extends JPanel implements View
 	private JButton btn_ctrl_stop;
 	
 
-	//-----------------------------------------------------------------------
-	//		Construtor
-	//-----------------------------------------------------------------------
+	//-------------------------------------------------------------------------
+	//		Constructor
+	//-------------------------------------------------------------------------
 	/**
-	 * Inicializa a view do player de música da aplicação.
+	 * Creates a representation of the music player view.
 	 * 
-	 * @param textPlayerController Controlador responsável pela view
-	 * @param frame Frame / janela principal da aplicação
+	 * @param		homeController Controller responsible for the view
+	 * @param		mainFrame Main application frame
 	 */
 	public TextPlayerView(TextPlayerController textPlayerController, JFrame frame)
 	{
@@ -69,37 +72,42 @@ public class TextPlayerView extends JPanel implements View
 	}
 	
 	
-	//-----------------------------------------------------------------------
-	//		Métodos
-	//-----------------------------------------------------------------------	
+	//-------------------------------------------------------------------------
+	//		Methods
+	//-------------------------------------------------------------------------
+	/**
+	 * {@inheritDoc}
+	 * @see		View#update(Model, Object)
+	 */
 	@Override
 	public void update(Model model, Object data) {
 		MusicPlayer mp = (MusicPlayer) model;
 		long musicLength = mp.getMusicLength();
 		long musicPosition = mp.getMusicPosition();
 		
-		// Atualiza a barra de progresso
+		// Updates progress bar
 		pb_music.setValue((int)(musicPosition/musicLength));
 				
-		// Atualiza os botoes de controle do player
+		// Updates control player buttons
 		btn_ctrl_play.setEnabled(!mp.isPlaying());
 		btn_ctrl_pause.setEnabled(!mp.isPaused());
 		btn_ctrl_stop.setEnabled(!mp.isStopped());
 		
-		// Atualiza os botões do menu que fica no topo da janela.
+		// Updates top bar buttons
 		textPlayerController.updateMenuBar(mp);
 	}
 	
 	/**
-	 * Atualiza a seção que exibe os dados do texto.
+	 * Updates the section that displays the text data.
 	 */
-	public void updateFileContent() {
+	public void updateFileContent() 
+	{
 		textArea.setText(textPlayerController.getText());
 		lbl_filename_name.setText(textPlayerController.getFilename());
 	}
 	
 	/**
-	 * Cria {@link JPanel} da view.
+	 * Creates {@link JPanel} of the view.
 	 */
 	private void make_panel()
 	{
@@ -109,40 +117,47 @@ public class TextPlayerView extends JPanel implements View
 	}
 	
 	/**
-	 * Cria o cabeçalho da view.
+	 * Creates header.
 	 */
 	private void make_header()
 	{
 		JPanel pnl_top = new JPanel();
+		FlowLayout flowLayout;
+		BufferedImage myPicture;
+		JLabel lbl_musicPlayer;
+		ImageIcon img;
+		
+		
 		pnl_top.setBackground(new Color(64, 64, 64));
-		FlowLayout flowLayout = (FlowLayout) pnl_top.getLayout();
+		flowLayout = (FlowLayout) pnl_top.getLayout();
 		flowLayout.setVgap(0);
 		flowLayout.setHgap(0);
 		
-		// Coloca o banner no cabeçalho
+		// Places the banner in the header
 		try {
-			BufferedImage myPicture;
 			myPicture = ImageIO.read(new File(System.getProperty("user.dir")+"/src/assets/images/musicPlayer/header_logo.jpg"));
-			
-			JLabel lbl_musicPlayer = new JLabel();
+			lbl_musicPlayer = new JLabel();
 			pnl_top.add(lbl_musicPlayer, BorderLayout.NORTH);
 			
-			ImageIcon img = new ImageIcon(myPicture.getScaledInstance(frame.getWidth(), frame.getHeight()/3, Image.SCALE_SMOOTH));
+			img = new ImageIcon(myPicture.getScaledInstance(frame.getWidth(), frame.getHeight()/3, Image.SCALE_SMOOTH));
 			lbl_musicPlayer.setIcon(img);
-		} catch (IOException e1) {
+		} 
+		catch (IOException e1) {
 			e1.printStackTrace();
 		}
 		
-		// Adiciona o banner na view
+		// Adds banner to the view
 		add(pnl_top, BorderLayout.NORTH);
 	}
 	
 	/**
-	 * Cria os botões de controle do player.
+	 * Creates player control buttons.
 	 */
 	private void make_controls()
 	{
 		JPanel pnl_down = new JPanel();
+		
+		
 		add(pnl_down, BorderLayout.SOUTH);
 		pnl_down.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
@@ -176,59 +191,78 @@ public class TextPlayerView extends JPanel implements View
 	}
 	
 	/**
-	 * Cria um botão de play.
+	 * Creates play button.
 	 * 
-	 * @param panel Panel que será adicionado esse botão
-	 * @return Botão de play
+	 * @param		panel Panel to which the button will be placed
+	 * 
+	 * @return		Created button
 	 */
 	private JButton make_btn_play(JPanel panel)
 	{
-		return make_btn_ctrl(panel, System.getProperty("user.dir")+"/src/assets/images/musicPlayer/play.png");
+		return make_btn_ctrl(
+			panel, 
+			System.getProperty("user.dir")+"/src/assets/images/musicPlayer/play.png"
+		);
 	}
 	
 	/**
-	 * Cria um botão de pause.
+	 * Creates pause button.
 	 * 
-	 * @param panel Panel que será adicionado esse botão
-	 * @return Botão de pause
+	 * @param		panel Panel to which the button will be placed
+	 * 
+	 * @return		Created button
 	 */
 	private JButton make_btn_pause(JPanel panel)
 	{
-		return make_btn_ctrl(panel, System.getProperty("user.dir")+"/src/assets/images/musicPlayer/pause.png");
+		return make_btn_ctrl(
+			panel, 
+			System.getProperty("user.dir")+"/src/assets/images/musicPlayer/pause.png"
+		);
 	}
 	
 	/**
-	 * Cria um botão de stop.
+	 * Creates stop button.
 	 * 
-	 * @param panel Panel que será adicionado esse botão
-	 * @return Botão de stop
+	 * @param		panel Panel to which the button will be placed
+	 * 
+	 * @return		Created button
 	 */
 	private JButton make_btn_stop(JPanel panel)
 	{
-		return make_btn_ctrl(panel, System.getProperty("user.dir")+"/src/assets/images/musicPlayer/stop.png");
+		return make_btn_ctrl(
+			panel, 
+			System.getProperty("user.dir")+"/src/assets/images/musicPlayer/stop.png"
+		);
 	}
 	
 	/**
-	 * Cria um botão de controle de player.
+	 * Creates player control button.
 	 * 
-	 * @param panel Panel que será adicionado o botão
-	 * @param filepath Caminho do arquivo que contém a imagem do botão
-	 * @return Botão de controle
+	 * @param		panel Panel to which the button will be placed
+	 * @param		filepath Path of the file containing the button image
+	 * 
+	 * @return		Created button
 	 */
 	private JButton make_btn_ctrl(JPanel panel, String filepath)
 	{
 		JButton btn_ctrl = new JButton();
+		BufferedImage myPicture;
+		ImageIcon img;
+		
+		
 		panel.add(btn_ctrl);
+		
 		try {
-			BufferedImage myPicture = ImageIO.read(new File(filepath));
-			ImageIcon img = new ImageIcon(myPicture.getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+			myPicture = ImageIO.read(new File(filepath));
+			img = new ImageIcon(myPicture.getScaledInstance(50, 50, Image.SCALE_SMOOTH));
 			btn_ctrl.setEnabled(false);
 			btn_ctrl.setIcon(img);
 			btn_ctrl.setContentAreaFilled(false);
 			btn_ctrl.setFocusPainted(true);
 			btn_ctrl.setBorderPainted(false);
 			btn_ctrl.setOpaque(false);
-		} catch (IOException e1) {
+		} 
+		catch (IOException e1) {
 			e1.printStackTrace();
 		}
 		
@@ -236,18 +270,21 @@ public class TextPlayerView extends JPanel implements View
 	}
 	
 	/**
-	 * Cria a seção central da view.
+	 * Creates central area.
 	 */
 	private void make_centralPanel()
 	{
-		// Panel responsável pela seção central da view
-		JPanel pnl_center = new JPanel();
+		JPanel pnl_center, pnl_center_center;
+		
+		
+		// Panel responsible for the central section of the view
+		pnl_center = new JPanel();
 		pnl_center.setBorder(null);
 		pnl_center.setLayout(new BorderLayout(0, 0));
 		add(pnl_center);
 		
-		// Panel que ficará no centro do panel da seção central
-		JPanel pnl_center_center = new JPanel(new BorderLayout(0,0));
+		// Panel that will be in the center of the center section panel
+		pnl_center_center = new JPanel(new BorderLayout(0,0));
 		pnl_center_center.setLayout(new BorderLayout(0, 0));
 		pnl_center.add(pnl_center_center, BorderLayout.CENTER);
 		
@@ -258,17 +295,21 @@ public class TextPlayerView extends JPanel implements View
 	}
 	
 	/**
-	 * Cria a seção que exibirá o nome do arquivo.
+	 * Creates the section that will display filename.
 	 * 
-	 * @param panel Panel que será adicionado essa seção
-	 * @param constraints Posição em que essa seção derá adicionada no panel
+	 * @param		panel Panel to which the section will be placed
+	 * @param		constraints Position where this section will be added to 
+	 * the panel
 	 */
 	private void make_fileInfo(JPanel panel, Object constraints)
 	{
 		JPanel pnl_filename = new JPanel();
+		JLabel lbl_filename_title;
+		
+		
 		pnl_filename.setLayout(new BorderLayout(0, 0));
 		
-		JLabel lbl_filename_title = new JLabel("Filename: ");
+		lbl_filename_title = new JLabel("Filename: ");
 		lbl_filename_title.setHorizontalAlignment(SwingConstants.CENTER);
 		lbl_filename_title.setFont(new Font("Tahoma", Font.BOLD, 15));
 		pnl_filename.add(lbl_filename_title, BorderLayout.WEST);
@@ -282,14 +323,16 @@ public class TextPlayerView extends JPanel implements View
 	}
 	
 	/**
-	 * Cria a seção que exibirá o conteúdo do arquivo.
+	 * Creates the section that will display file content.
 	 * 
-	 * @param panel Panel que será adicionado essa seção
-	 * @param constraints Posição em que essa seção derá adicionada no panel
+	 * @param		panel Panel to which the section will be placed
+	 * @param		constraints Position where this section will be added to 
+	 * the panel
 	 */
 	private void make_textArea(JPanel panel, Object constraints)
 	{
 		JScrollPane scrollPane = new JScrollPane();
+		
 		
 		textArea = new JTextArea();
 		scrollPane.setViewportView(textArea);		
@@ -301,10 +344,11 @@ public class TextPlayerView extends JPanel implements View
 	}
 	
 	/**
-	 * Cria a seção que exibirá a barra de progresso da música.
+	 * Creates the section that will display music progress bar.
 	 * 
-	 * @param panel Panel que será adicionado essa seção
-	 * @param constraints Posição em que essa seção derá adicionada no panel
+	 * @param		panel Panel to which the section will be placed
+	 * @param		constraints Position where this section will be added to 
+	 * the panel
 	 */
 	private void make_progressBar(JPanel panel, Object constraints)
 	{
@@ -317,14 +361,17 @@ public class TextPlayerView extends JPanel implements View
 	}
 	
 	/**
-	 * Cria a seção que exibirá o botão de mudar de arquivo.
+	 * Creates the section that will contain change file button.
 	 * 
-	 * @param panel Panel que será adicionado essa seção
-	 * @param constraints Posição em que essa seção derá adicionada no panel
+	 * @param		panel Panel to which the section will be placed
+	 * @param		constraints Position where this section will be added to 
+	 * the panel
 	 */
 	private void make_btn_change(JPanel panel, Object constraints)
 	{
 		JButton btn_changeFile = new JButton("Escolher outro arquivo");
+		
+		
 		btn_changeFile.setEnabled(true);
 		btn_changeFile.addActionListener(new ActionListener() {
 			@Override
@@ -337,16 +384,19 @@ public class TextPlayerView extends JPanel implements View
 	}
 
 	/**
-	 * Abre uma janela para a escolha de um arquivo. Será usada para trocar 
-	 * o arquivo atual por outro.
+	 * Opens a window for choosing a file. It will be used to exchange the 
+	 * current file for another one.
 	 */
 	private void open_file()
 	{
 		FileDialog fd = new FileDialog(frame, "Escolha um arquivo", FileDialog.LOAD);
+		String filepath;
+		
+		
 		fd.setDirectory(".");
 		fd.setFile("*.txt");
 		fd.setVisible(true);
-		String filepath = fd.getDirectory()+fd.getFile();
+		filepath = fd.getDirectory()+fd.getFile();
 		
 		if (filepath != null)
 			textPlayerController.changeFile(filepath);

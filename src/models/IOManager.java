@@ -7,19 +7,31 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Classe auxiliar de IO
+ * Helper class containing file manipulation methods.
+ * 
+ * @version		1.0.0
+ * @since		1.0.0
  */
 public class IOManager 
 {
+	/**
+	 * Extracts text from a file.
+	 * 
+	 * @param		file Text file
+	 * 
+	 * @return		File content or null if an error occurs
+	 */
 	public static String extractText(File file)
 	{
 		String text = null;
+		List<String> lines;
+		
 		
 		try {
-			List<String> lines;
 			lines = Files.readAllLines(file.toPath());
 			text = lines.stream().map(l->l+"\n").collect(Collectors.joining(""));
-		} catch (IOException e1) {
+		} 
+		catch (IOException e1) {
 			e1.printStackTrace();
 		}
 		

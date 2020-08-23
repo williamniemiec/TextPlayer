@@ -11,36 +11,40 @@ import views.HomeView;
 
 
 /**
- * Controlador principal. Será o responsável pelo comportamento da tela inicial do programa.
+ * Main controller. It will be responsible for {@link HomeView} behavior.
+ * 
+ * @version		1.0.0
+ * @since		1.0.0
  */
 public class HomeController extends Controller 
 {
-	//-----------------------------------------------------------------------
-	//		Atributos
-	//-----------------------------------------------------------------------
+	//-------------------------------------------------------------------------
+	//		Attributes
+	//-------------------------------------------------------------------------
 	private HomeView homeView;
 	private TextPlayerController textPlayerController;
 	
 	
-	//-----------------------------------------------------------------------
-	//		Métodos
-	//-----------------------------------------------------------------------
+	//-------------------------------------------------------------------------
+	//		Methods
+	//-------------------------------------------------------------------------
 	@Override
 	public void run()
 	{
-		// Inicializa HomeView
+		// Initializes HomeView
 		homeView = new HomeView(this, mainFrame);
 		addView("HomeView", homeView);
 		
-		// Deixa janela do programa visível
+		// Sets program windows as visible
 		mainFrame.setVisible(true);
 	}
 
 	/**
-	 * Adiciona um {@link Component componente} na janela principal. 
+	 * Adds a {@link Component component} on the main frame.
 	 * 
-	 * @param name Nome do componente (é recomendado usar o mesmo nome da variável)
-	 * @param component Componente a ser adicionado
+	 * @param		name Component name (it is recommended to use the same name
+	 * as the variable)
+	 * @param		component Component to be added
 	 */
 	public void addMainFrameComponent(String name, Component component)
 	{
@@ -48,15 +52,16 @@ public class HomeController extends Controller
 	}
 	
 	/**
-	 * Realiza o processamento de um arquivo e manda-o para o {@link TextPlayerController}.
-	 * Após a execução desse método, será aberta a view {@link TextPlayerView}.
+	 * Processes a file and send it to {@link TextPlayerController}. After, it
+	 * will be opened {@link TextPlayerView}.
 	 * 
-	 * @param file Arquivo a ser processado
+	 * @param		file File to be processed
 	 */
 	public void parseFile(File file)
 	{
 		String parsedFile;
 		Parser parser = new Parser(new JFugueMusicParser());
+		
 		
 		// SE DER ALGUM ERRO, TRATAR AQUI
 		parsedFile = parser.open(file).parse().get();
@@ -68,7 +73,7 @@ public class HomeController extends Controller
 	}
 	
 	/**
-	 * Atualiza os botões do menu que fica no topo da janela.
+	 * Updates top bar buttons.
 	 */
 	public void updateMenuBar()
 	{	

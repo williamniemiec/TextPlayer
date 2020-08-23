@@ -14,13 +14,16 @@ import views.TextPlayerView;
 
 
 /**
- * Responsável pelo comportamento da view {@link TextPlayerView}.
+ * Responsible for {@link TextPlayerView} behavior.
+ * 
+ * @version		1.0.0
+ * @since		1.0.0
  */
 public class TextPlayerController extends Controller 
 {
-	//-----------------------------------------------------------------------
-	//		Atributos
-	//-----------------------------------------------------------------------
+	//-------------------------------------------------------------------------
+	//		Attributes
+	//-------------------------------------------------------------------------
 	private String musicalText;
 	private TextPlayerView textPlayerView;
 	private MusicPlayer musicPlayer;
@@ -28,15 +31,16 @@ public class TextPlayerController extends Controller
 	private String filename;
 	
 
-	//-----------------------------------------------------------------------
-	//		Construtor
-	//-----------------------------------------------------------------------
+	//-------------------------------------------------------------------------
+	//		Constructor
+	//-------------------------------------------------------------------------
 	/**
-	 * Controlador da view {@link TextPlayerView}.
+	 * Controller for {@link TextPlayerView}.
 	 * 
-	 * @param musicalText Texto contendo comandos musicais obtidos através do {@link #originalText}
-	 * @param originalText Texto antes de sofrer o processamento
-	 * @param filename Nome do arquivo de texto
+	 * @param		musicalText Text containing musical commands obtained 
+	 * after processing the file text
+	 * @param		originalText File text before processing
+	 * @param		filename Text filename
 	 */
 	public TextPlayerController(String musicalText, String originalText, String filename)
 	{
@@ -47,28 +51,28 @@ public class TextPlayerController extends Controller
 	
 	
 	//-----------------------------------------------------------------------
-	//		Métodos
+	//		Methods
 	//-----------------------------------------------------------------------
 	@Override
 	public void run() 
 	{
-		// Inicializa TextPlayerView
+		// Initializes TextPlayerView
 		textPlayerView = new TextPlayerView(this, mainFrame);
 		
-		//Atualiza os botões do menu que fica no topo da janela
+		// Updates top bar bottons
 		updateControlsMenu();
 		
-		// Cria o music player
+		// Creates music player
 		musicPlayer = new JFugueMusicPlayer(musicalText);
 		musicPlayer.attach(textPlayerView);
 		
-		// Exibe a view TextPlayerView
+		// Displays TextPlayerView
 		addView("TextPlayerView", textPlayerView);
 		loadView("TextPlayerView");
 	}
 	
 	/**
-	 * Toca a musica que foi gerada a partir de um texto.
+	 * Plays the music that was generated from a text.
 	 */
 	public void play()
 	{
@@ -76,7 +80,7 @@ public class TextPlayerController extends Controller
 	}
 	
 	/**
-	 * Pausa a música em reprodução.
+	 * Pauses the playing music.
 	 */
 	public void pause()
 	{
@@ -84,7 +88,7 @@ public class TextPlayerController extends Controller
 	}
 	
 	/**
-	 * Para a música em reprodução e posiciona o player para o início dela.
+	 * Stops the music playing and positions the player to the beginning of it.
 	 */
 	public void stop()
 	{
@@ -92,9 +96,9 @@ public class TextPlayerController extends Controller
 	}
 	
 	/**
-	 * Seleciona outro arquivo para ser gerada música.
+	 * Select another file to generate music.
 	 * 
-	 * @param filepath Nome do arquivo
+	 * @param		filepath Filename
 	 */
 	public void changeFile(String filepath)
 	{
@@ -102,27 +106,29 @@ public class TextPlayerController extends Controller
 		Parser parser = new Parser(new JFugueMusicParser());
 		File file = new File(filepath);
 		
-		// Realiza o processamento do arquivo
+		
+		// Process the file
 		parsedFile = parser.open(file).parse().get();
 		
-		// Carrega o arquivo processado no player
+		// Loads processed file into the player
 		musicPlayer.change(parsedFile);
 		
-		// Atualiza a view com as informações desse arquivo
+		// Updates view with informations about the loaded file
 		originalText = IOManager.extractText(file);
 		this.filename = file.getName();
 		textPlayerView.updateFileContent();
 	}
-	// será feito na view
-	public void updateMenuBar(MusicPlayer mp)
-	{	
-		//((JMenuItem)getComponent("mb_ctrl_play")).setEnabled(!mp.isPlaying());
-		//((JMenuItem)getComponent("mb_ctrl_pause")).setEnabled(!mp.isPaused());
-		//((JMenuItem)getComponent("mb_ctrl_stop")).setEnabled(!mp.isStopped());
-	}
+	
+//	// será feito na view
+//	public void updateMenuBar(MusicPlayer mp)
+//	{	
+//		//((JMenuItem)getComponent("mb_ctrl_play")).setEnabled(!mp.isPlaying());
+//		//((JMenuItem)getComponent("mb_ctrl_pause")).setEnabled(!mp.isPaused());
+//		//((JMenuItem)getComponent("mb_ctrl_stop")).setEnabled(!mp.isStopped());
+//	}
 	
 	/**
-	 * Atualiza os botões de controle do music player.
+	 * Updates music player control buttons.
 	 */
 	private void updateControlsMenu()
 	{
