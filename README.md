@@ -69,11 +69,11 @@ Dentro da pasta src encontra-se todo o conteúdo referente à aplicação.
 |Nome| Tipo| Descrição
 |------- | --- | ----
 | bin	|	 `Diretório`	| Contém os arquivos binários da aplicação |
+| dist |	 `Diretório`	| Contém os arquivos executáveis do projeto |
+| docs |	 `Diretório`	| Informações relativas a documentação / Diagrama UML |
 | lib	|	 `Diretório`	| Contém as bibliotecas que a aplicação depende |
-| media|	 `Diretório`	| Informações visuais / Diagrama UML|
-| release |	 `Diretório`	| Contém o arquivo executável do projeto |
 | src 	|	 `Diretório`	| Contém os arquivos fonte da aplicação |
-| tests |	 `Diretório`	| Contém os testes da aplicação |
+| test |	 `Diretório`	| Contém os testes da aplicação |
 | .classpath |	 `Arquivo`	| Arquivo gerado por IDE |
 | .project	 |	 `Arquivo`	| Arquivo gerado por IDE |
 
