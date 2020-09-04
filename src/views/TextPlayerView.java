@@ -94,7 +94,7 @@ public class TextPlayerView extends JPanel implements View
 		btn_ctrl_stop.setEnabled(!mp.isStopped());
 		
 		// Updates top bar buttons
-		textPlayerController.updateMenuBar(mp);
+		//textPlayerController.updateMenuBar(mp);
 	}
 	
 	/**

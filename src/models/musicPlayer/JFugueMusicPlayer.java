@@ -140,7 +140,7 @@ public class JFugueMusicPlayer implements MusicPlayer
 	@Override
 	public long getMusicLength()
 	{
-		
+		//...
 	}
 	
 	/**
@@ -150,7 +150,7 @@ public class JFugueMusicPlayer implements MusicPlayer
 	@Override
 	public long getMusicPosition()
 	{
-		
+		//...
 	}
 	
 	/**
@@ -160,7 +160,7 @@ public class JFugueMusicPlayer implements MusicPlayer
 	@Override
 	public boolean isPlaying()
 	{
-		
+		//...
 	}
 	
 	/**
@@ -170,7 +170,7 @@ public class JFugueMusicPlayer implements MusicPlayer
 	@Override
 	public boolean isPaused()
 	{
-		
+		//...
 	}
 	
 	/**
@@ -180,6 +180,6 @@ public class JFugueMusicPlayer implements MusicPlayer
 	@Override
 	public boolean isStopped()
 	{
-		
+		//...
 	}
 }
