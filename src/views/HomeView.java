@@ -51,6 +51,7 @@ public class HomeView extends JPanel implements View
 	private final static int MAIN_FRAME_HEIGHT = 500;
 	private final static int MAIN_FRAME_X = 100;
 	private final static int MAIN_FRAME_Y = 100;
+	private final static String VERSION = "1.0.0";
 	
 	
 	//-------------------------------------------------------------------------
@@ -60,7 +61,7 @@ public class HomeView extends JPanel implements View
 	 * Creates a representation of home view.
 	 * 
 	 * @param		homeController Controller responsible for the view
-	 * @param		mainFrame Main application frame
+	 * @param		mainFrame Main frame of the application
 	 */
 	public HomeView(HomeController homeController, JFrame mainFrame)
 	{
@@ -70,6 +71,9 @@ public class HomeView extends JPanel implements View
 		make_mainFrame();
 		make_home();
 		
+		
+		// Updates menu bar items when the view is displayed. Also, updates the
+		// dimensions of the background image dimensions when the window is resized 
 		this.addComponentListener(new ComponentListener() {
 			@Override
 			public void componentShown(ComponentEvent e) {
@@ -107,7 +111,7 @@ public class HomeView extends JPanel implements View
 	}
 	
 	/**
-	 * Creates maion frame of the application.
+	 * Creates main frame of the application.
 	 */
 	private void make_mainFrame()
 	{
@@ -134,16 +138,16 @@ public class HomeView extends JPanel implements View
 	}
 	
 	/**
-	 * Creates the 'Arquivo' menu in the top bar.
+	 * Creates the 'File' menu in the top bar.
 	 */
 	private void make_mn_file()
 	{
 		JMenuItem mb_file_open, mb_file_close, btn_file_exit;
-		JMenu mb_file = new JMenu("Arquivo");
+		JMenu mb_file = new JMenu("File");
 		mb.add(mb_file);
 		
-		// Creates 'Abrir' button
-		mb_file_open = new JMenuItem("Abrir");
+		// Creates 'Open' button
+		mb_file_open = new JMenuItem("Open");
 		mb_file.add(mb_file_open);
 		mb_file_open.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
@@ -151,8 +155,8 @@ public class HomeView extends JPanel implements View
 			}
 		});
 		
-		// Creates 'Fechar' button
-		mb_file_close = new JMenuItem("Fechar");
+		// Creates 'Close' button
+		mb_file_close = new JMenuItem("Close");
 		mb_file_close.setEnabled(false);
 		mb_file.add(mb_file_close);
 		mb_file_close.addActionListener(new ActionListener() {
@@ -162,8 +166,8 @@ public class HomeView extends JPanel implements View
 		});
 		homeController.addMainFrameComponent("mb_file_close", mb_file_close);
 		
-		// Creates 'Sair' button
-		btn_file_exit = new JMenuItem("Sair");
+		// Creates 'Exit' button
+		btn_file_exit = new JMenuItem("Exit");
 		mb_file.add(btn_file_exit);
 		btn_file_exit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
@@ -173,12 +177,12 @@ public class HomeView extends JPanel implements View
 	}
 	
 	/**
-	 * Creates the 'Controles' menu in the top bar.
+	 * Creates the 'Control' menu in the top bar.
 	 */
 	private void make_mn_controller()
 	{
 		JMenuItem mb_ctrl_play, mb_ctrl_pause, mb_ctrl_stop;
-		JMenu mn_ctrl = new JMenu("Controles");
+		JMenu mn_ctrl = new JMenu("Control");
 		mb.add(mn_ctrl);
 		
 		// Creates 'Play' button
@@ -205,7 +209,7 @@ public class HomeView extends JPanel implements View
 	 */
 	private void make_mn_about()
 	{
-		JButton mn_about = new JButton("Sobre");
+		JButton mn_about = new JButton("About");
 		
 		
 		mn_about.setOpaque(true);
@@ -227,9 +231,9 @@ public class HomeView extends JPanel implements View
 	{
 		JOptionPane.showMessageDialog(
 				mainFrame,
-				"Versão 1.0\n\nFeito por:\n"
+				"Version " + VERSION + "\n\nMade by:\n"
 				+ "-> Matheus Hiroyuki Suwa Moura \n"
-				+ "-> William Niemiec", "Sobre",
+				+ "-> William Niemiec", "About",
 				JOptionPane.INFORMATION_MESSAGE
 		);
 	}
@@ -239,9 +243,9 @@ public class HomeView extends JPanel implements View
 	 */
 	private void ask_file_open()
 	{
-		Object[] options = {"GUI", "Texto"};
+		Object[] options = {"GUI", "Text"};
 		int op = JOptionPane.showOptionDialog(
-			mainFrame, "Como você deseja abrir o arquivo?","Abrir arquivo", 
+			mainFrame, "How do you want to open the file?","Open file", 
 			-1, JOptionPane.QUESTION_MESSAGE, null, options, options[0]
 		);
 		
@@ -257,12 +261,12 @@ public class HomeView extends JPanel implements View
 	 */
 	private void open_file_text()
 	{
-		String filepath = JOptionPane.showInputDialog("Digite o caminho do arquivo");
+		String filepath = JOptionPane.showInputDialog("Enter the file path");
 		
 		
 		while (filepath != null && !fileExists(filepath)) {
-			JOptionPane.showMessageDialog(mainFrame, "Erro! Arquivo não encontrado :/","Error",JOptionPane.ERROR_MESSAGE);
-			filepath = JOptionPane.showInputDialog("Digite o caminho do arquivo");
+			JOptionPane.showMessageDialog(mainFrame, "Error! File not found :/","Error",JOptionPane.ERROR_MESSAGE);
+			filepath = JOptionPane.showInputDialog("Enter the file path");
 		}
 		
 		if (filepath != null)
@@ -274,16 +278,20 @@ public class HomeView extends JPanel implements View
 	 */
 	private void open_file_gui()
 	{
-		FileDialog fd = new FileDialog(mainFrame, "Escolha um arquivo", FileDialog.LOAD);
+		String filepath;
+		FileDialog fd;
+		
+		
+		fd = new FileDialog(mainFrame, "Choose a file", FileDialog.LOAD);
 		fd.setDirectory("./");
 		fd.setFile("*.txt");
 		fd.setVisible(true);
 		
-		if (fd.getFile() == null) { return; }
-		
-		String filepath = fd.getDirectory()+fd.getFile();
-		
-		homeController.parseFile(new File(filepath));
+		if (fd.getFile() != null) {
+			filepath = fd.getDirectory()+fd.getFile();
+			
+			homeController.parseFile(new File(filepath));
+		}
 	}
 	
 	/**
@@ -338,7 +346,7 @@ public class HomeView extends JPanel implements View
 	 */
 	private void make_btn_openFile()
 	{
-		JButton btn_openFile = new JButton("Abrir arquivo");
+		JButton btn_openFile = new JButton("Open file");
 		
 		
 		add(btn_openFile, BorderLayout.SOUTH);

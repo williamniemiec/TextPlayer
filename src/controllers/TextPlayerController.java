@@ -59,7 +59,7 @@ public class TextPlayerController extends Controller
 		// Initializes TextPlayerView
 		textPlayerView = new TextPlayerView(this, mainFrame);
 		
-		// Updates top bar bottons
+		// Updates top bar buttons
 		updateControlsMenu();
 		
 		// Creates music player

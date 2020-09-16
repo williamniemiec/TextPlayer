@@ -369,7 +369,7 @@ public class TextPlayerView extends JPanel implements View
 	 */
 	private void make_btn_change(JPanel panel, Object constraints)
 	{
-		JButton btn_changeFile = new JButton("Escolher outro arquivo");
+		JButton btn_changeFile = new JButton("Choose another file");
 		
 		
 		btn_changeFile.setEnabled(true);
@@ -389,7 +389,7 @@ public class TextPlayerView extends JPanel implements View
 	 */
 	private void open_file()
 	{
-		FileDialog fd = new FileDialog(frame, "Escolha um arquivo", FileDialog.LOAD);
+		FileDialog fd = new FileDialog(frame, "Choose a file", FileDialog.LOAD);
 		String filepath;
 		
 		
