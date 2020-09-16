@@ -350,6 +350,7 @@ public class HomeView extends JPanel implements View
 		
 		
 		add(btn_openFile, BorderLayout.SOUTH);
+		btn_openFile.setFocusPainted(false);
 		btn_openFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ask_file_open();

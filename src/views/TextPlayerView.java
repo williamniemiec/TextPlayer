@@ -335,8 +335,9 @@ public class TextPlayerView extends JPanel implements View
 		
 		
 		textArea = new JTextArea();
-		scrollPane.setViewportView(textArea);		
-		textArea.setLineWrap(false);
+		scrollPane.setViewportView(textArea);
+		textArea.setLineWrap(true);
+		textArea.setWrapStyleWord(true);
 		textArea.setText(textPlayerController.getText());
 		textArea.setEditable(false);
 		
@@ -373,6 +374,7 @@ public class TextPlayerView extends JPanel implements View
 		
 		
 		btn_changeFile.setEnabled(true);
+		btn_changeFile.setFocusPainted(false);
 		btn_changeFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
