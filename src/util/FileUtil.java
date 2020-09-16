@@ -1,4 +1,4 @@
-package models;
+package util;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  * @version		1.0.0
  * @since		1.0.0
  */
-public class IOManager 
+public class FileUtil 
 {
 	/**
 	 * Extracts text from a file.

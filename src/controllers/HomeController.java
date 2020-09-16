@@ -4,9 +4,9 @@ import java.awt.Component;
 import java.io.File;
 import javax.swing.JMenuItem;
 import core.Controller;
-import models.IOManager;
 import models.parse.JFugueMusicParser;
 import models.parse.Parser;
+import util.FileUtil;
 import views.HomeView;
 
 
@@ -66,7 +66,7 @@ public class HomeController extends Controller
 		// SE DER ALGUM ERRO, TRATAR AQUI
 		parsedFile = parser.open(file).parse().get();
 		
-		String text = IOManager.extractText(file);
+		String text = FileUtil.extractText(file);
 		
 		textPlayerController = new TextPlayerController(parsedFile, text, file.getName());
 		textPlayerController.run();
