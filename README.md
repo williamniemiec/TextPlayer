@@ -1,7 +1,8 @@
-# TextPlayer
 ![](https://github.com/williamniemiec/TextPlayer/blob/master/docs/logo/logo.jpg?raw=true)
 
-Esse é um projeto feito em Java cujo objetivo consiste em gerar sons a partir de um texto qualquer. Ele utiliza o padrão de projeto MVC, utilizando a framework [MVC-in-Java](https://github.com/williamniemiec/MVC-in-Java).
+<h1 align='center'>TextPlayer</h1>
+
+<p align='center'>Esse é um projeto feito em Java cujo objetivo consiste em gerar sons a partir de um texto qualquer. Ele utiliza o padrão de projeto MVC, utilizando a framework <a href="https://github.com/williamniemiec/MVC-in-Java">MVC-in-Java</a>.</p>
 
 <hr />
 
