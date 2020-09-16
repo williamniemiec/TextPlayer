@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -41,6 +42,8 @@ public class TextPlayerView extends JPanel implements View
 	//-------------------------------------------------------------------------
 	//		Attributes
 	//-------------------------------------------------------------------------
+	private static final ResourceBundle RB = 
+			ResourceBundle.getBundle("resources.lang.textplayer.textplayer");
 	private TextPlayerController textPlayerController;
 	private JFrame frame;
 	private JLabel lbl_filename_name;
@@ -309,7 +312,7 @@ public class TextPlayerView extends JPanel implements View
 		
 		pnl_filename.setLayout(new BorderLayout(0, 0));
 		
-		lbl_filename_title = new JLabel("Filename: ");
+		lbl_filename_title = new JLabel(RB.getString("FILENAME") + ": ");
 		lbl_filename_title.setHorizontalAlignment(SwingConstants.CENTER);
 		lbl_filename_title.setFont(new Font("Tahoma", Font.BOLD, 15));
 		pnl_filename.add(lbl_filename_title, BorderLayout.WEST);
@@ -370,7 +373,7 @@ public class TextPlayerView extends JPanel implements View
 	 */
 	private void make_btn_change(JPanel panel, Object constraints)
 	{
-		JButton btn_changeFile = new JButton("Choose another file");
+		JButton btn_changeFile = new JButton(RB.getString("FILE_CHANGE"));
 		
 		
 		btn_changeFile.setEnabled(true);
@@ -391,7 +394,7 @@ public class TextPlayerView extends JPanel implements View
 	 */
 	private void open_file()
 	{
-		FileDialog fd = new FileDialog(frame, "Choose a file", FileDialog.LOAD);
+		FileDialog fd = new FileDialog(frame, RB.getString("FILE_CHOOSE"), FileDialog.LOAD);
 		String filepath;
 		
 		

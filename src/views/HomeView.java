@@ -11,6 +11,7 @@ import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -42,16 +43,17 @@ public class HomeView extends JPanel implements View
 	//-------------------------------------------------------------------------
 	//		Attributes
 	//-------------------------------------------------------------------------
-	private HomeController homeController;
-	private JFrame mainFrame;
-	private JMenuBar mb;
-	private JLabel home_background;
-	private BufferedImage home_background_file;
+	private static final ResourceBundle RB = ResourceBundle.getBundle("resources.lang.home.home");
 	private final static int MAIN_FRAME_WIDTH = 800;
 	private final static int MAIN_FRAME_HEIGHT = 500;
 	private final static int MAIN_FRAME_X = 100;
 	private final static int MAIN_FRAME_Y = 100;
 	private final static String VERSION = "1.0.0";
+	private HomeController homeController;
+	private JFrame mainFrame;
+	private JMenuBar mb;
+	private JLabel home_background;
+	private BufferedImage home_background_file;
 	
 	
 	//-------------------------------------------------------------------------
@@ -67,7 +69,7 @@ public class HomeView extends JPanel implements View
 	{
 		this.homeController = homeController;
 		this.mainFrame = mainFrame;
-		
+
 		make_mainFrame();
 		make_home();
 		
@@ -143,11 +145,11 @@ public class HomeView extends JPanel implements View
 	private void make_mn_file()
 	{
 		JMenuItem mb_file_open, mb_file_close, btn_file_exit;
-		JMenu mb_file = new JMenu("File");
+		JMenu mb_file = new JMenu(RB.getString("FILE"));
 		mb.add(mb_file);
 		
 		// Creates 'Open' button
-		mb_file_open = new JMenuItem("Open");
+		mb_file_open = new JMenuItem(RB.getString("OPEN"));
 		mb_file.add(mb_file_open);
 		mb_file_open.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
@@ -156,7 +158,7 @@ public class HomeView extends JPanel implements View
 		});
 		
 		// Creates 'Close' button
-		mb_file_close = new JMenuItem("Close");
+		mb_file_close = new JMenuItem(RB.getString("CLOSE"));
 		mb_file_close.setEnabled(false);
 		mb_file.add(mb_file_close);
 		mb_file_close.addActionListener(new ActionListener() {
@@ -167,7 +169,7 @@ public class HomeView extends JPanel implements View
 		homeController.addMainFrameComponent("mb_file_close", mb_file_close);
 		
 		// Creates 'Exit' button
-		btn_file_exit = new JMenuItem("Exit");
+		btn_file_exit = new JMenuItem(RB.getString("EXIT"));
 		mb_file.add(btn_file_exit);
 		btn_file_exit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
@@ -182,23 +184,23 @@ public class HomeView extends JPanel implements View
 	private void make_mn_controller()
 	{
 		JMenuItem mb_ctrl_play, mb_ctrl_pause, mb_ctrl_stop;
-		JMenu mn_ctrl = new JMenu("Control");
+		JMenu mn_ctrl = new JMenu(RB.getString("CONTROL"));
 		mb.add(mn_ctrl);
 		
 		// Creates 'Play' button
-		mb_ctrl_play = new JMenuItem("Play");
+		mb_ctrl_play = new JMenuItem(RB.getString("PLAY"));
 		mb_ctrl_play.setEnabled(false);
 		mn_ctrl.add(mb_ctrl_play);
 		homeController.addMainFrameComponent("mb_ctrl_play", mb_ctrl_play);
 		
 		// Creates 'Pause' button
-		mb_ctrl_pause = new JMenuItem("Pause");
+		mb_ctrl_pause = new JMenuItem(RB.getString("PAUSE"));
 		mb_ctrl_pause.setEnabled(false);
 		mn_ctrl.add(mb_ctrl_pause);
 		homeController.addMainFrameComponent("mb_ctrl_pause", mb_ctrl_pause);
 		
 		// Creates 'Stop' button
-		mb_ctrl_stop = new JMenuItem("Stop");
+		mb_ctrl_stop = new JMenuItem(RB.getString("STOP"));
 		mb_ctrl_stop.setEnabled(false);
 		mn_ctrl.add(mb_ctrl_stop);
 		homeController.addMainFrameComponent("mb_ctrl_stop", mb_ctrl_stop);
@@ -209,7 +211,7 @@ public class HomeView extends JPanel implements View
 	 */
 	private void make_mn_about()
 	{
-		JButton mn_about = new JButton("About");
+		JButton mn_about = new JButton(RB.getString("ABOUT"));
 		
 		
 		mn_about.setOpaque(true);
@@ -231,9 +233,9 @@ public class HomeView extends JPanel implements View
 	{
 		JOptionPane.showMessageDialog(
 				mainFrame,
-				"Version " + VERSION + "\n\nMade by:\n"
+				RB.getString("VERSION") +" " + VERSION + "\n\n" +RB.getString("MADE_BY") + ":\n"
 				+ "-> Matheus Hiroyuki Suwa Moura \n"
-				+ "-> William Niemiec", "About",
+				+ "-> William Niemiec", RB.getString("ABOUT"),
 				JOptionPane.INFORMATION_MESSAGE
 		);
 	}
@@ -243,9 +245,9 @@ public class HomeView extends JPanel implements View
 	 */
 	private void ask_file_open()
 	{
-		Object[] options = {"GUI", "Text"};
+		Object[] options = {RB.getString("FILE_CHOOSE_OP1"), RB.getString("FILE_CHOOSE_OP2")};
 		int op = JOptionPane.showOptionDialog(
-			mainFrame, "How do you want to open the file?","Open file", 
+			mainFrame, RB.getString("FILE_OPEN_CHOOSE"), RB.getString("FILE_OPEN"), 
 			-1, JOptionPane.QUESTION_MESSAGE, null, options, options[0]
 		);
 		
@@ -265,8 +267,8 @@ public class HomeView extends JPanel implements View
 		
 		
 		while (filepath != null && !fileExists(filepath)) {
-			JOptionPane.showMessageDialog(mainFrame, "Error! File not found :/","Error",JOptionPane.ERROR_MESSAGE);
-			filepath = JOptionPane.showInputDialog("Enter the file path");
+			JOptionPane.showMessageDialog(mainFrame, RB.getString("ERROR_FILE_NOT_FOUND"),RB.getString("ERROR"),JOptionPane.ERROR_MESSAGE);
+			filepath = JOptionPane.showInputDialog(RB.getString("FILE_GET_FILEPATH"));
 		}
 		
 		if (filepath != null)
@@ -282,7 +284,7 @@ public class HomeView extends JPanel implements View
 		FileDialog fd;
 		
 		
-		fd = new FileDialog(mainFrame, "Choose a file", FileDialog.LOAD);
+		fd = new FileDialog(mainFrame, RB.getString("FILE_CHOOSE_DIALOG_TITLE"), FileDialog.LOAD);
 		fd.setDirectory("./");
 		fd.setFile("*.txt");
 		fd.setVisible(true);
@@ -346,7 +348,7 @@ public class HomeView extends JPanel implements View
 	 */
 	private void make_btn_openFile()
 	{
-		JButton btn_openFile = new JButton("Open file");
+		JButton btn_openFile = new JButton(RB.getString("FILE_OPEN"));
 		
 		
 		add(btn_openFile, BorderLayout.SOUTH);
