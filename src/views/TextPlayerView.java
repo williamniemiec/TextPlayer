@@ -138,7 +138,7 @@ public class TextPlayerView extends JPanel implements View
 		
 		// Places the banner in the header
 		try {
-			myPicture = ImageIO.read(new File(System.getProperty("user.dir")+"/src/assets/img/musicPlayer/header_logo.jpg"));
+			myPicture = ImageIO.read(new File(System.getProperty("user.dir")+"/src/assets/img/player/header_logo.jpg"));
 			lbl_musicPlayer = new JLabel();
 			pnl_top.add(lbl_musicPlayer, BorderLayout.NORTH);
 			
@@ -204,7 +204,7 @@ public class TextPlayerView extends JPanel implements View
 	{
 		return make_btn_ctrl(
 			panel, 
-			System.getProperty("user.dir")+"/src/assets/img/musicPlayer/play.png"
+			System.getProperty("user.dir")+"/src/assets/img/player/play.png"
 		);
 	}
 	
@@ -219,7 +219,7 @@ public class TextPlayerView extends JPanel implements View
 	{
 		return make_btn_ctrl(
 			panel, 
-			System.getProperty("user.dir")+"/src/assets/img/musicPlayer/pause.png"
+			System.getProperty("user.dir")+"/src/assets/img/player/pause.png"
 		);
 	}
 	
@@ -234,7 +234,7 @@ public class TextPlayerView extends JPanel implements View
 	{
 		return make_btn_ctrl(
 			panel, 
-			System.getProperty("user.dir")+"/src/assets/img/musicPlayer/stop.png"
+			System.getProperty("user.dir")+"/src/assets/img/player/stop.png"
 		);
 	}
 	
