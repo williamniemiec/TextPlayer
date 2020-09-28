@@ -3,6 +3,7 @@ package views;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FileDialog;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -241,44 +242,9 @@ public class HomeView extends JPanel implements View
 	}
 	
 	/**
-	 * Opens open file dialog.
+	 * Opens file dialog.
 	 */
 	private void ask_file_open()
-	{
-		Object[] options = {RB.getString("FILE_CHOOSE_OP1"), RB.getString("FILE_CHOOSE_OP2")};
-		int op = JOptionPane.showOptionDialog(
-			mainFrame, RB.getString("FILE_OPEN_CHOOSE"), RB.getString("FILE_OPEN"), 
-			-1, JOptionPane.QUESTION_MESSAGE, null, options, options[0]
-		);
-		
-		
-		if (op == 0)
-			open_file_gui();
-		else if (op == 1)
-			open_file_text();
-	}
-	
-	/**
-	 * Opens open file dialog by text.
-	 */
-	private void open_file_text()
-	{
-		String filepath = JOptionPane.showInputDialog("Enter the file path");
-		
-		
-		while (filepath != null && !fileExists(filepath)) {
-			JOptionPane.showMessageDialog(mainFrame, RB.getString("ERROR_FILE_NOT_FOUND"),RB.getString("ERROR"),JOptionPane.ERROR_MESSAGE);
-			filepath = JOptionPane.showInputDialog(RB.getString("FILE_GET_FILEPATH"));
-		}
-		
-		if (filepath != null)
-			homeController.parseFile(new File(filepath));
-	}
-	
-	/**
-	 * Opens open file dialog by GUI.
-	 */
-	private void open_file_gui()
 	{
 		String filepath;
 		FileDialog fd;
@@ -297,18 +263,6 @@ public class HomeView extends JPanel implements View
 	}
 	
 	/**
-	 * Checks if a file exists or not.
-	 * 
-	 * @param		filepath File
-	 * 
-	 * @return		If file exists
-	 */
-	private boolean fileExists(String filepath)
-	{
-		return new File(filepath).exists();
-	}
-	
-	/**
 	 * Creates main screen.
 	 */
 	private void make_home()
@@ -316,7 +270,7 @@ public class HomeView extends JPanel implements View
 		setLayout(new BorderLayout(0, 0));
 
 		make_background();
-		make_btn_openFile();
+		make_input_options();
 	}
 	
 	/**
@@ -344,19 +298,58 @@ public class HomeView extends JPanel implements View
 	}
 	
 	/**
+	 * Creates input options.
+	 */
+	private void make_input_options()
+	{
+		JPanel pnl_input = new JPanel();
+		
+		
+		pnl_input.setLayout(new GridLayout(0, 2, 0, 0));
+		add(pnl_input, BorderLayout.SOUTH);
+		make_btn_textEntry(pnl_input);
+		make_btn_openFile(pnl_input);
+	}
+	
+	/**
+	 * Creates text entry button.
+	 */
+	private void make_btn_textEntry(JPanel inputPanel)
+	{
+		JButton btn_textEntry = new JButton(RB.getString("TEXT_ENTRY"));
+		
+		
+		inputPanel.add(btn_textEntry);
+		btn_textEntry.setFocusPainted(false);
+		btn_textEntry.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ask_text_open();
+			}
+		});
+	}
+	
+	/**
 	 * Creates open file button.
 	 */
-	private void make_btn_openFile()
+	private void make_btn_openFile(JPanel inputPanel)
 	{
 		JButton btn_openFile = new JButton(RB.getString("FILE_OPEN"));
 		
-		
-		add(btn_openFile, BorderLayout.SOUTH);
+
+		inputPanel.add(btn_openFile);
 		btn_openFile.setFocusPainted(false);
 		btn_openFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ask_file_open();
 			}
 		});
+	}
+	
+	/**
+	 * Opens text entry window.
+	 */
+	private void ask_text_open()
+	{
+		JOptionPane.showMessageDialog(this, "Não implementado");
 	}
 }
