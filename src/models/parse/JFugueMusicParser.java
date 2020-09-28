@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 
 /**
- * Responsible for processing text files in a format that JFugue accepts.
+ * Responsible for processing text files in a format that JFugue accepts. 
  * 
  * @version		1.0.0
  * @since		1.0.0
@@ -32,6 +32,137 @@ public class JFugueMusicParser implements ParseType
 	//-------------------------------------------------------------------------
 	//		Methods
 	//-------------------------------------------------------------------------
+	/**
+	 * {@inheritDoc}
+	 * Process txt file according to the following criteria:
+	 * <table width='100%' border='1'>
+	 * 	<tr>	
+	 * 		<th>Text</th>
+	 * 		<th>Action</th>
+	 * 	</tr>
+	 * 	<tr align="center">
+	 * 		<td>Letter A or a</td>
+	 * 		<td>Musical note 'La'</td>
+	 * 	</tr>
+	 * 	<tr align="center">
+	 * 		<td>Letter B or b</td>
+	 * 		<td>Musical note 'Si'</td>
+	 * 	</tr>
+	 * 	<tr align="center">
+	 * 		<td>Letter C or c</td>
+	 * 		<td>Musical note 'Do'</td>
+	 * 	</tr>
+	 * 	<tr align="center">
+	 * 		<td>Letter D or d</td>
+	 * 		<td>Musical note 'Re'</td>
+	 * 	</tr>
+	 * 	<tr align="center">
+	 * 		<td>Letter E or e</td>
+	 * 		<td>Musical note 'Mi'</td>
+	 * 	</tr>
+	 * 	<tr align="center">
+	 * 		<td>Letter F or f</td>
+	 * 		<td>Musical note 'Fa'</td>
+	 * 	</tr>
+	 * 	<tr align="center">
+	 * 		<td>Letter G or g</td>
+	 * 		<td>Musical note 'Sol'</td>
+	 * 	</tr>
+	 * 	<tr align="center">
+	 * 		<td>Character</td>
+	 * 		<td>Pause / Silence</td>
+	 * 	</tr>
+	 * 	<tr align="center">
+	 * 		<td>+</td>
+	 * 		<td>Increases volume to double the current volume</td>
+	 * 	</tr>
+	 * 	<tr align="center">
+	 * 		<td>-</td>
+	 * 		<td>Volume returns to initial value</td>
+	 * 	</tr>
+	 * 	<tr align="center">
+	 * 		<td>O, o, I, i, U or u</td>
+	 * 		<td>If the previous character was a musical note (from A to G) 
+	 * 		repeats the note; otherwise, pauses</td>
+	 * 	</tr>
+	 * 	<tr align="center">
+	 * 		<td>O+</td>
+	 * 		<td>Increases one octave</td>
+	 * 	</tr>
+	 * 	<tr align="center">
+	 * 		<td>O-</td>
+	 * 		<td>Decreases one octave</td>
+	 * 	</tr>
+	 * 	<tr align="center">
+	 * 		<td>?</td>
+	 * 		<td>Random note</td>
+	 * 	</tr>
+	 * 	<tr align="center">
+	 * 		<td>NL (new line)</td>
+	 * 		<td>Changes current instrument</td>
+	 * 	</tr>
+	 * 	<tr align="center">
+	 * 		<td>B+</td>
+	 * 		<td>Increases BPM by 50 units</td>
+	 * 	</tr>
+	 * 	<tr align="center">
+	 * 		<td>B-</td>
+	 * 		<td>Decreases BPM by 50 units</td>
+	 * 	</tr>
+	 * 	<tr align="center">
+	 * 		<td>Others</td>
+	 * 		<td>Ignores</td>
+	 * 	</tr>
+	 * </table>
+	 * 
+	 * @see		ParseType#parseFile(File)
+	 */
+	@Override
+	public String parseFile(File file) throws IllegalArgumentException
+	{
+		if (file == null)
+			throw new IllegalArgumentException("File cannot be empty");
+		
+		String line;
+		StringBuilder parsedFile = new StringBuilder();
+
+		
+		initInstruments();
+		// Problema: pode continuar na proxima linha
+		// pega letra anterior ao o+ / o- tb para aumentar / diminuir ela
+		// _ INDICARÁ QUE FOI ADD ALGO NA LINHA (METODOS ANTERIORES. SE ACHAR _, SÓ CONTINUAR PROCURANDO APÓS ACHAR OUTRO)
+		
+		try (BufferedReader br = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
+			line = br.readLine();
+			
+			while (line != null) {
+				line = removeNumbers(line);
+				line = removeAccentuation(line);
+				line = parseSpaces(line);				
+				line = parseOPlusMinus(line);			// O+ | O-
+				line = parseBPlusMinus(line);			// B+ | B-
+				line = parseDotInterrogationMark(line);	// ? | .
+				line = parseVogals(line);				
+				line = parsePlusMinus(line);			// + | -
+				line = spaceTerms(line);				
+				line += changeInstrument();		
+				
+				// Saves parsed line
+				parsedFile.append(line);
+				
+				line = br.readLine();
+			}
+		} 
+		catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return parsedFile.toString();
+	}
+	
 	/**
 	 * Performs line processing for the case of the following symbols:
 	 * <ul>
@@ -316,84 +447,6 @@ public class JFugueMusicParser implements ParseType
 	private String removeNumbers(String str) 
 	{
 		return str.replaceAll("[0-9]", " ");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see		ParseType#parseFile(File)
-	 */
-	@Override
-	public String parseFile(File file) throws IllegalArgumentException
-	{
-		if (file == null)
-			throw new IllegalArgumentException("File cannot be empty");
-		
-		String regex1Char = "[a-g\\s\\+\\-iou\\?\\n]+";
-		String regex2Char = "((o\\+|o\\-|b\\+|b\\-)+)?";
-		String line;
-		Pattern p;
-		Pattern p2;
-		Matcher m;
-		Matcher m2;
-		List<String> oneChar = new ArrayList<>();
-		List<String> twoChar = new ArrayList<>();
-		int positiveOctaves;
-		int negativeOctaves;
-		String letter;
-		StringBuilder parsedFile = new StringBuilder();
-		
-		
-		initInstruments();
-		
-		try (BufferedReader br = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
-			while ((line = br.readLine()) != null) {
-				// Problema: pode continuar na proxima linha
-				// pega letra anterior ao o+ / o- tb para aumentar / diminuir ela
-				
-				
-				// Remove numeros
-				line = removeNumbers(line);
-				
-				// Remove acentos
-				line = removeAccentuation(line);
-				
-				// Separa as letras
-				// _ INDICARÁ QUE FOI ADD ALGO NA LINHA (METODOS ANTERIORES. SE ACHAR _, SÓ CONTINUAR PROCURANDO APÓS ACHAR OUTRO)
-				line = parseSpaces(line);
-				
-				// O+ | O-
-				line = parseOPlusMinus(line);
-				
-				// B+ | B-
-				line = parseBPlusMinus(line);
-				
-				// ? | .
-				line = parseDotInterrogationMark(line);
-				
-				//O | o | I | i | U | u
-				line = parseVogals(line);
-
-				// + | -
-				line = parsePlusMinus(line);
-
-				// Space terms
-				line = spaceTerms(line);
-				
-				// New line
-				line = line + changeInstrument();
-				
-				// Saves parsed line
-				parsedFile.append(line);
-			}
-		} 
-		catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} 
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return parsedFile.toString();
 	}
 	
 	/**
