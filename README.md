@@ -100,7 +100,7 @@ Dentro da pasta src encontra-se todo o conteúdo referente à aplicação.
 ![home](https://github.com/williamniemiec/TextPlayer/blob/master/docs/app/en/home.png?raw=true)
 
 #### MusicPlayer
-![musicPlayer](https://github.com/williamniemiec/TextPlayer/blob/master/docs/app/en/musicPlayer.png?raw=true)
+![musicPlayer](https://github.com/williamniemiec/TextPlayer/blob/master/docs/app/en/player.png?raw=true)
 
 <hr />
 
@@ -110,7 +110,7 @@ Dentro da pasta src encontra-se todo o conteúdo referente à aplicação.
 ![home](https://github.com/williamniemiec/TextPlayer/blob/master/docs/app/pt_BR/home.png?raw=true)
 
 #### MusicPlayer
-![musicPlayer](https://github.com/williamniemiec/TextPlayer/blob/master/docs/app/pt_BR/musicPlayer.png?raw=true)
+![musicPlayer](https://github.com/williamniemiec/TextPlayer/blob/master/docs/app/pt_BR/player.png?raw=true)
 
 ## Referências
 - Freeman, Eric, Elisabeth Robson, Kathy Sierra, and Bert Bates. 2004. Head First design patterns. Sebastopol, CA: O'Reilly. 
