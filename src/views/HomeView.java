@@ -29,6 +29,7 @@ import controllers.HomeController;
 import core.Controller;
 import core.Model;
 import core.View;
+import models.input.TextInput;
 
 
 /**
@@ -157,6 +158,7 @@ public class HomeView extends JPanel implements View
 				ask_file_open();
 			}
 		});
+		homeController.addMainFrameComponent("mb_file_open", mb_file_open);
 		
 		// Creates 'Close' button
 		mb_file_close = new JMenuItem(RB.getString("CLOSE"));
@@ -313,30 +315,36 @@ public class HomeView extends JPanel implements View
 	
 	/**
 	 * Creates text entry button.
+	 * 
+	 * @param		panel Panel that the button will be added
 	 */
-	private void make_btn_textEntry(JPanel inputPanel)
+	private void make_btn_textEntry(JPanel panel)
 	{
 		JButton btn_textEntry = new JButton(RB.getString("TEXT_ENTRY"));
 		
 		
-		inputPanel.add(btn_textEntry);
+		panel.add(btn_textEntry);
 		btn_textEntry.setFocusPainted(false);
 		btn_textEntry.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
-				ask_text_open();
+//				ask_text_open();
+				System.out.println(homeController.getTextEntry(mainFrame, RB.getString("TEXT_ENTRY"), "Clear", "Action"));
 			}
 		});
 	}
 	
 	/**
 	 * Creates open file button.
+	 * 
+	 * @param		panel Panel that the button will be added
 	 */
-	private void make_btn_openFile(JPanel inputPanel)
+	private void make_btn_openFile(JPanel panel)
 	{
 		JButton btn_openFile = new JButton(RB.getString("FILE_OPEN"));
 		
 
-		inputPanel.add(btn_openFile);
+		panel.add(btn_openFile);
 		btn_openFile.setFocusPainted(false);
 		btn_openFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -348,8 +356,10 @@ public class HomeView extends JPanel implements View
 	/**
 	 * Opens text entry window.
 	 */
-	private void ask_text_open()
-	{
-		JOptionPane.showMessageDialog(this, "Não implementado");
-	}
+//	private void ask_text_open()
+//	{
+//		//JOptionPane.showMessageDialog(this, "Não implementado");
+//		TextInput ti = new TextInput();
+//		ti.getInput(mainFrame, RB.getString("TEXT_ENTRY"), "Clear", "Action");
+//	}
 }

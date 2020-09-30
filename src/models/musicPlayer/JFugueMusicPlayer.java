@@ -75,6 +75,7 @@ public class JFugueMusicPlayer implements MusicPlayer
 			view.update(this, null);
 		}
 	}
+	
 	//---------------------------------------------------------------------
 	
 	/**

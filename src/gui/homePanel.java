@@ -16,6 +16,14 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.BoxLayout;
+import java.awt.Component;
+import javax.swing.SwingConstants;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 
 public class homePanel extends JPanel {
 	final static int WIDTH = 600;
@@ -62,7 +70,25 @@ public class homePanel extends JPanel {
 				System.out.println(filepath);
 			}
 		});
-		add(btn_openFile, BorderLayout.SOUTH);
+		
+		JPanel panel = new JPanel();
+		add(panel, BorderLayout.NORTH);
+		
+		JButton btnNewButton = new JButton("New button");
+		btnNewButton.setHorizontalAlignment(SwingConstants.TRAILING);
+		btnNewButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+		
+		
+		JButton btnNewButton_1 = new JButton("New button");
+		btnNewButton_1.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		panel.setLayout(new GridLayout(0, 2, 0, 0));
+		panel.add(btnNewButton);
+		panel.add(btnNewButton_1);
+		panel.
+		add(btn_openFile);
+		
+		JLabel label = new JLabel("");
+		panel.add(label);
 
 	}
 

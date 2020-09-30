@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,6 +19,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -84,9 +86,13 @@ public class TextPlayerView extends JPanel implements View
 	 */
 	@Override
 	public void update(Model model, Object data) {
+		if (!(model instanceof MusicPlayer))
+			return;
+		
 		MusicPlayer mp = (MusicPlayer) model;
 		long musicLength = mp.getMusicLength();
 		long musicPosition = mp.getMusicPosition();
+		
 		
 		// Updates progress bar
 		pb_music.setValue((int)(musicPosition/musicLength));
@@ -95,9 +101,6 @@ public class TextPlayerView extends JPanel implements View
 		btn_ctrl_play.setEnabled(!mp.isPlaying());
 		btn_ctrl_pause.setEnabled(!mp.isPaused());
 		btn_ctrl_stop.setEnabled(!mp.isStopped());
-		
-		// Updates top bar buttons
-		//textPlayerController.updateMenuBar(mp);
 	}
 	
 	/**
@@ -277,7 +280,7 @@ public class TextPlayerView extends JPanel implements View
 	 */
 	private void make_centralPanel()
 	{
-		JPanel pnl_center, pnl_center_center;
+		JPanel pnl_center, pnl_center_center, pnl_input;
 		
 		
 		// Panel responsible for the central section of the view
@@ -291,8 +294,13 @@ public class TextPlayerView extends JPanel implements View
 		pnl_center_center.setLayout(new BorderLayout(0, 0));
 		pnl_center.add(pnl_center_center, BorderLayout.CENTER);
 		
+		pnl_input = new JPanel();
+		pnl_input.setLayout(new GridLayout(0, 2, 0, 0));
+		pnl_center_center.add(pnl_input, BorderLayout.NORTH);
+		
 		make_fileInfo(pnl_center, BorderLayout.NORTH);
-		make_btn_change(pnl_center_center, BorderLayout.NORTH);
+		make_btn_textEntry(pnl_input);
+		make_btn_openFile(pnl_input);
 		make_textArea(pnl_center_center, BorderLayout.CENTER);
 		make_progressBar(pnl_center, BorderLayout.SOUTH);
 	}
@@ -367,25 +375,21 @@ public class TextPlayerView extends JPanel implements View
 	/**
 	 * Creates the section that will contain change file button.
 	 * 
-	 * @param		panel Panel to which the section will be placed
-	 * @param		constraints Position where this section will be added to 
-	 * the panel
+	 * @param		panel Panel that the button will be added
 	 */
-	private void make_btn_change(JPanel panel, Object constraints)
+	private void make_btn_openFile(JPanel panel)
 	{
-		JButton btn_changeFile = new JButton(RB.getString("FILE_CHANGE"));
+		JButton btn_openFile = new JButton(RB.getString("FILE_OPEN"));
 		
+
+		panel.add(btn_openFile);
 		
-		btn_changeFile.setEnabled(true);
-		btn_changeFile.setFocusPainted(false);
-		btn_changeFile.addActionListener(new ActionListener() {
+		btn_openFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				open_file();
 			}
 		});
-		
-		panel.add(btn_changeFile, constraints);
 	}
 
 	/**
@@ -405,5 +409,32 @@ public class TextPlayerView extends JPanel implements View
 		
 		if (filepath != null)
 			textPlayerController.changeFile(filepath);
+	}
+	
+	/**
+	 * Creates text entry button.
+	 * 
+	 * @param		panel Panel that the button will be added
+	 */
+	private void make_btn_textEntry(JPanel panel)
+	{
+		JButton btn_textEntry = new JButton(RB.getString("TEXT_ENTRY"));
+		
+		
+		panel.add(btn_textEntry);
+		btn_textEntry.setFocusPainted(false);
+		btn_textEntry.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ask_text_open();
+			}
+		});
+	}
+	
+	/**
+	 * Opens text entry window.
+	 */
+	private void ask_text_open()
+	{
+		JOptionPane.showMessageDialog(this, "Não implementado");
 	}
 }
