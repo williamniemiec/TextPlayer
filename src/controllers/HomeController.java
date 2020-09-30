@@ -44,15 +44,6 @@ public class HomeController extends Controller
 		homeView = new HomeView(this, mainFrame);
 		addView("HomeView", homeView);
 		
-		//
-//		KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-//		manager.addKeyEventDispatcher(new KeyEventDispatcher () {
-//			@Override
-//	        public boolean dispatchKeyEvent(KeyEvent e) {
-//				System.out.println("Key event");
-//				return false;
-//	        }
-//		});
 		KeyboardController keyboardController = new KeyboardController();
 		keyboardController.run();
 		
@@ -106,8 +97,7 @@ public class HomeController extends Controller
 	 */
 	public void updateMenuBar()
 	{	
-		((JMenuItem)getComponent("mb_ctrl_play")).setEnabled(false);
-		((JMenuItem)getComponent("mb_ctrl_pause")).setEnabled(false);
+		((JMenuItem)getComponent("mb_ctrl_playPause")).setEnabled(false);
 		((JMenuItem)getComponent("mb_ctrl_stop")).setEnabled(false);
 		((JMenuItem)getComponent("mb_file_close")).setEnabled(false);
 	}

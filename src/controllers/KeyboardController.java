@@ -1,20 +1,26 @@
 package controllers;
 
-import java.awt.Component;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JMenuItem;
 
 import core.Controller;
 
+
 public class KeyboardController extends Controller
 {
+	//-------------------------------------------------------------------------
+	//		Attributes
+	//-------------------------------------------------------------------------
 	private static KeyboardFocusManager manager;
 	private static KeyboardHandler keyboardHandler;
 	
+	
+	//-------------------------------------------------------------------------
+	//		Methods
+	//-------------------------------------------------------------------------
 	@Override
 	public void run() 
 	{
@@ -25,6 +31,7 @@ public class KeyboardController extends Controller
 	{
 		if (keyboardHandler == null)
 			keyboardHandler = new KeyboardHandler();
+		
 		manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 		manager.addKeyEventDispatcher(keyboardHandler);
 	}
@@ -35,6 +42,9 @@ public class KeyboardController extends Controller
 	}
 	
 	
+	//-------------------------------------------------------------------------
+	//		Inner classes
+	//-------------------------------------------------------------------------
 	private static class KeyboardHandler implements KeyEventDispatcher
 	{
 		/**
@@ -45,30 +55,34 @@ public class KeyboardController extends Controller
 		public boolean dispatchKeyEvent(KeyEvent e) 
 		{
 			if (e.getID() == KeyEvent.KEY_RELEASED) {
+				JMenuItem component;
+				
+				
 				if (e.isControlDown()) {
 					switch (e.getKeyCode()) {
 						case KeyEvent.VK_N:
-							System.out.println("n");
+							component = (JMenuItem)getComponent("mb_file_textEntry");
+							component.doClick();
 							break;
 						case KeyEvent.VK_O:
-							System.out.println("o");
-							JMenuItem c = (JMenuItem)getComponent("mb_file_open");System.out.println(c);
-							c.doClick();
+							component = (JMenuItem)getComponent("mb_file_openFile");
+							component.doClick();
 							break;
 						case KeyEvent.VK_W:
-							System.out.println("w");
+							component = (JMenuItem)getComponent("mb_file_close");
+							component.doClick();
 							break;
 					}
 				}
 				else {
 					switch (e.getKeyCode()) {
 						case KeyEvent.VK_SPACE:
-							System.out.println("play/pause");
-							JMenuItem c = (JMenuItem)getComponent("mb_ctrl_play");
-							c.doClick();
+							component = (JMenuItem)getComponent("mb_ctrl_playPause");
+							component.doClick();
 							break;
 						case KeyEvent.VK_H:
-							System.out.println("stop");
+							component = (JMenuItem)getComponent("mb_ctrl_stop");
+							component.doClick();
 							break;
 					}
 				}
