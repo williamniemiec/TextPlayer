@@ -1,10 +1,12 @@
-package models.input;
+package models.input.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Dialog.ModalityType;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -24,14 +26,14 @@ public class TextInput
 	private final static int MAIN_FRAME_Y = 150;
 	
 	
-	public String getInput(JFrame window, String windowTitle, String clearButtonTitle, String actionButtonTitle) 
+	public List<String> getInput(JFrame window, String windowTitle, String clearButtonTitle, String actionButtonTitle) 
 	{
 		JPanel pnl_control = createControlPanel(clearButtonTitle, actionButtonTitle);
 		
 		
 		createDialog(window, windowTitle, pnl_control);
 		
-		return txt_content.getText();
+		return Arrays.asList(txt_content.getText().split("\\n"));
 	}
 	
 	private void clearText()
