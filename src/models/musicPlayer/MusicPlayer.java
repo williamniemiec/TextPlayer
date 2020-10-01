@@ -1,5 +1,7 @@
 package models.musicPlayer;
 
+import java.util.List;
+
 import core.Model;
 
 
@@ -39,7 +41,7 @@ public interface MusicPlayer extends Model
 	 * 
 	 * @return		Itself to allow chained calls
 	 */
-	public abstract MusicPlayer change(String text);
+	public abstract MusicPlayer change(List<String> text);
 	
 	/**
 	 * Returns total length of the current music.

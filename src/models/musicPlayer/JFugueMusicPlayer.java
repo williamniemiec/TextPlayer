@@ -22,7 +22,7 @@ public class JFugueMusicPlayer implements MusicPlayer
 	/**
 	 * Text that the player will read and play.
 	 */
-	private String text;
+	private List<String> text;
 	
 	
 	//-----------------------------------------------------------------------
@@ -31,11 +31,11 @@ public class JFugueMusicPlayer implements MusicPlayer
 	/**
 	 * Music player that will play with JFugue.
 	 * 
-	 * @param		musicalNotes Text with JFugue commands.
+	 * @param		text Text with JFugue commands.
 	 */
-	public JFugueMusicPlayer(String musicalNotes)
+	public JFugueMusicPlayer(List<String> text)
 	{
-		this.text = musicalNotes;
+		this.text = text;
 		views = new ArrayList<>();
 		
 	}
@@ -125,7 +125,7 @@ public class JFugueMusicPlayer implements MusicPlayer
 	 * @see		MusicPlayer#change(String)
 	 */
 	@Override
-	public MusicPlayer change(String musicalNotes)
+	public MusicPlayer change(List<String> text)
 	{
 		//...
 		

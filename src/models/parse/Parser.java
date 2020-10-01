@@ -20,9 +20,9 @@ public class Parser implements Model
 	//-------------------------------------------------------------------------
 	//		Attributes
 	//-------------------------------------------------------------------------
-	private File file;
+//	private File file;
 	private ParseType parseType;
-	private String parsedText;
+	private List<String> parsedText;
 	private List<View> views;
 	
 	
@@ -91,15 +91,15 @@ public class Parser implements Model
 	 * 
 	 * @throws		IllegalArgumentException If file is null
 	 */
-	public Parser open(File file)
-	{
-		if (file == null)
-			throw new IllegalArgumentException("File cannot be empty");
-		
-		this.file = file;
-		
-		return this;
-	}
+//	public Parser open(File file)
+//	{
+//		if (file == null)
+//			throw new IllegalArgumentException("File cannot be empty");
+//		
+//		this.file = file;
+//		
+//		return this;
+//	}
 	
 	/**
 	 * Opens the file to be parsed.
@@ -108,25 +108,28 @@ public class Parser implements Model
 	 * 
 	 * @return		Itself to allow chained calls
 	 */
-	public Parser open(String filename)
-	{
-		this.file = new File(filename);
-		
-		return this;
-	}
+//	public Parser open(String filename)
+//	{
+//		this.file = new File(filename);
+//		
+//		return this;
+//	}
 	
 	/**
 	 * Parses the opened file.
 	 * 
+	 * @param		content Content to be processed
+	 * 
 	 * @return		Itself to allow chained calls
 	 * 
-	 * @throws		IllegalStateException If file has not been opened
+	 * @throws		IllegalArgumentException If content is null or empty
 	 */
-	public Parser parse()
+	public Parser parse(List<String> content)
 	{
-		if (file == null)
-			throw new IllegalStateException("A file must be opened before parsing");
-		parsedText = parseType.parseFile(file);
+		if (content == null || content.size() == 0)
+			throw new IllegalArgumentException("Content cannot be empty");
+		
+		parsedText = parseType.parse(content);
 		notifyViews();
 		
 		return this;
@@ -137,7 +140,7 @@ public class Parser implements Model
 	 * 
 	 * @return		Parsed content
 	 */
-	public String get()
+	public List<String> get()
 	{
 		return parsedText;
 	}

@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -115,16 +114,23 @@ public class JFugueMusicParser implements ParseType
 	 * 	</tr>
 	 * </table>
 	 * 
-	 * @see		ParseType#parseFile(File)
+	 * @param		content Content to be processed
+	 * 
+	 * @return		Processed content
+	 * 
+	 * @throws		IllegalArgumentException If content is null or empty
+	 * 
+	 * @see			ParseType#parseFile(File)
 	 */
 	@Override
-	public String parseFile(File file) throws IllegalArgumentException
+	public List<String> parse(List<String> content)
 	{
-		if (file == null)
-			throw new IllegalArgumentException("File cannot be empty");
+		if (content == null || content.size() == 0)
+			throw new IllegalArgumentException("Content cannot be empty");
 		
-		String line;
-		StringBuilder parsedFile = new StringBuilder();
+		//String line;
+//		StringBuilder processedContent = new StringBuilder();
+		List<String> processedContent = new ArrayList<>();
 
 		
 		initInstruments();
@@ -132,8 +138,9 @@ public class JFugueMusicParser implements ParseType
 		// pega letra anterior ao o+ / o- tb para aumentar / diminuir ela
 		// _ INDICARÁ QUE FOI ADD ALGO NA LINHA (METODOS ANTERIORES. SE ACHAR _, SÓ CONTINUAR PROCURANDO APÓS ACHAR OUTRO)
 		
-		try (BufferedReader br = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
-			line = br.readLine();
+//		try (BufferedReader br = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
+		for (String line : content) {
+//			line = br.readLine();
 			
 			while (line != null) {
 				line = removeNumbers(line);
@@ -147,20 +154,12 @@ public class JFugueMusicParser implements ParseType
 				line = spaceTerms(line);				
 				line += changeInstrument();		
 				
-				// Saves parsed line
-				parsedFile.append(line);
-				
-				line = br.readLine();
+				// Saves processed line
+				processedContent.add(line);
 			}
-		} 
-		catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} 
-		catch (IOException e) {
-			e.printStackTrace();
 		}
 		
-		return parsedFile.toString();
+		return processedContent;
 	}
 	
 	/**

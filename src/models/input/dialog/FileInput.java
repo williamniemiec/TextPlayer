@@ -1,4 +1,4 @@
-package models.input;
+package models.input.dialog;
 
 import java.awt.FileDialog;
 import java.io.File;
@@ -10,7 +10,7 @@ public class FileInput {
 	/**
 	 * Opens file dialog.
 	 */
-	public static File getInput(JFrame window, String windowTitle)
+	public File getInput(JFrame window, String windowTitle)
 	{
 		String filepath = null;
 		FileDialog fd;

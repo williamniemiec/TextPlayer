@@ -1,6 +1,7 @@
 package controllers;
 
 import java.io.File;
+import java.util.List;
 
 import javax.swing.JMenuItem;
 
@@ -24,10 +25,10 @@ public class TextPlayerController extends Controller
 	//-------------------------------------------------------------------------
 	//		Attributes
 	//-------------------------------------------------------------------------
-	private String musicalText;
+	private List<String> musicalText;
 	private TextPlayerView textPlayerView;
 	private MusicPlayer musicPlayer;
-	private String originalText;
+	private List<String> originalText;
 	private String filename;
 	
 
@@ -42,7 +43,7 @@ public class TextPlayerController extends Controller
 	 * @param		originalText File text before processing
 	 * @param		filename Text filename
 	 */
-	public TextPlayerController(String musicalText, String originalText, String filename)
+	public TextPlayerController(List<String> musicalText, List<String> originalText, String filename)
 	{
 		this.musicalText = musicalText;
 		this.originalText = originalText;
@@ -140,12 +141,12 @@ public class TextPlayerController extends Controller
 	//-----------------------------------------------------------------------
 	//		Getters & Setters
 	//-----------------------------------------------------------------------
-	public String getText()
+	public List<String> getText()
 	{
 		return this.originalText;
 	}
 	
-	public void setText(String text)
+	public void setText(List<String> text)
 	{
 		this.originalText = text;
 	}

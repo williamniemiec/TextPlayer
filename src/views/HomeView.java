@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
@@ -32,7 +33,9 @@ import controllers.HomeController;
 import core.Controller;
 import core.Model;
 import core.View;
-import models.input.TextInput;
+import models.input.dialog.InputDialogType;
+import models.input.dialog.TextInput;
+import util.Pair;
 
 
 /**
@@ -48,7 +51,7 @@ public class HomeView extends JPanel implements View
 	//-------------------------------------------------------------------------
 	//		Attributes
 	//-------------------------------------------------------------------------
-	private static final ResourceBundle RB = ResourceBundle.getBundle("resources.lang.home.home");
+	private final ResourceBundle RB;
 	private final static int MAIN_FRAME_WIDTH = 800;
 	private final static int MAIN_FRAME_HEIGHT = 500;
 	private final static int MAIN_FRAME_X = 100;
@@ -70,11 +73,12 @@ public class HomeView extends JPanel implements View
 	 * @param		homeController Controller responsible for the view
 	 * @param		mainFrame Main frame of the application
 	 */
-	public HomeView(HomeController homeController, JFrame mainFrame)
+	public HomeView(HomeController homeController, JFrame mainFrame, ResourceBundle RB)
 	{
 		this.homeController = homeController;
 		this.mainFrame = mainFrame;
-
+		this.RB = RB;
+		
 		make_mainFrame();
 		make_home();
 		
@@ -160,7 +164,16 @@ public class HomeView extends JPanel implements View
 		mb_file_textEntry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
 		mb_file_textEntry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				homeController.getTextEntry(mainFrame, RB.getString("TEXT_ENTRY"), RB.getString("CLEAR"), RB.getString("PROCESS"));
+				try {
+					Pair<String, List<String>> inputContent;
+					
+					
+					inputContent = homeController.getContent(InputDialogType.TEXT);
+					homeController.openPlayer(inputContent);
+				} 
+				catch (IOException e1) {
+					JOptionPane.showMessageDialog(mainFrame, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 		mb_file.add(mb_file_textEntry);
@@ -171,7 +184,16 @@ public class HomeView extends JPanel implements View
 		mb_file_openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
 		mb_file_openFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				ask_file_open();
+				try {
+					Pair<String, List<String>> inputContent;
+					
+					
+					inputContent = homeController.getContent(InputDialogType.FILE);
+					homeController.openPlayer(inputContent);
+				} 
+				catch (IOException e1) {
+					JOptionPane.showMessageDialog(mainFrame, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 		mb_file.add(mb_file_openFile);
@@ -261,23 +283,23 @@ public class HomeView extends JPanel implements View
 	/**
 	 * Opens file dialog.
 	 */
-	private void ask_file_open()
-	{
-		String filepath;
-		FileDialog fd;
-		
-		
-		fd = new FileDialog(mainFrame, RB.getString("FILE_CHOOSE_DIALOG_TITLE"), FileDialog.LOAD);
-		fd.setDirectory("./");
-		fd.setFile("*.txt");
-		fd.setVisible(true);
-		
-		if (fd.getFile() != null) {
-			filepath = fd.getDirectory()+fd.getFile();
-			
-			homeController.parseFile(new File(filepath));
-		}
-	}
+//	private void ask_file_open()
+//	{
+//		String filepath;
+//		FileDialog fd;
+//		
+//		
+//		fd = new FileDialog(mainFrame, RB.getString("FILE_CHOOSE_DIALOG_TITLE"), FileDialog.LOAD);
+//		fd.setDirectory("./");
+//		fd.setFile("*.txt");
+//		fd.setVisible(true);
+//		
+//		if (fd.getFile() != null) {
+//			filepath = fd.getDirectory()+fd.getFile();
+//			
+//			homeController.parseFile(new File(filepath));
+//		}
+//	}
 	
 	/**
 	 * Creates main screen.
@@ -343,8 +365,16 @@ public class HomeView extends JPanel implements View
 		btn_textEntry.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//				ask_text_open();
-				System.out.println(homeController.getTextEntry(mainFrame, RB.getString("TEXT_ENTRY"), RB.getString("CLEAR"), RB.getString("PROCESS")));
+				try {
+					Pair<String, List<String>> inputContent;
+					
+					
+					inputContent = homeController.getContent(InputDialogType.TEXT);
+					homeController.openPlayer(inputContent);
+				} 
+				catch (IOException e1) {
+					JOptionPane.showMessageDialog(mainFrame, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 	}
@@ -363,18 +393,17 @@ public class HomeView extends JPanel implements View
 		btn_openFile.setFocusPainted(false);
 		btn_openFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ask_file_open();
+				try {
+					Pair<String, List<String>> inputContent;
+					
+					
+					inputContent = homeController.getContent(InputDialogType.FILE);
+					homeController.openPlayer(inputContent);
+				} 
+				catch (IOException e1) {
+					JOptionPane.showMessageDialog(mainFrame, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 	}
-	
-	/**
-	 * Opens text entry window.
-	 */
-//	private void ask_text_open()
-//	{
-//		//JOptionPane.showMessageDialog(this, "Não implementado");
-//		TextInput ti = new TextInput();
-//		ti.getInput(mainFrame, RB.getString("TEXT_ENTRY"), "Clear", "Action");
-//	}
 }

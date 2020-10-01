@@ -1,6 +1,7 @@
 package models.parse;
 
 import java.io.File;
+import java.util.List;
 
 
 /**
@@ -14,9 +15,9 @@ public interface ParseType
 	/**
 	 * Parses a file.
 	 * 
-	 * @return		Processed content
+	 * @param		content Content to be processed
 	 * 
-	 * @throws		IllegalArgumentException If file is empty
+	 * @return		Processed content
 	 */
-	public String parseFile(File file) throws IllegalArgumentException;
+	public List<String> parse(List<String> content);
 }
