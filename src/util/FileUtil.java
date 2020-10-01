@@ -19,22 +19,19 @@ public class FileUtil
 	 * 
 	 * @param		file Text file
 	 * 
-	 * @return		File content or null if an error occurs
+	 * @return		File content
+	 * 
+	 * @throws		IOException If an I/O error occurs reading from the file or
+	 * a malformed or unmappable byte sequence is read
 	 */
-	public static String extractText(File file)
+	public static List<String> extractText(File file) throws IOException
 	{
-		String text = null;
 		List<String> lines;
 		
 		
-		try {
-			lines = Files.readAllLines(file.toPath());
-			text = lines.stream().map(l->l+"\n").collect(Collectors.joining(""));
-		} 
-		catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		lines = Files.readAllLines(file.toPath());
+		lines = lines.stream().map(l->l+"\n").collect(Collectors.toList());
 		
-		return text;
+		return lines;
 	}
 }
