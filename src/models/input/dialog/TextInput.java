@@ -65,7 +65,7 @@ public class TextInput
 		txt_content.setWrapStyleWord(true);
 		txt_content.setMargin(new Insets(10, 10, 10, 10));
 		
-		// Sets scroll pane on text area
+		// Sets scroll bar on text area
 		scrl_txtContent.setViewportView(txt_content);
 		
 		// Creates dialog

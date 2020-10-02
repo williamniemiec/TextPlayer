@@ -263,27 +263,6 @@ public class HomeView extends JPanel implements View
 	}
 	
 	/**
-	 * Opens file dialog.
-	 */
-//	private void ask_file_open()
-//	{
-//		String filepath;
-//		FileDialog fd;
-//		
-//		
-//		fd = new FileDialog(mainFrame, RB.getString("FILE_CHOOSE_DIALOG_TITLE"), FileDialog.LOAD);
-//		fd.setDirectory("./");
-//		fd.setFile("*.txt");
-//		fd.setVisible(true);
-//		
-//		if (fd.getFile() != null) {
-//			filepath = fd.getDirectory()+fd.getFile();
-//			
-//			homeController.parseFile(new File(filepath));
-//		}
-//	}
-	
-	/**
 	 * Creates main screen.
 	 */
 	private void make_home()
@@ -304,7 +283,15 @@ public class HomeView extends JPanel implements View
 			home_background = new JLabel(new ImageIcon(home_background_file.getScaledInstance(MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT, Image.SCALE_FAST)));
 			add(home_background);
 		} 
-		catch (IOException e1) { e1.printStackTrace();}
+		catch (IOException e) { 
+			JOptionPane.showMessageDialog(
+					mainFrame, 
+					e.getClass().getCanonicalName() + ": " + e.getMessage(), 
+					"Error", 
+					JOptionPane.ERROR_MESSAGE
+			);
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -383,7 +370,12 @@ public class HomeView extends JPanel implements View
 				homeController.openPlayer(inputContent);
 		}
 		catch (IOException e) {
-			JOptionPane.showMessageDialog(mainFrame, e.getClass().getCanonicalName() + ": " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(
+					mainFrame, 
+					e.getClass().getCanonicalName() + ": " + e.getMessage(), 
+					"Error", 
+					JOptionPane.ERROR_MESSAGE
+			);
 			e.printStackTrace();
 		}
 	}

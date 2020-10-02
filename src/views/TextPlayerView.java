@@ -159,8 +159,14 @@ public class TextPlayerView extends JPanel implements View
 			img = new ImageIcon(myPicture.getScaledInstance(mainFrame.getWidth(), mainFrame.getHeight()/3, Image.SCALE_SMOOTH));
 			lbl_musicPlayer.setIcon(img);
 		} 
-		catch (IOException e1) {
-			e1.printStackTrace();
+		catch (IOException e) {
+			JOptionPane.showMessageDialog(
+					mainFrame, 
+					e.getClass().getCanonicalName() + ": " + e.getMessage(), 
+					"Error", 
+					JOptionPane.ERROR_MESSAGE
+			);
+			e.printStackTrace();
 		}
 		
 		// Adds banner to the view
@@ -279,8 +285,14 @@ public class TextPlayerView extends JPanel implements View
 			btn_ctrl.setBorderPainted(false);
 			btn_ctrl.setOpaque(false);
 		} 
-		catch (IOException e1) {
-			e1.printStackTrace();
+		catch (IOException e) {
+			JOptionPane.showMessageDialog(
+					mainFrame, 
+					e.getClass().getCanonicalName() + ": " + e.getMessage(), 
+					"Error", 
+					JOptionPane.ERROR_MESSAGE
+			);
+			e.printStackTrace();
 		}
 		
 		return btn_ctrl;
@@ -360,13 +372,16 @@ public class TextPlayerView extends JPanel implements View
 				.collect(Collectors.joining(""));
 		
 		
+		// Creates text area
 		textArea = new JTextArea();
-		scrollPane.setViewportView(textArea);
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
 		textArea.setText(text);
 		textArea.setEditable(false);
 		textArea.setMargin(new Insets(10, 10, 10, 10));
+		
+		// Sets scroll bar on text area
+		scrollPane.setViewportView(textArea);
 		
 		panel.add(scrollPane, constraints);
 	}
@@ -407,25 +422,6 @@ public class TextPlayerView extends JPanel implements View
 			}
 		});
 	}
-
-	/**
-	 * Opens a window for choosing a file. It will be used to exchange the 
-	 * current file for another one.
-	 */
-//	private void open_file()
-//	{
-//		FileDialog fd = new FileDialog(mainFrame, RB.getString("FILE_CHOOSE"), FileDialog.LOAD);
-//		String filepath;
-//		
-//		
-//		fd.setDirectory(".");
-//		fd.setFile("*.txt");
-//		fd.setVisible(true);
-//		filepath = fd.getDirectory()+fd.getFile();
-//		
-//		if (filepath != null)
-//			textPlayerController.changeFile(filepath);
-//	}
 	
 	/**
 	 * Creates text entry button.
@@ -458,16 +454,13 @@ public class TextPlayerView extends JPanel implements View
 				textPlayerController.changeText(inputContent);
 		}
 		catch (IOException e) {
-			JOptionPane.showMessageDialog(mainFrame, e.getClass().getCanonicalName() + ": " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(
+					mainFrame, 
+					e.getClass().getCanonicalName() + ": " + e.getMessage(), 
+					"Error", 
+					JOptionPane.ERROR_MESSAGE
+			);
 			e.printStackTrace();
 		}
 	}
-	
-	/**
-	 * Opens text entry window.
-	 */
-//	private void ask_text_open()
-//	{
-//		JOptionPane.showMessageDialog(this, "Não implementado");
-//	}
 }
