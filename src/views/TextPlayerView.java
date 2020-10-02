@@ -401,19 +401,7 @@ public class TextPlayerView extends JPanel implements View
 		btn_openFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//open_file();
-				try {
-					Pair<String, List<String>> inputContent;
-					
-					
-					inputContent = textPlayerController.getContent(InputDialogType.FILE);
-					
-					if (!(inputContent.first == null || inputContent.second == null))
-						textPlayerController.changeText(inputContent);
-				} 
-				catch (IOException e1) {
-					JOptionPane.showMessageDialog(mainFrame, e1.getClass().getCanonicalName() + ": " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-				}
+				change_content(InputDialogType.FILE);
 			}
 		});
 	}
@@ -451,20 +439,26 @@ public class TextPlayerView extends JPanel implements View
 		btn_textEntry.setFocusPainted(false);
 		btn_textEntry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					Pair<String, List<String>> inputContent;
-					
-					
-					inputContent = textPlayerController.getContent(InputDialogType.TEXT);
-					
-					if (!(inputContent.first == null || inputContent.second == null))
-						textPlayerController.changeText(inputContent);
-				} 
-				catch (IOException e1) {
-					JOptionPane.showMessageDialog(mainFrame, e1.getClass().getCanonicalName() + ": " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-				}
+				change_content(InputDialogType.TEXT);
 			}
 		});
+	}
+	
+	private void change_content(InputDialogType inputDialogType)
+	{
+		try {
+			Pair<String, List<String>> inputContent;
+			
+			
+			inputContent = textPlayerController.getContent(inputDialogType);
+	
+			if (!(inputContent.first == null || inputContent.second == null))
+				textPlayerController.changeText(inputContent);
+		}
+		catch (IOException e) {
+			JOptionPane.showMessageDialog(mainFrame, e.getClass().getCanonicalName() + ": " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+		}
 	}
 	
 	/**
