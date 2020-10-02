@@ -46,7 +46,7 @@ public class JFugueMusicPlayer implements MusicPlayer
 	//-----------------------------------------------------------------------
 	/**
 	 * {@inheritDoc}
-	 * @see		MusicPlayer#attach(View)
+	 * @see			MusicPlayer#attach(View)
 	 */
 	@Override
 	public void attach(View view) 
@@ -56,7 +56,7 @@ public class JFugueMusicPlayer implements MusicPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @see		MusicPlayer#detach(View)
+	 * @see			MusicPlayer#detach(View)
 	 */
 	@Override
 	public void detach(View view) 
@@ -66,7 +66,7 @@ public class JFugueMusicPlayer implements MusicPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @see		MusicPlayer#notifyViews()
+	 * @see			MusicPlayer#notifyViews()
 	 */
 	@Override
 	public void notifyViews() 
@@ -80,7 +80,7 @@ public class JFugueMusicPlayer implements MusicPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @see		MusicPlayer#play()
+	 * @see			MusicPlayer#play()
 	 */
 	@Override
 	public MusicPlayer play()
@@ -94,7 +94,7 @@ public class JFugueMusicPlayer implements MusicPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @see		MusicPlayer#pause()
+	 * @see			MusicPlayer#pause()
 	 */
 	@Override
 	public MusicPlayer pause()
@@ -108,7 +108,7 @@ public class JFugueMusicPlayer implements MusicPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @see		MusicPlayer#stop()
+	 * @see			MusicPlayer#stop()
 	 */
 	@Override
 	public MusicPlayer stop()
@@ -122,7 +122,7 @@ public class JFugueMusicPlayer implements MusicPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @see		MusicPlayer#change(String)
+	 * @see			MusicPlayer#change(String)
 	 */
 	@Override
 	public MusicPlayer change(List<String> text)
@@ -136,7 +136,7 @@ public class JFugueMusicPlayer implements MusicPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @see		MusicPlayer#getMusicLength()
+	 * @see			MusicPlayer#getMusicLength()
 	 */
 	@Override
 	public long getMusicLength()
@@ -146,7 +146,7 @@ public class JFugueMusicPlayer implements MusicPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @see		MusicPlayer#getMusicPosition()
+	 * @see			MusicPlayer#getMusicPosition()
 	 */
 	@Override
 	public long getMusicPosition()
@@ -156,7 +156,7 @@ public class JFugueMusicPlayer implements MusicPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @see		MusicPlayer#isPlaying()
+	 * @see			MusicPlayer#isPlaying()
 	 */
 	@Override
 	public boolean isPlaying()
@@ -166,7 +166,7 @@ public class JFugueMusicPlayer implements MusicPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @see		MusicPlayer#isPaused()
+	 * @see			MusicPlayer#isPaused()
 	 */
 	@Override
 	public boolean isPaused()
@@ -176,7 +176,7 @@ public class JFugueMusicPlayer implements MusicPlayer
 	
 	/**
 	 * {@inheritDoc}
-	 * @see		MusicPlayer#isStopped()
+	 * @see			MusicPlayer#isStopped()
 	 */
 	@Override
 	public boolean isStopped()

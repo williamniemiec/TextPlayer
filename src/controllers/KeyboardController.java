@@ -49,7 +49,7 @@ public class KeyboardController extends Controller
 	{
 		/**
 		 * {@inheritDoc}
-		 * @see		KeyEventDispatcher#dispatchKeyEvent(KeyEvent)
+		 * @see			KeyEventDispatcher#dispatchKeyEvent(KeyEvent)
 		 */
 		@Override
 		public boolean dispatchKeyEvent(KeyEvent e) 

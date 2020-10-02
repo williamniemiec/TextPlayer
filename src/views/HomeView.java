@@ -112,7 +112,7 @@ public class HomeView extends JPanel implements View
 	//-------------------------------------------------------------------------
 	/**
 	 * {@inheritDoc}
-	 * @see		View#update(Model, Object)
+	 * @see			View#update(Model, Object)
 	 */
 	@Override
 	public void update(Model model, Object data) 

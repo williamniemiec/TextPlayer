@@ -52,7 +52,7 @@ public class Parser implements Model
 	//-------------------------------------------------------------------------
 	/**
 	 * {@inheritDoc}
-	 * @see		MusicPlayer#attach(View)
+	 * @see			MusicPlayer#attach(View)
 	 */
 	@Override
 	public void attach(View view) 
@@ -62,7 +62,7 @@ public class Parser implements Model
 	
 	/**
 	 * {@inheritDoc}
-	 * @see		MusicPlayer#detach(View)
+	 * @see			MusicPlayer#detach(View)
 	 */
 	@Override
 	public void detach(View view) 
@@ -72,7 +72,7 @@ public class Parser implements Model
 	
 	/**
 	 * {@inheritDoc}
-	 * @see		MusicPlayer#notifyViews()
+	 * @see			MusicPlayer#notifyViews()
 	 */
 	@Override
 	public void notifyViews() 
