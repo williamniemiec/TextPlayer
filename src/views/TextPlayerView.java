@@ -12,7 +12,9 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -29,7 +31,9 @@ import javax.swing.SwingConstants;
 import controllers.TextPlayerController;
 import core.Model;
 import core.View;
+import models.input.dialog.InputDialogType;
 import models.musicPlayer.MusicPlayer;
+import util.Pair;
 
 
 /**
@@ -44,10 +48,9 @@ public class TextPlayerView extends JPanel implements View
 	//-------------------------------------------------------------------------
 	//		Attributes
 	//-------------------------------------------------------------------------
-	private static final ResourceBundle RB = 
-			ResourceBundle.getBundle("resources.lang.textplayer.textplayer");
+	private final ResourceBundle RB;
 	private TextPlayerController textPlayerController;
-	private JFrame frame;
+	private JFrame mainFrame;
 	private JLabel lbl_filename_name;
 	private JTextArea textArea;
 	private JProgressBar pb_music;
@@ -65,10 +68,11 @@ public class TextPlayerView extends JPanel implements View
 	 * @param		homeController Controller responsible for the view
 	 * @param		mainFrame Main application frame
 	 */
-	public TextPlayerView(TextPlayerController textPlayerController, JFrame frame)
+	public TextPlayerView(TextPlayerController textPlayerController, JFrame frame, ResourceBundle RB)
 	{
 		this.textPlayerController = textPlayerController;
-		this.frame = frame;
+		this.mainFrame = frame;
+		this.RB = RB;
 		
 		make_panel();
 		make_header();
@@ -106,9 +110,15 @@ public class TextPlayerView extends JPanel implements View
 	/**
 	 * Updates the section that displays the text data.
 	 */
-	public void updateFileContent() 
+	public void updateContent() 
 	{
-		textArea.setText(textPlayerController.getText());
+		String content = textPlayerController.getText()
+				.stream()
+				.map((line) -> line + "\n")
+				.collect(Collectors.joining(""));
+		
+		
+		textArea.setText(content);
 		lbl_filename_name.setText(textPlayerController.getFilename());
 	}
 	
@@ -118,7 +128,7 @@ public class TextPlayerView extends JPanel implements View
 	private void make_panel()
 	{
 		setBorder(null);
-		setBounds(frame.getX(), frame.getY(), frame.getWidth(), frame.getHeight());
+		setBounds(mainFrame.getX(), mainFrame.getY(), mainFrame.getWidth(), mainFrame.getHeight());
 		setLayout(new BorderLayout(0, 0));
 	}
 	
@@ -145,7 +155,7 @@ public class TextPlayerView extends JPanel implements View
 			lbl_musicPlayer = new JLabel();
 			pnl_top.add(lbl_musicPlayer, BorderLayout.NORTH);
 			
-			img = new ImageIcon(myPicture.getScaledInstance(frame.getWidth(), frame.getHeight()/3, Image.SCALE_SMOOTH));
+			img = new ImageIcon(myPicture.getScaledInstance(mainFrame.getWidth(), mainFrame.getHeight()/3, Image.SCALE_SMOOTH));
 			lbl_musicPlayer.setIcon(img);
 		} 
 		catch (IOException e1) {
@@ -300,7 +310,7 @@ public class TextPlayerView extends JPanel implements View
 		
 		make_fileInfo(pnl_center, BorderLayout.NORTH);
 		make_btn_textEntry(pnl_input);
-		make_btn_openFile(pnl_input);
+		make_btn_changeFile(pnl_input);
 		make_textArea(pnl_center_center, BorderLayout.CENTER);
 		make_progressBar(pnl_center, BorderLayout.SOUTH);
 	}
@@ -343,13 +353,17 @@ public class TextPlayerView extends JPanel implements View
 	private void make_textArea(JPanel panel, Object constraints)
 	{
 		JScrollPane scrollPane = new JScrollPane();
+		String text = textPlayerController.getText()
+				.stream()
+				.map((line) -> line + "\n")
+				.collect(Collectors.joining(""));
 		
 		
 		textArea = new JTextArea();
 		scrollPane.setViewportView(textArea);
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
-		textArea.setText(textPlayerController.getText());
+		textArea.setText(text);
 		textArea.setEditable(false);
 		
 		panel.add(scrollPane, constraints);
@@ -377,7 +391,7 @@ public class TextPlayerView extends JPanel implements View
 	 * 
 	 * @param		panel Panel that the button will be added
 	 */
-	private void make_btn_openFile(JPanel panel)
+	private void make_btn_changeFile(JPanel panel)
 	{
 		JButton btn_openFile = new JButton(RB.getString("FILE_OPEN"));
 		
@@ -387,7 +401,19 @@ public class TextPlayerView extends JPanel implements View
 		btn_openFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				open_file();
+				//open_file();
+				try {
+					Pair<String, List<String>> inputContent;
+					
+					
+					inputContent = textPlayerController.getContent(InputDialogType.FILE);
+					
+					if (!(inputContent.first == null || inputContent.second == null))
+						textPlayerController.changeText(inputContent);
+				} 
+				catch (IOException e1) {
+					JOptionPane.showMessageDialog(mainFrame, e1.getClass().getCanonicalName() + ": " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 	}
@@ -396,20 +422,20 @@ public class TextPlayerView extends JPanel implements View
 	 * Opens a window for choosing a file. It will be used to exchange the 
 	 * current file for another one.
 	 */
-	private void open_file()
-	{
-		FileDialog fd = new FileDialog(frame, RB.getString("FILE_CHOOSE"), FileDialog.LOAD);
-		String filepath;
-		
-		
-		fd.setDirectory(".");
-		fd.setFile("*.txt");
-		fd.setVisible(true);
-		filepath = fd.getDirectory()+fd.getFile();
-		
-		if (filepath != null)
-			textPlayerController.changeFile(filepath);
-	}
+//	private void open_file()
+//	{
+//		FileDialog fd = new FileDialog(mainFrame, RB.getString("FILE_CHOOSE"), FileDialog.LOAD);
+//		String filepath;
+//		
+//		
+//		fd.setDirectory(".");
+//		fd.setFile("*.txt");
+//		fd.setVisible(true);
+//		filepath = fd.getDirectory()+fd.getFile();
+//		
+//		if (filepath != null)
+//			textPlayerController.changeFile(filepath);
+//	}
 	
 	/**
 	 * Creates text entry button.
@@ -425,7 +451,18 @@ public class TextPlayerView extends JPanel implements View
 		btn_textEntry.setFocusPainted(false);
 		btn_textEntry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ask_text_open();
+				try {
+					Pair<String, List<String>> inputContent;
+					
+					
+					inputContent = textPlayerController.getContent(InputDialogType.TEXT);
+					
+					if (!(inputContent.first == null || inputContent.second == null))
+						textPlayerController.changeText(inputContent);
+				} 
+				catch (IOException e1) {
+					JOptionPane.showMessageDialog(mainFrame, e1.getClass().getCanonicalName() + ": " + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 	}
@@ -433,8 +470,8 @@ public class TextPlayerView extends JPanel implements View
 	/**
 	 * Opens text entry window.
 	 */
-	private void ask_text_open()
-	{
-		JOptionPane.showMessageDialog(this, "Não implementado");
-	}
+//	private void ask_text_open()
+//	{
+//		JOptionPane.showMessageDialog(this, "Não implementado");
+//	}
 }

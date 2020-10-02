@@ -1,16 +1,23 @@
 package controllers;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.swing.JMenuItem;
 
 import core.Controller;
+import models.input.dialog.FileInput;
+import models.input.dialog.InputDialogType;
+import models.input.dialog.InputManager;
+import models.input.dialog.TextInput;
 import models.musicPlayer.JFugueMusicPlayer;
 import models.musicPlayer.MusicPlayer;
 import models.parse.JFugueMusicParser;
 import models.parse.Parser;
 import util.FileUtil;
+import util.Pair;
 import views.TextPlayerView;
 
 
@@ -25,6 +32,8 @@ public class TextPlayerController extends Controller
 	//-------------------------------------------------------------------------
 	//		Attributes
 	//-------------------------------------------------------------------------
+	private static final ResourceBundle RB = 
+			ResourceBundle.getBundle("resources.lang.textplayer.textplayer");
 	private List<String> musicalText;
 	private TextPlayerView textPlayerView;
 	private MusicPlayer musicPlayer;
@@ -58,7 +67,7 @@ public class TextPlayerController extends Controller
 	public void run() 
 	{
 		// Initializes TextPlayerView
-		textPlayerView = new TextPlayerView(this, mainFrame);
+		textPlayerView = new TextPlayerView(this, mainFrame, RB);
 		
 		// Updates top bar buttons
 		updateControlsMenu();
@@ -97,27 +106,31 @@ public class TextPlayerController extends Controller
 	}
 	
 	/**
-	 * Select another file to generate music.
+	 * Select another text to generate music.
 	 * 
-	 * @param		filepath Filename
+	 * @param		newContent New text along with its filename
 	 */
-	public void changeFile(String filepath)
+	public void changeText(Pair<String, List<String>> newContent)
 	{
-		String parsedFile;
+		List<String> parsedFile;
 		Parser parser = new Parser(new JFugueMusicParser());
-		File file = new File(filepath);
 		
 		
 		// Process the file
-		parsedFile = parser.open(file).parse().get();
+		parsedFile = parser.parse(newContent.second).get();
 		
 		// Loads processed file into the player
 		musicPlayer.change(parsedFile);
 		
 		// Updates view with informations about the loaded file
-		originalText = FileUtil.extractText(file);
-		this.filename = file.getName();
-		textPlayerView.updateFileContent();
+		originalText = newContent.second;
+		this.filename = newContent.first;
+		textPlayerView.updateContent();
+	}
+	
+	public Pair<String, List<String>> getContent(InputDialogType inputDialogType) throws IOException
+	{
+		return InputManager.getContent(mainFrame, inputDialogType);
 	}
 	
 //	// será feito na view
@@ -134,7 +147,7 @@ public class TextPlayerController extends Controller
 	private void updateControlsMenu()
 	{
 		((JMenuItem)getComponent("mb_file_close")).setEnabled(true);
-		((JMenuItem)getComponent("mb_ctrl_play")).setEnabled(true);
+		((JMenuItem)getComponent("mb_ctrl_playPause")).setEnabled(true);
 	}
 	
 	

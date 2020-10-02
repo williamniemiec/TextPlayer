@@ -141,22 +141,19 @@ public class JFugueMusicParser implements ParseType
 //		try (BufferedReader br = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
 		for (String line : content) {
 //			line = br.readLine();
+			line = removeNumbers(line);
+			line = removeAccentuation(line);
+			line = parseSpaces(line);				
+			line = parseOPlusMinus(line);			// O+ | O-
+			line = parseBPlusMinus(line);			// B+ | B-
+			line = parseDotInterrogationMark(line);	// ? | .
+			line = parseVogals(line);				
+			line = parsePlusMinus(line);			// + | -
+			line = spaceTerms(line);				
+			line += changeInstrument();		
 			
-			while (line != null) {
-				line = removeNumbers(line);
-				line = removeAccentuation(line);
-				line = parseSpaces(line);				
-				line = parseOPlusMinus(line);			// O+ | O-
-				line = parseBPlusMinus(line);			// B+ | B-
-				line = parseDotInterrogationMark(line);	// ? | .
-				line = parseVogals(line);				
-				line = parsePlusMinus(line);			// + | -
-				line = spaceTerms(line);				
-				line += changeInstrument();		
-				
-				// Saves processed line
-				processedContent.add(line);
-			}
+			// Saves processed line
+			processedContent.add(line);
 		}
 		
 		return processedContent;

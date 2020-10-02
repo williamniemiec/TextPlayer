@@ -164,16 +164,7 @@ public class HomeView extends JPanel implements View
 		mb_file_textEntry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
 		mb_file_textEntry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				try {
-					Pair<String, List<String>> inputContent;
-					
-					
-					inputContent = homeController.getContent(InputDialogType.TEXT);
-					homeController.openPlayer(inputContent);
-				} 
-				catch (IOException e1) {
-					JOptionPane.showMessageDialog(mainFrame, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-				}
+				open_view_player(InputDialogType.TEXT);
 			}
 		});
 		mb_file.add(mb_file_textEntry);
@@ -184,16 +175,7 @@ public class HomeView extends JPanel implements View
 		mb_file_openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
 		mb_file_openFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				try {
-					Pair<String, List<String>> inputContent;
-					
-					
-					inputContent = homeController.getContent(InputDialogType.FILE);
-					homeController.openPlayer(inputContent);
-				} 
-				catch (IOException e1) {
-					JOptionPane.showMessageDialog(mainFrame, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-				}
+				open_view_player(InputDialogType.FILE);
 			}
 		});
 		mb_file.add(mb_file_openFile);
@@ -365,16 +347,7 @@ public class HomeView extends JPanel implements View
 		btn_textEntry.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					Pair<String, List<String>> inputContent;
-					
-					
-					inputContent = homeController.getContent(InputDialogType.TEXT);
-					homeController.openPlayer(inputContent);
-				} 
-				catch (IOException e1) {
-					JOptionPane.showMessageDialog(mainFrame, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-				}
+				open_view_player(InputDialogType.TEXT);
 			}
 		});
 	}
@@ -393,17 +366,25 @@ public class HomeView extends JPanel implements View
 		btn_openFile.setFocusPainted(false);
 		btn_openFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					Pair<String, List<String>> inputContent;
-					
-					
-					inputContent = homeController.getContent(InputDialogType.FILE);
-					homeController.openPlayer(inputContent);
-				} 
-				catch (IOException e1) {
-					JOptionPane.showMessageDialog(mainFrame, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-				}
+				open_view_player(InputDialogType.FILE);
 			}
 		});
+	}
+	
+	private void open_view_player(InputDialogType inputDialogType)
+	{
+		try {
+			Pair<String, List<String>> inputContent;
+			
+			
+			inputContent = homeController.getContent(inputDialogType);
+	
+			if (!(inputContent.first == null || inputContent.second == null))
+				homeController.openPlayer(inputContent);
+		}
+		catch (IOException e) {
+			JOptionPane.showMessageDialog(mainFrame, e.getClass().getCanonicalName() + ": " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+		}
 	}
 }

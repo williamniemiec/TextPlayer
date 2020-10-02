@@ -18,6 +18,10 @@ import javax.swing.JTextArea;
 
 public class TextInput 
 {
+	//-------------------------------------------------------------------------
+	//		Attributes
+	//-------------------------------------------------------------------------
+	private boolean actionPressed;
 	private JTextArea txt_content;
 	private JDialog textInputWindow;
 	private final static int MAIN_FRAME_WIDTH = 600;
@@ -26,6 +30,9 @@ public class TextInput
 	private final static int MAIN_FRAME_Y = 150;
 	
 	
+	//-------------------------------------------------------------------------
+	//		Methods
+	//-------------------------------------------------------------------------
 	public List<String> getInput(JFrame window, String windowTitle, String clearButtonTitle, String actionButtonTitle) 
 	{
 		JPanel pnl_control = createControlPanel(clearButtonTitle, actionButtonTitle);
@@ -33,8 +40,13 @@ public class TextInput
 		
 		createDialog(window, windowTitle, pnl_control);
 		
-		return Arrays.asList(txt_content.getText().split("\\n"));
+		return actionPressed ? Arrays.asList(txt_content.getText().split("\\n")) : null;
 	}
+	
+//	public boolean wasActionPressed()
+//	{
+//		return actionPressed;
+//	}
 	
 	private void clearText()
 	{
@@ -68,6 +80,7 @@ public class TextInput
 		btn_action.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				actionPressed = true;
 				textInputWindow.dispose();
 			}
 		});

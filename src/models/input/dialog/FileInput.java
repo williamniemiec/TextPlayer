@@ -6,7 +6,11 @@ import java.io.File;
 import javax.swing.JFrame;
 
 
-public class FileInput {
+public class FileInput 
+{
+	//-------------------------------------------------------------------------
+	//		Methods
+	//-------------------------------------------------------------------------
 	/**
 	 * Opens file dialog.
 	 */
@@ -20,6 +24,8 @@ public class FileInput {
 		fd.setDirectory("./");
 		fd.setFile("*.txt");
 		fd.setVisible(true);
+		
+		filepath = fd.getDirectory()+fd.getFile();
 		
 		return (filepath == null) ? null : new File(filepath);
 	}

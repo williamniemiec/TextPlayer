@@ -30,7 +30,7 @@ public class FileUtil
 		
 		
 		lines = Files.readAllLines(file.toPath());
-		lines = lines.stream().map(l->l+"\n").collect(Collectors.toList());
+		//lines = lines.stream().map(l->l+"\n").collect(Collectors.toList());
 		
 		return lines;
 	}

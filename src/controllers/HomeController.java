@@ -12,6 +12,7 @@ import javax.swing.JMenuItem;
 import core.Controller;
 import models.input.dialog.FileInput;
 import models.input.dialog.InputDialogType;
+import models.input.dialog.InputManager;
 import models.input.dialog.TextInput;
 import models.parse.JFugueMusicParser;
 import models.parse.Parser;
@@ -34,7 +35,9 @@ public class HomeController extends Controller
 	//-------------------------------------------------------------------------
 	private HomeView homeView;
 	private TextPlayerController textPlayerController;
-	private static final ResourceBundle RB = ResourceBundle.getBundle("resources.lang.home.home");
+	private static final ResourceBundle RB = 
+			ResourceBundle.getBundle("resources.lang.home.home");
+	
 	
 	
 	//-------------------------------------------------------------------------
@@ -117,31 +120,39 @@ public class HomeController extends Controller
 	
 	public Pair<String, List<String>> getContent(InputDialogType inputDialogType) throws IOException
 	{
-		List<String> content;
-		String filename = "N/A";
-		
-		
-		if (inputDialogType == InputDialogType.FILE) {
-			FileInput fi = new FileInput();
-			File file;
-			
-			
-			file = fi.getInput(mainFrame, RB.getString("FILE_CHOOSE_DIALOG_TITLE"));
-			content = FileUtil.extractText(file);
-			filename = file.getName();
-		}
-		else if (inputDialogType == InputDialogType.TEXT) {
-			TextInput ti = new TextInput();
-			
-			
-			content = ti.getInput(mainFrame, RB.getString("TEXT_ENTRY"), RB.getString("CLEAR"), RB.getString("PROCESS"));
-		}
-		else {
-			throw new IllegalArgumentException("Unsupported type");
-		}
-		
-		return Pair.of(filename, content);
+		return InputManager.getContent(mainFrame, inputDialogType);
 	}
+	
+//	public Pair<String, List<String>> getContent(InputDialogType inputDialogType) throws IOException
+//	{
+//		List<String> content = null;
+//		String filename = "N/A";
+//		
+//		
+//		if (inputDialogType == InputDialogType.FILE) {
+//			FileInput fi = new FileInput();
+//			File file;
+//			
+//			
+//			file = fi.getInput(mainFrame, RB_INPUT.getString("FILE_CHOOSE_DIALOG_TITLE"));
+//			
+//			if (file != null) {
+//				content = FileUtil.extractText(file);
+//				filename = file.getName();
+//			}
+//		}
+//		else if (inputDialogType == InputDialogType.TEXT) {
+//			TextInput ti = new TextInput();
+//			
+//			
+//			content = ti.getInput(mainFrame, RB_INPUT.getString("TEXT_ENTRY"), RB_INPUT.getString("CLEAR"), RB_INPUT.getString("PROCESS"));
+//		}
+//		else {
+//			throw new IllegalArgumentException("Unsupported type");
+//		}
+//		
+//		return Pair.of(filename, content);
+//	}
 	
 	private List<String> parseContent(List<String> content)
 	{
