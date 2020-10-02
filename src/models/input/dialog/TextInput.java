@@ -3,6 +3,7 @@ package models.input.dialog;
 import java.awt.BorderLayout;
 import java.awt.Dialog.ModalityType;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
@@ -12,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 
@@ -43,25 +45,33 @@ public class TextInput
 		return actionPressed ? Arrays.asList(txt_content.getText().split("\\n")) : null;
 	}
 	
-//	public boolean wasActionPressed()
-//	{
-//		return actionPressed;
-//	}
-	
 	private void clearText()
 	{
-		if (txt_content != null)
+		if (txt_content != null) {
 			txt_content.setText("");
+			txt_content.setCaretPosition(0);
+			txt_content.requestFocus();
+		}
 	}
 	
 	private void createDialog(JFrame parent, String title, JPanel controlPanel)
 	{
+		JScrollPane scrl_txtContent = new JScrollPane();
+		
+
+		// Creates text area		
 		txt_content = new JTextArea();
+		txt_content.setLineWrap(true);
+		txt_content.setWrapStyleWord(true);
+		txt_content.setMargin(new Insets(10, 10, 10, 10));
 		
+		// Sets scroll pane on text area
+		scrl_txtContent.setViewportView(txt_content);
+		
+		// Creates dialog
 		textInputWindow = new JDialog(parent, title);
-		
 		textInputWindow.setLayout(new BorderLayout(0, 0));
-		textInputWindow.add(txt_content, BorderLayout.CENTER);
+		textInputWindow.add(scrl_txtContent, BorderLayout.CENTER);
 		textInputWindow.add(controlPanel, BorderLayout.SOUTH);
 		textInputWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		textInputWindow.setBounds(MAIN_FRAME_X, MAIN_FRAME_Y, MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT);
