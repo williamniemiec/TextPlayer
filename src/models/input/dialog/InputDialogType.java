@@ -1,5 +1,6 @@
 package models.input.dialog;
 
-public enum InputDialogType {
+public enum InputDialogType 
+{
 	FILE, TEXT
 }

@@ -26,10 +26,30 @@ public class TextInput
 	private boolean actionPressed;
 	private JTextArea txt_content;
 	private JDialog textInputWindow;
-	private final static int MAIN_FRAME_WIDTH = 600;
-	private final static int MAIN_FRAME_HEIGHT = 250;
-	private final static int MAIN_FRAME_X = 150;
-	private final static int MAIN_FRAME_Y = 150;
+	private final int FRAME_WIDTH;
+	private final int FRAME_HEIGHT;
+	private final int FRAME_X;
+	private final int FRAME_Y;
+	
+	
+	//-------------------------------------------------------------------------
+	//		Constructor
+	//-------------------------------------------------------------------------
+	public TextInput(int width, int height, int x, int y)
+	{
+		FRAME_WIDTH = width;
+		FRAME_HEIGHT = height;
+		FRAME_X = x;
+		FRAME_Y = y;
+	}
+	
+	public TextInput()
+	{
+		FRAME_WIDTH = 600;
+		FRAME_HEIGHT = 250;
+		FRAME_X = 150;
+		FRAME_Y = 150;
+	}
 	
 	
 	//-------------------------------------------------------------------------
@@ -74,7 +94,7 @@ public class TextInput
 		textInputWindow.add(scrl_txtContent, BorderLayout.CENTER);
 		textInputWindow.add(controlPanel, BorderLayout.SOUTH);
 		textInputWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		textInputWindow.setBounds(MAIN_FRAME_X, MAIN_FRAME_Y, MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT);
+		textInputWindow.setBounds(FRAME_X, FRAME_Y, FRAME_WIDTH, FRAME_HEIGHT);
 		textInputWindow.setModalityType(ModalityType.APPLICATION_MODAL);
 		textInputWindow.setVisible(true);
 	}

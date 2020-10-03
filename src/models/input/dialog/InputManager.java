@@ -2,13 +2,12 @@ package models.input.dialog;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.swing.JFrame;
 
-import util.FileUtil;
-import util.Pair;
 
 public class InputManager 
 {
@@ -29,14 +28,14 @@ public class InputManager
 		
 		
 		if (inputDialogType == InputDialogType.FILE) {
-			FileInput fi = new FileInput();
+			FileInput fi = new FileInput("txt");
 			File file;
 			
 			
 			file = fi.getInput(window, RB_INPUT.getString("FILE_CHOOSE_DIALOG_TITLE"));
 			
 			if (file != null) {
-				content = FileUtil.extractText(file);
+				content = Files.readAllLines(file.toPath());
 				filename = file.getName();
 			}
 		}

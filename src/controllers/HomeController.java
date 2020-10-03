@@ -112,6 +112,6 @@ public class HomeController extends Controller
 		Parser parser = new Parser(new JFugueMusicParser());
 		
 
-		return parser.parse(content).get();
+		return parser.parse(content);
 	}
 }

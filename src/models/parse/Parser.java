@@ -1,6 +1,5 @@
 package models.parse;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +19,6 @@ public class Parser implements Model
 	//-------------------------------------------------------------------------
 	//		Attributes
 	//-------------------------------------------------------------------------
-//	private File file;
 	private ParseType parseType;
 	private List<String> parsedText;
 	private List<View> views;
@@ -83,48 +81,15 @@ public class Parser implements Model
 	}
 	
 	/**
-	 * Opens the file to be parsed.
-	 * 
-	 * @param		filename Filename
-	 * 
-	 * @return		Itself to allow chained calls
-	 * 
-	 * @throws		IllegalArgumentException If file is null
-	 */
-//	public Parser open(File file)
-//	{
-//		if (file == null)
-//			throw new IllegalArgumentException("File cannot be empty");
-//		
-//		this.file = file;
-//		
-//		return this;
-//	}
-	
-	/**
-	 * Opens the file to be parsed.
-	 * 
-	 * @param		filename Filename
-	 * 
-	 * @return		Itself to allow chained calls
-	 */
-//	public Parser open(String filename)
-//	{
-//		this.file = new File(filename);
-//		
-//		return this;
-//	}
-	
-	/**
 	 * Parses the opened file.
 	 * 
 	 * @param		content Content to be processed
 	 * 
-	 * @return		Itself to allow chained calls
+	 * @return		Parsed content
 	 * 
 	 * @throws		IllegalArgumentException If content is null or empty
 	 */
-	public Parser parse(List<String> content)
+	public List<String> parse(List<String> content)
 	{
 		if (content == null || content.size() == 0)
 			throw new IllegalArgumentException("Content cannot be empty");
@@ -132,16 +97,6 @@ public class Parser implements Model
 		parsedText = parseType.parse(content);
 		notifyViews();
 		
-		return this;
-	}
-	
-	/**
-	 * Gets parsed content.
-	 * 
-	 * @return		Parsed content
-	 */
-	public List<String> get()
-	{
 		return parsedText;
 	}
 }

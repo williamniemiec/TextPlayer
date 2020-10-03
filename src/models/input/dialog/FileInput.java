@@ -9,6 +9,27 @@ import javax.swing.JFrame;
 public class FileInput 
 {
 	//-------------------------------------------------------------------------
+	//		Attributes
+	//-------------------------------------------------------------------------
+	private String directory;
+	private String fileExtension;
+	
+	
+	//-------------------------------------------------------------------------
+	//		Constructor
+	//-------------------------------------------------------------------------
+	public FileInput(String directory, String fileExtension)
+	{
+		this.directory = directory;
+		this.fileExtension = fileExtension;
+	}
+	
+	public FileInput(String fileExtension)
+	{
+		this("./", fileExtension);
+	}
+	
+	//-------------------------------------------------------------------------
 	//		Methods
 	//-------------------------------------------------------------------------
 	/**
@@ -21,11 +42,11 @@ public class FileInput
 		
 		
 		fd = new FileDialog(window, windowTitle, FileDialog.LOAD);
-		fd.setDirectory("./");
-		fd.setFile("*.txt");
+		fd.setDirectory(directory);
+		fd.setFile("*." + fileExtension);
 		fd.setVisible(true);
 		
-		filepath = fd.getDirectory()+fd.getFile();
+		filepath = fd.getDirectory() + fd.getFile();
 		
 		return (filepath == null) ? null : new File(filepath);
 	}

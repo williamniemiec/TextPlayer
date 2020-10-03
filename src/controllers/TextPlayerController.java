@@ -1,6 +1,5 @@
 package controllers;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -8,17 +7,13 @@ import java.util.ResourceBundle;
 import javax.swing.JMenuItem;
 
 import core.Controller;
-import models.input.dialog.FileInput;
 import models.input.dialog.InputContent;
 import models.input.dialog.InputDialogType;
 import models.input.dialog.InputManager;
-import models.input.dialog.TextInput;
 import models.musicPlayer.JFugueMusicPlayer;
 import models.musicPlayer.MusicPlayer;
 import models.parse.JFugueMusicParser;
 import models.parse.Parser;
-import util.FileUtil;
-import util.Pair;
 import views.TextPlayerView;
 
 
@@ -118,7 +113,7 @@ public class TextPlayerController extends Controller
 		
 		
 		// Process the file
-		parsedFile = parser.parse(newContent.getContent()).get();
+		parsedFile = parser.parse(newContent.getContent());
 		
 		// Loads processed file into the player
 		musicPlayer.change(parsedFile);
