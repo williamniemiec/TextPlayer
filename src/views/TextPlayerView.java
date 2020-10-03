@@ -49,7 +49,7 @@ public class TextPlayerView extends JPanel implements View
 	//-------------------------------------------------------------------------
 	private final ResourceBundle RB;
 	private TextPlayerController textPlayerController;
-	private JFrame mainFrame;
+	private JFrame frame;
 	private JLabel lbl_filename_name;
 	private JTextArea textArea;
 	private JProgressBar pb_music;
@@ -65,12 +65,12 @@ public class TextPlayerView extends JPanel implements View
 	 * Creates a representation of the music player view.
 	 * 
 	 * @param		homeController Controller responsible for the view
-	 * @param		mainFrame Main application frame
+	 * @param		frame Main application frame
 	 */
 	public TextPlayerView(TextPlayerController textPlayerController, JFrame frame, ResourceBundle RB)
 	{
 		this.textPlayerController = textPlayerController;
-		this.mainFrame = frame;
+		this.frame = frame;
 		this.RB = RB;
 		
 		make_panel();
@@ -109,7 +109,7 @@ public class TextPlayerView extends JPanel implements View
 	/**
 	 * Updates the section that displays the text data.
 	 */
-	public void updateContent() 
+	public void update_content() 
 	{
 		String content = textPlayerController.getText()
 				.stream()
@@ -127,7 +127,7 @@ public class TextPlayerView extends JPanel implements View
 	private void make_panel()
 	{
 		setBorder(null);
-		setBounds(mainFrame.getX(), mainFrame.getY(), mainFrame.getWidth(), mainFrame.getHeight());
+		setBounds(frame.getX(), frame.getY(), frame.getWidth(), frame.getHeight());
 		setLayout(new BorderLayout(0, 0));
 	}
 	
@@ -154,12 +154,12 @@ public class TextPlayerView extends JPanel implements View
 			lbl_musicPlayer = new JLabel();
 			pnl_top.add(lbl_musicPlayer, BorderLayout.NORTH);
 			
-			img = new ImageIcon(myPicture.getScaledInstance(mainFrame.getWidth(), mainFrame.getHeight()/3, Image.SCALE_SMOOTH));
+			img = new ImageIcon(myPicture.getScaledInstance(frame.getWidth(), frame.getHeight()/3, Image.SCALE_SMOOTH));
 			lbl_musicPlayer.setIcon(img);
 		} 
 		catch (IOException e) {
 			JOptionPane.showMessageDialog(
-					mainFrame, 
+					frame, 
 					e.getClass().getCanonicalName() + ": " + e.getMessage(), 
 					"Error", 
 					JOptionPane.ERROR_MESSAGE
@@ -285,7 +285,7 @@ public class TextPlayerView extends JPanel implements View
 		} 
 		catch (IOException e) {
 			JOptionPane.showMessageDialog(
-					mainFrame, 
+					frame, 
 					e.getClass().getCanonicalName() + ": " + e.getMessage(), 
 					"Error", 
 					JOptionPane.ERROR_MESSAGE
@@ -451,7 +451,7 @@ public class TextPlayerView extends JPanel implements View
 		}
 		catch (IOException e) {
 			JOptionPane.showMessageDialog(
-					mainFrame, 
+					frame, 
 					e.getClass().getCanonicalName() + ": " + e.getMessage(), 
 					"Error", 
 					JOptionPane.ERROR_MESSAGE

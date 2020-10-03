@@ -27,10 +27,10 @@ public class HomeController extends Controller
 	//-------------------------------------------------------------------------
 	//		Attributes
 	//-------------------------------------------------------------------------
-	private HomeView homeView;
-	private TextPlayerController textPlayerController;
 	private static final ResourceBundle RB = 
 			ResourceBundle.getBundle("resources.lang.home.home");
+	private HomeView homeView;
+	private TextPlayerController textPlayerController;
 	
 	
 	
@@ -84,7 +84,8 @@ public class HomeController extends Controller
 	
 	public void openPlayer(InputContent inputContent)
 	{
-		List<String> parsedContent = parseContent(inputContent.getContent());
+		Parser parser = new Parser(new JFugueMusicParser());
+		List<String> parsedContent = parser.parse(inputContent.getContent());
 		
 		
 		textPlayerController = new TextPlayerController(
@@ -105,13 +106,5 @@ public class HomeController extends Controller
 		KeyboardController.enable();
 		
 		return content;
-	}
-	
-	private List<String> parseContent(List<String> content)
-	{
-		Parser parser = new Parser(new JFugueMusicParser());
-		
-
-		return parser.parse(content);
 	}
 }

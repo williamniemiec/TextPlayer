@@ -121,7 +121,7 @@ public class TextPlayerController extends Controller
 		// Updates view with informations about the loaded file
 		originalText = newContent.getContent();
 		filename = newContent.getName();
-		textPlayerView.updateContent();
+		textPlayerView.update_content();
 	}
 	
 	public InputContent getContent(InputDialogType inputDialogType) throws IOException

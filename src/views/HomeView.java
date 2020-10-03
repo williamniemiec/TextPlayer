@@ -54,7 +54,7 @@ public class HomeView extends JPanel implements View
 	private final static int MAIN_FRAME_Y = 100;
 	private final static String VERSION = "1.0.0";
 	private HomeController homeController;
-	private JFrame mainFrame;
+	private JFrame frame;
 	private JMenuBar mb;
 	private JLabel home_background;
 	private BufferedImage home_background_file;
@@ -67,19 +67,19 @@ public class HomeView extends JPanel implements View
 	 * Creates a representation of home view.
 	 * 
 	 * @param		homeController Controller responsible for the view
-	 * @param		mainFrame Main frame of the application
+	 * @param		frame Main frame of the application
 	 */
-	public HomeView(HomeController homeController, JFrame mainFrame, ResourceBundle RB)
+	public HomeView(HomeController homeController, JFrame frame, ResourceBundle RB)
 	{
 		this.homeController = homeController;
-		this.mainFrame = mainFrame;
+		this.frame = frame;
 		this.RB = RB;
 		
 		make_mainFrame();
 		make_home();
 		autoresize();
 			
-		mainFrame.setVisible(true);
+		frame.setVisible(true);
 	}
 	
 	
@@ -102,11 +102,11 @@ public class HomeView extends JPanel implements View
 	 */
 	private void make_mainFrame()
 	{
-		mainFrame.setOpacity(1.0f);
-		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mainFrame.setBounds(MAIN_FRAME_X, MAIN_FRAME_Y, MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT);
-		mainFrame.setMinimumSize(new Dimension(MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT));
-		mainFrame.setTitle("Text Player");
+		frame.setOpacity(1.0f);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setBounds(MAIN_FRAME_X, MAIN_FRAME_Y, MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT);
+		frame.setMinimumSize(new Dimension(MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT));
+		frame.setTitle("Text Player");
 
 		make_menuBar();
 	}
@@ -117,7 +117,7 @@ public class HomeView extends JPanel implements View
 	private void make_menuBar()
 	{
 		mb = new JMenuBar();
-		mainFrame.setJMenuBar(mb);
+		frame.setJMenuBar(mb);
 		
 		make_mn_file();
 		make_mn_controller();
@@ -174,7 +174,7 @@ public class HomeView extends JPanel implements View
 		btn_file_exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, KeyEvent.ALT_DOWN_MASK));
 		btn_file_exit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				mainFrame.dispose();
+				frame.dispose();
 			}
 		});
 		mb_file.add(btn_file_exit);
@@ -230,7 +230,7 @@ public class HomeView extends JPanel implements View
 	private void show_about()
 	{
 		JOptionPane.showMessageDialog(
-				mainFrame,
+				frame,
 				RB.getString("VERSION") +" " + VERSION + "\n\n" +RB.getString("MADE_BY") + ":\n"
 				+ "-> Matheus Hiroyuki Suwa Moura \n"
 				+ "-> William Niemiec", RB.getString("ABOUT"),
@@ -261,7 +261,7 @@ public class HomeView extends JPanel implements View
 		} 
 		catch (IOException e) { 
 			JOptionPane.showMessageDialog(
-					mainFrame, 
+					frame, 
 					e.getClass().getCanonicalName() + ": " + e.getMessage(), 
 					"Error", 
 					JOptionPane.ERROR_MESSAGE
@@ -352,7 +352,7 @@ public class HomeView extends JPanel implements View
 			
 			@Override
 			public void componentResized(ComponentEvent e) {
-				resize_background(mainFrame.getWidth(), mainFrame.getHeight());
+				resize_background(frame.getWidth(), frame.getHeight());
 			}
 
 			@Override
@@ -374,7 +374,7 @@ public class HomeView extends JPanel implements View
 		}
 		catch (IOException e) {
 			JOptionPane.showMessageDialog(
-					mainFrame, 
+					frame, 
 					e.getClass().getCanonicalName() + ": " + e.getMessage(), 
 					"Error", 
 					JOptionPane.ERROR_MESSAGE

@@ -3,8 +3,6 @@ package models.musicPlayer;
 import java.util.ArrayList;
 import java.util.List;
 
-import core.View;
-
 
 /**
  * Responsible for representing JFugue music player.
