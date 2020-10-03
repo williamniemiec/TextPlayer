@@ -54,15 +54,23 @@ public abstract class Controller
 	 */
 	public abstract void run();
 	
-	
 	/**
 	 * Adds a view in main frame.
 	 * 
 	 * @param		viewName Name of the view
 	 * @param		view View to be added
+	 * 
+	 * @throws		IllegalArgumentException If viewName is null or empty or if
+	 * view is null
 	 */
 	public static final void addView(String viewName, View view)
 	{
+		if (viewName == null || viewName.isBlank())
+			throw new IllegalArgumentException("View name cannot be null or empty");
+		
+		if (view == null)
+			throw new IllegalArgumentException("View cannot be null");
+		
 		viewsViewer.add((Component)view, viewName);
 	}
 	
@@ -70,9 +78,14 @@ public abstract class Controller
 	 * Loads a view in main frame.
 	 * 
 	 * @param		viewName Name of the view
+	 * 
+	 * @throws		IllegalArgumentException If viewName is null or empty
 	 */
 	public static final void loadView(String viewName)
 	{
+		if (viewName == null || viewName.isBlank())
+			throw new IllegalArgumentException("View name cannot be null or empty");
+		
 		CardLayout cl = (CardLayout)viewsViewer.getLayout();
 		cl.show(viewsViewer, viewName);
 	}
@@ -82,9 +95,18 @@ public abstract class Controller
 	 * 
 	 * @param		name Name of the component
 	 * @param		component Component to be added
+	 * 
+	 * @throws		IllegalArgumentException If name is null or empty or if 
+	 * component is null
 	 */
 	public static final void addComponent(String name, Component component)
 	{
+		if (name == null || name.isBlank())
+			throw new IllegalArgumentException("Name cannot be null or empty");
+		
+		if (component == null)
+			throw new IllegalArgumentException("Component cannot be null");
+		
 		mainFrameComponents.put(name, component);
 	}
 	
@@ -92,9 +114,14 @@ public abstract class Controller
 	 * Removes a component from the list of main frame's components.
 	 * 
 	 * @param		name Name of the component
+	 * 
+	 * @throws		IllegalArgumentException If name is null or empty
 	 */
 	public static final void removeComponent(String name)
 	{
+		if (name == null || name.isBlank())
+			throw new IllegalArgumentException("Name cannot be null or empty");
+		
 		mainFrameComponents.remove(name);
 	}
 	
@@ -103,10 +130,16 @@ public abstract class Controller
 	 * 
 	 * @param		name Name of the component
 	 * 
-	 * @return		Component with the provided name or null if it is not in the list
+	 * @return		Component with the provided name or null if it is not in 
+	 * the list
+	 * 
+	 * @throws		IllegalArgumentException If name is null or empty
 	 */
 	public static final Component getComponent(String name)
 	{
+		if (name == null || name.isBlank())
+			throw new IllegalArgumentException("Name cannot be null or empty");
+		
 		return mainFrameComponents.get(name);
 	}
 }
