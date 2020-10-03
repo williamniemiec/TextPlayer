@@ -2,10 +2,8 @@ package views;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FileDialog;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -33,8 +31,8 @@ import controllers.HomeController;
 import core.Controller;
 import core.Model;
 import core.View;
+import models.input.dialog.InputContent;
 import models.input.dialog.InputDialogType;
-import models.input.dialog.TextInput;
 import util.Pair;
 
 
@@ -81,28 +79,8 @@ public class HomeView extends JPanel implements View
 		
 		make_mainFrame();
 		make_home();
-		
-		
-		// Updates menu bar items when the view is displayed. Also, updates the
-		// dimensions of the background image dimensions when the window is resized 
-		this.addComponentListener(new ComponentListener() {
-			@Override
-			public void componentShown(ComponentEvent e) {
-				homeController.updateMenuBar();
-			}
+		autoresize();
 			
-			@Override
-			public void componentResized(ComponentEvent e) {
-				resize_background(mainFrame.getWidth(), mainFrame.getHeight());
-			}
-
-			@Override
-			public void componentMoved(ComponentEvent e) { }
-
-			@Override
-			public void componentHidden(ComponentEvent e) { }
-		});
-				
 		mainFrame.setVisible(true);
 	}
 	
@@ -240,12 +218,12 @@ public class HomeView extends JPanel implements View
 		mn_about.setContentAreaFilled(false);
 		mn_about.setBorderPainted(false);
 		mn_about.setFocusable(false);
-		mb.add(mn_about);
 		mn_about.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				show_about();
 			}
 		});
+		mb.add(mn_about);
 	}
 	
 	/**
@@ -302,7 +280,10 @@ public class HomeView extends JPanel implements View
 	 */
 	private void resize_background(int w, int h)
 	{
-		home_background.setIcon(new ImageIcon(home_background_file.getScaledInstance(w, h, Image.SCALE_FAST)));
+		Image homeBackgroundImage = home_background_file.getScaledInstance(w, h, Image.SCALE_FAST);
+		
+		
+		home_background.setIcon(new ImageIcon(homeBackgroundImage));
 	}
 	
 	/**
@@ -315,6 +296,7 @@ public class HomeView extends JPanel implements View
 		
 		pnl_input.setLayout(new GridLayout(0, 2, 0, 0));
 		add(pnl_input, BorderLayout.SOUTH);
+		
 		make_btn_textEntry(pnl_input);
 		make_btn_openFile(pnl_input);
 	}
@@ -358,15 +340,38 @@ public class HomeView extends JPanel implements View
 		});
 	}
 	
+	/**
+	 * Updates menu bar items when the view is displayed. Also, updates the
+	 * dimensions of the background image dimensions when the window is resized 
+	 */
+	private void autoresize()
+	{
+		this.addComponentListener(new ComponentListener() {
+			@Override
+			public void componentShown(ComponentEvent e) {
+				homeController.updateMenuBar();
+			}
+			
+			@Override
+			public void componentResized(ComponentEvent e) {
+				resize_background(mainFrame.getWidth(), mainFrame.getHeight());
+			}
+
+			@Override
+			public void componentMoved(ComponentEvent e) { }
+
+			@Override
+			public void componentHidden(ComponentEvent e) { }
+		});
+	}
+	
 	private void open_view_player(InputDialogType inputDialogType)
 	{
 		try {
-			Pair<String, List<String>> inputContent;
-			
-			
-			inputContent = homeController.getContent(inputDialogType);
+			InputContent inputContent = homeController.getContent(inputDialogType);
 	
-			if (!(inputContent.first == null || inputContent.second == null))
+			
+			if (!(inputContent.getName() == null || inputContent.getContent() == null))
 				homeController.openPlayer(inputContent);
 		}
 		catch (IOException e) {

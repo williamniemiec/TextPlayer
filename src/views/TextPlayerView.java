@@ -32,6 +32,7 @@ import javax.swing.SwingConstants;
 import controllers.TextPlayerController;
 import core.Model;
 import core.View;
+import models.input.dialog.InputContent;
 import models.input.dialog.InputDialogType;
 import models.musicPlayer.MusicPlayer;
 import util.Pair;
@@ -445,12 +446,10 @@ public class TextPlayerView extends JPanel implements View
 	private void change_content(InputDialogType inputDialogType)
 	{
 		try {
-			Pair<String, List<String>> inputContent;
+			InputContent inputContent = textPlayerController.getContent(inputDialogType);
 			
-			
-			inputContent = textPlayerController.getContent(inputDialogType);
 	
-			if (!(inputContent.first == null || inputContent.second == null))
+			if (!(inputContent.getName() == null || inputContent.getContent() == null))
 				textPlayerController.changeText(inputContent);
 		}
 		catch (IOException e) {

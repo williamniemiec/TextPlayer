@@ -22,7 +22,7 @@ public class InputManager
 	//-------------------------------------------------------------------------
 	//		Methods
 	//-------------------------------------------------------------------------
-	public static Pair<String, List<String>> getContent(JFrame window, InputDialogType inputDialogType) throws IOException
+	public static InputContent getContent(JFrame window, InputDialogType inputDialogType) throws IOException
 	{
 		List<String> content = null;
 		String filename = "N/A";
@@ -50,6 +50,6 @@ public class InputManager
 			throw new IllegalArgumentException("Unsupported type");
 		}
 		
-		return Pair.of(filename, content);
+		return new InputContent(filename, content);
 	}
 }

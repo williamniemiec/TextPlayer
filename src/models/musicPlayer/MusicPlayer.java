@@ -3,6 +3,7 @@ package models.musicPlayer;
 import java.util.List;
 
 import core.Model;
+import core.View;
 
 
 /**
@@ -11,8 +12,49 @@ import core.Model;
  * @version		1.0.0
  * @since		1.0.0
  */
-public interface MusicPlayer extends Model
+public abstract class MusicPlayer implements Model
 {
+	//-----------------------------------------------------------------------
+	//		Attributes
+	//-----------------------------------------------------------------------
+	protected List<View> views;
+		
+	
+	//-----------------------------------------------------------------------
+	//		Methods
+	//-----------------------------------------------------------------------
+	/**
+	 * {@inheritDoc}
+	 * @see			MusicPlayer#attach(View)
+	 */
+	@Override
+	public void attach(View view) 
+	{
+		views.add(view);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see			MusicPlayer#detach(View)
+	 */
+	@Override
+	public void detach(View view) 
+	{
+		views.remove(view);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see			MusicPlayer#notifyViews()
+	 */
+	@Override
+	public void notifyViews() 
+	{
+		for (View view : views) {
+			view.update(this, null);
+		}
+	}
+	
 	/**
 	 * Plays current music.
 	 * 

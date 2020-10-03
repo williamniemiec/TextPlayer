@@ -1,25 +1,19 @@
 package controllers;
 
 import java.awt.Component;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 
 import core.Controller;
-import models.input.dialog.FileInput;
+import models.input.dialog.InputContent;
 import models.input.dialog.InputDialogType;
 import models.input.dialog.InputManager;
-import models.input.dialog.TextInput;
 import models.parse.JFugueMusicParser;
 import models.parse.Parser;
-import util.FileUtil;
-import util.Pair;
 import views.HomeView;
-import views.TextPlayerView;
 
 
 /**
@@ -79,26 +73,6 @@ public class HomeController extends Controller
 	}
 	
 	/**
-	 * Processes a file and send it to {@link TextPlayerController}. After, it
-	 * will be opened {@link TextPlayerView}.
-	 * 
-	 * @param		file File to be processed
-	 */
-//	public void parseFile(File file)
-//	{
-//		String parsedFile, text;
-//		Parser parser = new Parser(new JFugueMusicParser());
-//		
-//
-//		parsedFile = parser.open(file).parse().get();
-//		
-//		text = FileUtil.extractText(file);
-//		
-//		textPlayerController = new TextPlayerController(parsedFile, text, file.getName());
-//		textPlayerController.run();
-//	}
-	
-	/**
 	 * Updates top bar buttons.
 	 */
 	public void updateMenuBar()
@@ -108,51 +82,30 @@ public class HomeController extends Controller
 		((JMenuItem)getComponent("mb_file_close")).setEnabled(false);
 	}
 	
-	public void openPlayer(Pair<String, List<String>> inputContent)
+	public void openPlayer(InputContent inputContent)
 	{
-		//Pair<String, String> inputContent = getContent(InputDialogType);
-		List<String> parsedContent = parseContent(inputContent.second);
+		List<String> parsedContent = parseContent(inputContent.getContent());
 		
 		
-		textPlayerController = new TextPlayerController(parsedContent, inputContent.second, inputContent.first);
+		textPlayerController = new TextPlayerController(
+				parsedContent, 
+				inputContent.getContent(), 
+				inputContent.getName()
+		);
 		textPlayerController.run();
 	}
 	
-	public Pair<String, List<String>> getContent(InputDialogType inputDialogType) throws IOException
+	public InputContent getContent(InputDialogType inputDialogType) throws IOException
 	{
-		return InputManager.getContent(mainFrame, inputDialogType);
+		InputContent content;
+		
+		
+		KeyboardController.disable();
+		content = InputManager.getContent(mainFrame, inputDialogType);
+		KeyboardController.enable();
+		
+		return content;
 	}
-	
-//	public Pair<String, List<String>> getContent(InputDialogType inputDialogType) throws IOException
-//	{
-//		List<String> content = null;
-//		String filename = "N/A";
-//		
-//		
-//		if (inputDialogType == InputDialogType.FILE) {
-//			FileInput fi = new FileInput();
-//			File file;
-//			
-//			
-//			file = fi.getInput(mainFrame, RB_INPUT.getString("FILE_CHOOSE_DIALOG_TITLE"));
-//			
-//			if (file != null) {
-//				content = FileUtil.extractText(file);
-//				filename = file.getName();
-//			}
-//		}
-//		else if (inputDialogType == InputDialogType.TEXT) {
-//			TextInput ti = new TextInput();
-//			
-//			
-//			content = ti.getInput(mainFrame, RB_INPUT.getString("TEXT_ENTRY"), RB_INPUT.getString("CLEAR"), RB_INPUT.getString("PROCESS"));
-//		}
-//		else {
-//			throw new IllegalArgumentException("Unsupported type");
-//		}
-//		
-//		return Pair.of(filename, content);
-//	}
 	
 	private List<String> parseContent(List<String> content)
 	{
@@ -161,16 +114,4 @@ public class HomeController extends Controller
 
 		return parser.parse(content).get();
 	}
-	
-//	public void getTextEntry(JFrame window, String windowTitle, String clearButtonTitle, String actionButtonTitle)
-//	{
-//		TextInput ti = new TextInput();
-//		ti.getInput(window, windowTitle, clearButtonTitle, actionButtonTitle);
-//	}
-//	
-//	public void getFileInput(JFrame window, String windowTitle)
-//	{
-//		FileInput fi = new FileInput();
-//		fi.getInput(window, windowTitle);
-//	}
 }

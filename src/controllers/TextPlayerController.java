@@ -9,6 +9,7 @@ import javax.swing.JMenuItem;
 
 import core.Controller;
 import models.input.dialog.FileInput;
+import models.input.dialog.InputContent;
 import models.input.dialog.InputDialogType;
 import models.input.dialog.InputManager;
 import models.input.dialog.TextInput;
@@ -110,36 +111,28 @@ public class TextPlayerController extends Controller
 	 * 
 	 * @param		newContent New text along with its filename
 	 */
-	public void changeText(Pair<String, List<String>> newContent)
+	public void changeText(InputContent newContent)
 	{
 		List<String> parsedFile;
 		Parser parser = new Parser(new JFugueMusicParser());
 		
 		
 		// Process the file
-		parsedFile = parser.parse(newContent.second).get();
+		parsedFile = parser.parse(newContent.getContent()).get();
 		
 		// Loads processed file into the player
 		musicPlayer.change(parsedFile);
 		
 		// Updates view with informations about the loaded file
-		originalText = newContent.second;
-		this.filename = newContent.first;
+		originalText = newContent.getContent();
+		filename = newContent.getName();
 		textPlayerView.updateContent();
 	}
 	
-	public Pair<String, List<String>> getContent(InputDialogType inputDialogType) throws IOException
+	public InputContent getContent(InputDialogType inputDialogType) throws IOException
 	{
 		return InputManager.getContent(mainFrame, inputDialogType);
 	}
-	
-//	// será feito na view
-//	public void updateMenuBar(MusicPlayer mp)
-//	{	
-//		//((JMenuItem)getComponent("mb_ctrl_play")).setEnabled(!mp.isPlaying());
-//		//((JMenuItem)getComponent("mb_ctrl_pause")).setEnabled(!mp.isPaused());
-//		//((JMenuItem)getComponent("mb_ctrl_stop")).setEnabled(!mp.isStopped());
-//	}
 	
 	/**
 	 * Updates music player control buttons.
@@ -159,11 +152,6 @@ public class TextPlayerController extends Controller
 		return this.originalText;
 	}
 	
-	public void setText(List<String> text)
-	{
-		this.originalText = text;
-	}
-	
 	public TextPlayerView getView()
 	{
 		return textPlayerView;
@@ -172,10 +160,5 @@ public class TextPlayerController extends Controller
 	public String getFilename()
 	{
 		return filename;
-	}
-	
-	public void setFilename(String filename)
-	{
-		this.filename = filename;
 	}
 }

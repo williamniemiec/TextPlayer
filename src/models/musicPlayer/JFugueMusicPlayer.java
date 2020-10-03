@@ -12,13 +12,11 @@ import core.View;
  * @version		1.0.0
  * @since		1.0.0
  */
-public class JFugueMusicPlayer implements MusicPlayer
+public class JFugueMusicPlayer extends MusicPlayer
 {
 	//-----------------------------------------------------------------------
 	//		Attributes
 	//-----------------------------------------------------------------------
-	private List<View> views;
-
 	/**
 	 * Text that the player will read and play.
 	 */
@@ -37,44 +35,12 @@ public class JFugueMusicPlayer implements MusicPlayer
 	{
 		this.text = text;
 		views = new ArrayList<>();
-		
 	}
 	
 	
 	//-----------------------------------------------------------------------
 	//		Methods
 	//-----------------------------------------------------------------------
-	/**
-	 * {@inheritDoc}
-	 * @see			MusicPlayer#attach(View)
-	 */
-	@Override
-	public void attach(View view) 
-	{
-		views.add(view);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see			MusicPlayer#detach(View)
-	 */
-	@Override
-	public void detach(View view) 
-	{
-		views.remove(view);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @see			MusicPlayer#notifyViews()
-	 */
-	@Override
-	public void notifyViews() 
-	{
-		for (View view : views) {
-			view.update(this, null);
-		}
-	}
 	
 	//---------------------------------------------------------------------
 	
