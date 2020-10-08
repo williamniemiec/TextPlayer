@@ -1,5 +1,7 @@
 package models.musicPlayer;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import core.Model;
@@ -75,6 +77,13 @@ public abstract class MusicPlayer implements Model
 	 * @return		Itself to allow chained calls
 	 */
 	public abstract MusicPlayer stop();
+	
+	/**
+	 * Saves the generated music in a MIDI file.
+	 * 
+	 * @return		Itself to allow chained calls
+	 */
+	public abstract MusicPlayer saveMidi(File output) throws IOException;
 	
 	/**
 	 * Changes current music, loading a new file.

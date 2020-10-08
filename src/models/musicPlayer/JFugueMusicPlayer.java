@@ -1,5 +1,7 @@
 package models.musicPlayer;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +20,7 @@ public class JFugueMusicPlayer extends MusicPlayer
 	/**
 	 * Text that the player will read and play.
 	 */
-	private List<String> text;
+	private List<String> processedText;
 	
 	
 	//-----------------------------------------------------------------------
@@ -27,11 +29,11 @@ public class JFugueMusicPlayer extends MusicPlayer
 	/**
 	 * Music player that will play with JFugue.
 	 * 
-	 * @param		text Text with JFugue commands.
+	 * @param		processedText Text with JFugue commands.
 	 */
-	public JFugueMusicPlayer(List<String> text)
+	public JFugueMusicPlayer(List<String> processedText)
 	{
-		this.text = text;
+		this.processedText = processedText;
 		views = new ArrayList<>();
 	}
 	
@@ -63,9 +65,9 @@ public class JFugueMusicPlayer extends MusicPlayer
 	@Override
 	public MusicPlayer pause()
 	{
-		notifyViews();
-		
 		//...
+		
+		notifyViews();
 		
 		return this;
 	}
@@ -77,9 +79,23 @@ public class JFugueMusicPlayer extends MusicPlayer
 	@Override
 	public MusicPlayer stop()
 	{
+		//...
+		
 		notifyViews();
 		
+		return this;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see			MusicPlayer#saveMidi(java.io.File)
+	 */
+	@Override
+	public MusicPlayer saveMidi(File output) throws IOException
+	{
 		//...
+		
+		notifyViews();
 		
 		return this;
 	}
