@@ -6,11 +6,12 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import core.Controller;
-import models.input.dialog.InputContent;
-import models.input.dialog.InputDialogType;
-import models.input.dialog.InputManager;
+import models.io.IOType;
+import models.io.InputContent;
+import models.io.dialog.IOManager;
 import models.parse.JFugueMusicParser;
 import models.parse.Parser;
 import views.HomeView;
@@ -40,15 +41,22 @@ public class HomeController extends Controller
 	@Override
 	public void run()
 	{
-		// Initializes HomeView
-		homeView = new HomeView(this, mainFrame, RB);
-		addView("HomeView", homeView);
-		
-		KeyboardController keyboardController = new KeyboardController();
-		keyboardController.run();
-		
-		// Sets program windows as visible
-		mainFrame.setVisible(true);		
+		try {
+			// Initializes HomeView
+			homeView = new HomeView(this, mainFrame, RB);
+			addView("HomeView", homeView);
+			
+			KeyboardController keyboardController = new KeyboardController();
+			keyboardController.run();
+			
+			// Sets program windows as visible
+			mainFrame.setVisible(true);		
+		} 
+		catch (IOException e) {
+			mainFrame.setVisible(true);
+			onException(e);
+			System.exit(-1);
+		}
 	}
 
 	/**
@@ -96,15 +104,32 @@ public class HomeController extends Controller
 		textPlayerController.run();
 	}
 	
-	public InputContent getContent(InputDialogType inputDialogType) throws IOException
+	public InputContent getContent(IOType inputDialogType)
 	{
-		InputContent content;
+		InputContent content = null;
 		
 		
 		KeyboardController.disable();
-		content = InputManager.getContent(mainFrame, inputDialogType);
+		
+		try {
+			content = IOManager.getContent(mainFrame, inputDialogType);
+		}
+		catch (IOException e) {
+			onException(e);
+		}
+		
 		KeyboardController.enable();
 		
 		return content;
+	}
+	
+	private void onException(Exception e)
+	{
+		JOptionPane.showMessageDialog(
+				mainFrame, 
+				e.getMessage(), 
+				"Error", 
+				JOptionPane.ERROR_MESSAGE
+		);
 	}
 }

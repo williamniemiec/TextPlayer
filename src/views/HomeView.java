@@ -30,8 +30,8 @@ import controllers.HomeController;
 import core.Controller;
 import core.Model;
 import core.View;
-import models.input.dialog.InputContent;
-import models.input.dialog.InputDialogType;
+import models.io.IOType;
+import models.io.InputContent;
 
 
 /**
@@ -68,8 +68,10 @@ public class HomeView extends JPanel implements View
 	 * 
 	 * @param		homeController Controller responsible for the view
 	 * @param		frame Main frame of the application
+	 * 
+	 * @throws		IOException If an error occurs during reading home image 
 	 */
-	public HomeView(HomeController homeController, JFrame frame, ResourceBundle RB)
+	public HomeView(HomeController homeController, JFrame frame, ResourceBundle RB) throws IOException
 	{
 		this.homeController = homeController;
 		this.frame = frame;
@@ -140,7 +142,7 @@ public class HomeView extends JPanel implements View
 		mb_file_textEntry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
 		mb_file_textEntry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				open_view_player(InputDialogType.TEXT);
+				open_view_player(IOType.TEXT);
 			}
 		});
 		mb_file.add(mb_file_textEntry);
@@ -151,7 +153,7 @@ public class HomeView extends JPanel implements View
 		mb_file_openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
 		mb_file_openFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				open_view_player(InputDialogType.FILE);
+				open_view_player(IOType.FILE_LOAD);
 			}
 		});
 		mb_file.add(mb_file_openFile);
@@ -240,8 +242,10 @@ public class HomeView extends JPanel implements View
 	
 	/**
 	 * Creates main screen.
+	 * 
+	 * @throws		IOException If an error occurs during reading home image 
 	 */
-	private void make_home()
+	private void make_home() throws IOException
 	{
 		setLayout(new BorderLayout(0, 0));
 
@@ -251,23 +255,30 @@ public class HomeView extends JPanel implements View
 	
 	/**
 	 * Sets main screen background.
+	 * 
+	 * @throws		IOException If an error occurs during reading home image   
 	 */
-	private void make_background()
+	private void make_background() throws IOException
 	{
+		File homeImageFile = new File(System.getProperty("user.dir")+"/src/assets/img/home/logo.jpg");
+		ImageIcon homeImage;
+		
 		try {
-			home_background_file = ImageIO.read(new File(System.getProperty("user.dir")+"/src/assets/img/home/logo.jpg"));
-			home_background = new JLabel(new ImageIcon(home_background_file.getScaledInstance(MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT, Image.SCALE_FAST)));
-			add(home_background);
-		} 
-		catch (IOException e) { 
-			JOptionPane.showMessageDialog(
-					frame, 
-					e.getClass().getCanonicalName() + ": " + e.getMessage(), 
-					"Error", 
-					JOptionPane.ERROR_MESSAGE
-			);
-			e.printStackTrace();
+			home_background_file = ImageIO.read(homeImageFile);
 		}
+		catch (IOException e) {
+			throw new IOException("Error while reading home image");
+		}
+		
+		homeImage = new ImageIcon(
+				home_background_file.getScaledInstance(
+						MAIN_FRAME_WIDTH, 
+						MAIN_FRAME_HEIGHT, 
+						Image.SCALE_FAST
+		));
+		
+		home_background = new JLabel(homeImage);
+		add(home_background);
 	}
 	
 	/**
@@ -314,7 +325,7 @@ public class HomeView extends JPanel implements View
 		btn_textEntry.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				open_view_player(InputDialogType.TEXT);
+				open_view_player(IOType.TEXT);
 			}
 		});
 	}
@@ -333,7 +344,7 @@ public class HomeView extends JPanel implements View
 		btn_openFile.setFocusPainted(false);
 		btn_openFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				open_view_player(InputDialogType.FILE);
+				open_view_player(IOType.FILE_LOAD);
 			}
 		});
 	}
@@ -363,23 +374,12 @@ public class HomeView extends JPanel implements View
 		});
 	}
 	
-	private void open_view_player(InputDialogType inputDialogType)
+	private void open_view_player(IOType inputDialogType)
 	{
-		try {
-			InputContent inputContent = homeController.getContent(inputDialogType);
-	
-			
-			if (!(inputContent.getName() == null || inputContent.getContent() == null))
-				homeController.openPlayer(inputContent);
-		}
-		catch (IOException e) {
-			JOptionPane.showMessageDialog(
-					frame, 
-					e.getClass().getCanonicalName() + ": " + e.getMessage(), 
-					"Error", 
-					JOptionPane.ERROR_MESSAGE
-			);
-			e.printStackTrace();
-		}
+		InputContent inputContent = homeController.getContent(inputDialogType);
+
+		
+		if (!(inputContent.getName() == null || inputContent.getContent() == null))
+			homeController.openPlayer(inputContent);
 	}
 }

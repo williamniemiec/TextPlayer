@@ -1,4 +1,4 @@
-package models.input.dialog;
+package models.io.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Dialog.ModalityType;

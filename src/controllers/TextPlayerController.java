@@ -1,15 +1,17 @@
 package controllers;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import core.Controller;
-import models.input.dialog.InputContent;
-import models.input.dialog.InputDialogType;
-import models.input.dialog.InputManager;
+import models.io.IOType;
+import models.io.InputContent;
+import models.io.dialog.IOManager;
 import models.musicPlayer.JFugueMusicPlayer;
 import models.musicPlayer.MusicPlayer;
 import models.parse.JFugueMusicParser;
@@ -62,19 +64,25 @@ public class TextPlayerController extends Controller
 	@Override
 	public void run() 
 	{
-		// Initializes TextPlayerView
-		textPlayerView = new TextPlayerView(this, mainFrame, RB);
-		
-		// Updates top bar buttons
-		updateControlsMenu();
-		
-		// Creates music player
-		musicPlayer = new JFugueMusicPlayer(musicalText);
-		musicPlayer.attach(textPlayerView);
-		
-		// Displays TextPlayerView
-		addView("TextPlayerView", textPlayerView);
-		loadView("TextPlayerView");
+		try {
+			// Initializes TextPlayerView
+			textPlayerView = new TextPlayerView(this, mainFrame, RB);
+			
+			// Updates top bar buttons
+			updateControlsMenu();
+			
+			// Creates music player
+			musicPlayer = new JFugueMusicPlayer(musicalText);
+			musicPlayer.attach(textPlayerView);
+			
+			// Displays TextPlayerView
+			addView("TextPlayerView", textPlayerView);
+			loadView("TextPlayerView");
+		} 
+		catch (IOException e) {
+			onException(e);
+			Controller.loadView("HomeView");
+		}
 	}
 	
 	/**
@@ -124,9 +132,44 @@ public class TextPlayerController extends Controller
 		textPlayerView.update_content();
 	}
 	
-	public InputContent getContent(InputDialogType inputDialogType) throws IOException
+	public InputContent getContent(IOType inputDialogType)
 	{
-		return InputManager.getContent(mainFrame, inputDialogType);
+		InputContent content = null;
+		
+		
+		try {
+			content = IOManager.getContent(mainFrame, inputDialogType);
+		} 
+		catch (IOException e) {
+			onException(e);
+		}
+		
+		return content;
+	}
+	
+	/**
+	 * Exports generated music to a MIDI file.
+	 * 
+	 * @return		True if the file has been successfully saved, or false 
+	 * otherwise
+	 * 
+	 * @throws		IllegalArgumentException If file extension is not MIDI
+	 */
+	public void exportMusicFile()
+	{
+		String extension = "midi";
+		File outputFile = IOManager.getOutput(mainFrame, extension);
+		
+		
+		try {
+			if (!outputFile.getName().endsWith(extension))
+				throw new IllegalArgumentException("File extension must be '.midi'");
+		
+			musicPlayer.saveMidi(outputFile);
+		} 
+		catch (IOException | IllegalArgumentException e) {
+			onException(e);
+		}
 	}
 	
 	/**
@@ -136,6 +179,16 @@ public class TextPlayerController extends Controller
 	{
 		((JMenuItem)getComponent("mb_file_close")).setEnabled(true);
 		((JMenuItem)getComponent("mb_ctrl_playPause")).setEnabled(true);
+	}
+	
+	private void onException(Exception e)
+	{
+		JOptionPane.showMessageDialog(
+				mainFrame, 
+				e.getMessage(), 
+				"Error", 
+				JOptionPane.ERROR_MESSAGE
+		);
 	}
 	
 	

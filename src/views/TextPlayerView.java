@@ -20,7 +20,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -30,8 +29,8 @@ import javax.swing.SwingConstants;
 import controllers.TextPlayerController;
 import core.Model;
 import core.View;
-import models.input.dialog.InputContent;
-import models.input.dialog.InputDialogType;
+import models.io.IOType;
+import models.io.InputContent;
 import models.musicPlayer.MusicPlayer;
 
 
@@ -66,8 +65,10 @@ public class TextPlayerView extends JPanel implements View
 	 * 
 	 * @param		homeController Controller responsible for the view
 	 * @param		frame Main application frame
+	 * 
+	 * @throws		IOException If an error while creating header or controls
 	 */
-	public TextPlayerView(TextPlayerController textPlayerController, JFrame frame, ResourceBundle RB)
+	public TextPlayerView(TextPlayerController textPlayerController, JFrame frame, ResourceBundle RB) throws IOException
 	{
 		this.textPlayerController = textPlayerController;
 		this.frame = frame;
@@ -133,8 +134,10 @@ public class TextPlayerView extends JPanel implements View
 	
 	/**
 	 * Creates header.
+	 * 
+	 * @throws		IOException If an error occurs during reading header image  
 	 */
-	private void make_header()
+	private void make_header() throws IOException
 	{
 		JPanel pnl_top = new JPanel();
 		FlowLayout flowLayout;
@@ -151,21 +154,16 @@ public class TextPlayerView extends JPanel implements View
 		// Places the banner in the header
 		try {
 			myPicture = ImageIO.read(new File(System.getProperty("user.dir")+"/src/assets/img/player/header_logo.jpg"));
-			lbl_musicPlayer = new JLabel();
-			pnl_top.add(lbl_musicPlayer, BorderLayout.NORTH);
-			
-			img = new ImageIcon(myPicture.getScaledInstance(frame.getWidth(), frame.getHeight()/3, Image.SCALE_SMOOTH));
-			lbl_musicPlayer.setIcon(img);
-		} 
-		catch (IOException e) {
-			JOptionPane.showMessageDialog(
-					frame, 
-					e.getClass().getCanonicalName() + ": " + e.getMessage(), 
-					"Error", 
-					JOptionPane.ERROR_MESSAGE
-			);
-			e.printStackTrace();
 		}
+		catch (IOException e) {
+			throw new IOException("Error while reading header image");
+		}
+		
+		lbl_musicPlayer = new JLabel();
+		pnl_top.add(lbl_musicPlayer, BorderLayout.NORTH);
+		
+		img = new ImageIcon(myPicture.getScaledInstance(frame.getWidth(), frame.getHeight()/3, Image.SCALE_SMOOTH));
+		lbl_musicPlayer.setIcon(img);
 		
 		// Adds banner to the view
 		add(pnl_top, BorderLayout.NORTH);
@@ -173,8 +171,10 @@ public class TextPlayerView extends JPanel implements View
 	
 	/**
 	 * Creates player control buttons.
+	 * 
+	 * @throws		IOException If an error occurs during reading control icon   
 	 */
-	private void make_controls()
+	private void make_controls() throws IOException
 	{
 		JPanel pnl_down = new JPanel();
 		
@@ -217,8 +217,11 @@ public class TextPlayerView extends JPanel implements View
 	 * @param		panel Panel to which the button will be placed
 	 * 
 	 * @return		Created button
+	 * 
+	 * @throws		IOException If an error occurs during reading play control
+	 * icon
 	 */
-	private JButton make_btn_play(JPanel panel)
+	private JButton make_btn_play(JPanel panel) throws IOException
 	{
 		return make_btn_ctrl(
 			panel, 
@@ -232,8 +235,11 @@ public class TextPlayerView extends JPanel implements View
 	 * @param		panel Panel to which the button will be placed
 	 * 
 	 * @return		Created button
+	 * 
+	 * @throws		IOException If an error occurs during reading pause control
+	 * icon
 	 */
-	private JButton make_btn_pause(JPanel panel)
+	private JButton make_btn_pause(JPanel panel) throws IOException
 	{
 		return make_btn_ctrl(
 			panel, 
@@ -247,8 +253,11 @@ public class TextPlayerView extends JPanel implements View
 	 * @param		panel Panel to which the button will be placed
 	 * 
 	 * @return		Created button
+	 * 
+	 * @throws		IOException If an error occurs during reading stop control
+	 * icon
 	 */
-	private JButton make_btn_stop(JPanel panel)
+	private JButton make_btn_stop(JPanel panel) throws IOException
 	{
 		return make_btn_ctrl(
 			panel, 
@@ -263,8 +272,10 @@ public class TextPlayerView extends JPanel implements View
 	 * @param		filepath Path of the file containing the button image
 	 * 
 	 * @return		Created button
+	 * 
+	 * @throws		IOException If an error occurs during reading control icon   
 	 */
-	private JButton make_btn_ctrl(JPanel panel, String filepath)
+	private JButton make_btn_ctrl(JPanel panel, String filepath) throws IOException
 	{
 		JButton btn_ctrl = new JButton();
 		BufferedImage myPicture;
@@ -275,23 +286,18 @@ public class TextPlayerView extends JPanel implements View
 		
 		try {
 			myPicture = ImageIO.read(new File(filepath));
-			img = new ImageIcon(myPicture.getScaledInstance(50, 50, Image.SCALE_SMOOTH));
-			btn_ctrl.setEnabled(false);
-			btn_ctrl.setIcon(img);
-			btn_ctrl.setContentAreaFilled(false);
-			btn_ctrl.setFocusPainted(true);
-			btn_ctrl.setBorderPainted(false);
-			btn_ctrl.setOpaque(false);
-		} 
-		catch (IOException e) {
-			JOptionPane.showMessageDialog(
-					frame, 
-					e.getClass().getCanonicalName() + ": " + e.getMessage(), 
-					"Error", 
-					JOptionPane.ERROR_MESSAGE
-			);
-			e.printStackTrace();
 		}
+		catch (IOException e) {
+			throw new IOException("Error while reading control icon");
+		}
+		
+		img = new ImageIcon(myPicture.getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+		btn_ctrl.setEnabled(false);
+		btn_ctrl.setIcon(img);
+		btn_ctrl.setContentAreaFilled(false);
+		btn_ctrl.setFocusPainted(true);
+		btn_ctrl.setBorderPainted(false);
+		btn_ctrl.setOpaque(false);
 		
 		return btn_ctrl;
 	}
@@ -416,7 +422,7 @@ public class TextPlayerView extends JPanel implements View
 		btn_openFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				change_content(InputDialogType.FILE);
+				change_content(IOType.FILE_LOAD);
 			}
 		});
 	}
@@ -435,28 +441,17 @@ public class TextPlayerView extends JPanel implements View
 		btn_textEntry.setFocusPainted(false);
 		btn_textEntry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				change_content(InputDialogType.TEXT);
+				change_content(IOType.TEXT);
 			}
 		});
 	}
 	
-	private void change_content(InputDialogType inputDialogType)
+	private void change_content(IOType inputDialogType)
 	{
-		try {
-			InputContent inputContent = textPlayerController.getContent(inputDialogType);
-			
-	
-			if (!(inputContent.getName() == null || inputContent.getContent() == null))
-				textPlayerController.changeText(inputContent);
-		}
-		catch (IOException e) {
-			JOptionPane.showMessageDialog(
-					frame, 
-					e.getClass().getCanonicalName() + ": " + e.getMessage(), 
-					"Error", 
-					JOptionPane.ERROR_MESSAGE
-			);
-			e.printStackTrace();
-		}
+		InputContent inputContent = textPlayerController.getContent(inputDialogType);
+		
+
+		if (!(inputContent.getName() == null || inputContent.getContent() == null))
+			textPlayerController.changeText(inputContent);
 	}
 }
