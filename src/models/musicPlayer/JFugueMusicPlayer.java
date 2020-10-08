@@ -30,9 +30,14 @@ public class JFugueMusicPlayer extends MusicPlayer
 	 * Music player that will play with JFugue.
 	 * 
 	 * @param		processedText Text with JFugue commands.
+	 * 
+	 * @throws		IllegalArgumentException If processed text is null 
 	 */
 	public JFugueMusicPlayer(List<String> processedText)
 	{
+		if (processedText == null)
+			throw new IllegalArgumentException("Processed text cannot be null");
+			
 		this.processedText = processedText;
 		views = new ArrayList<>();
 	}
@@ -89,10 +94,15 @@ public class JFugueMusicPlayer extends MusicPlayer
 	/**
 	 * {@inheritDoc}
 	 * @see			MusicPlayer#saveMidi(java.io.File)
+	 * 
+	 * @throws		IllegalArgumentException If output file is null 
 	 */
 	@Override
 	public MusicPlayer saveMidi(File output) throws IOException
 	{
+		if (output == null)
+			throw new IllegalArgumentException("Output file cannot be null");
+		
 		//...
 		
 		notifyViews();
