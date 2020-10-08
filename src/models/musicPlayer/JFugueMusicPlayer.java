@@ -95,13 +95,17 @@ public class JFugueMusicPlayer extends MusicPlayer
 	 * {@inheritDoc}
 	 * @see			MusicPlayer#saveMidi(java.io.File)
 	 * 
-	 * @throws		IllegalArgumentException If output file is null 
+	 * @throws		IllegalArgumentException If output file is null or if 
+	 * output file does not have MIDI extension
 	 */
 	@Override
-	public MusicPlayer saveMidi(File output) throws IOException
+	public MusicPlayer saveMidi(File outputFile) throws IOException
 	{
-		if (output == null)
+		if (outputFile == null)
 			throw new IllegalArgumentException("Output file cannot be null");
+		
+		if (!outputFile.getName().endsWith("midi"))
+			throw new IllegalArgumentException("Output file extension must be '.midi'");
 		
 		//...
 		

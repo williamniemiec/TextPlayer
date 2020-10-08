@@ -81,9 +81,11 @@ public abstract class MusicPlayer implements Model
 	/**
 	 * Saves the generated music in a MIDI file.
 	 * 
+	 * @param		outputFile Output file with MIDI extension
+	 * 
 	 * @return		Itself to allow chained calls
 	 */
-	public abstract MusicPlayer saveMidi(File output) throws IOException;
+	public abstract MusicPlayer saveMidi(File outputFile) throws IOException;
 	
 	/**
 	 * Changes current music, loading a new file.
