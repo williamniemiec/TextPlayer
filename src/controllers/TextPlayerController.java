@@ -161,6 +161,9 @@ public class TextPlayerController extends Controller
 		File outputFile = IOManager.getOutput(mainFrame, extension);
 		
 		
+		if (outputFile == null)
+			return;
+		
 		try {
 			if (!outputFile.getName().endsWith(extension))
 				throw new IllegalArgumentException("File extension must be '.midi'");

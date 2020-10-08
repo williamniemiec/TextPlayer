@@ -307,7 +307,7 @@ public class TextPlayerView extends JPanel implements View
 	 */
 	private void make_centralPanel()
 	{
-		JPanel pnl_center, pnl_center_center, pnl_input;
+		JPanel pnl_center, pnl_center_center, pnl_options;
 		
 		
 		// Panel responsible for the central section of the view
@@ -321,15 +321,40 @@ public class TextPlayerView extends JPanel implements View
 		pnl_center_center.setLayout(new BorderLayout(0, 0));
 		pnl_center.add(pnl_center_center, BorderLayout.CENTER);
 		
-		pnl_input = new JPanel();
-		pnl_input.setLayout(new GridLayout(0, 2, 0, 0));
-		pnl_center_center.add(pnl_input, BorderLayout.NORTH);
+		pnl_options = make_pnl_options();
+		pnl_center_center.add(pnl_options, BorderLayout.NORTH);
 		
 		make_fileInfo(pnl_center, BorderLayout.NORTH);
-		make_btn_textEntry(pnl_input);
-		make_btn_changeFile(pnl_input);
 		make_textArea(pnl_center_center, BorderLayout.CENTER);
 		make_progressBar(pnl_center, BorderLayout.SOUTH);
+	}
+	
+	/**
+	 * Creates options panel.
+	 * 
+	 * @return		Options panel
+	 */
+	private JPanel make_pnl_options()
+	{
+		JPanel pnl_options, pnl_options_top, pnl_options_bottom;
+		
+		
+		pnl_options_top = new JPanel();
+		pnl_options_top.setLayout(new GridLayout(0, 2, 0, 0));
+		
+		pnl_options_bottom = new JPanel();
+		pnl_options_bottom.setLayout(new GridLayout(0, 1, 0, 0));
+		
+		pnl_options = new JPanel();
+		pnl_options.setLayout(new BorderLayout(0, 0));
+		pnl_options.add(pnl_options_top, BorderLayout.NORTH);
+		pnl_options.add(pnl_options_bottom, BorderLayout.SOUTH);
+		
+		make_btn_textEntry(pnl_options_top);
+		make_btn_changeFile(pnl_options_top);
+		make_btn_exportFileMusic(pnl_options_bottom);
+		
+		return pnl_options;
 	}
 	
 	/**
@@ -423,6 +448,26 @@ public class TextPlayerView extends JPanel implements View
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				change_content(IOType.FILE_LOAD);
+			}
+		});
+	}
+	
+	/**
+	 * Creates the section that will contain export file button.
+	 * 
+	 * @param		panel Panel that the button will be added
+	 */
+	private void make_btn_exportFileMusic(JPanel panel)
+	{
+		JButton btn_openFile = new JButton(RB.getString("EXPORT_TO_MIDI"));
+		
+
+		panel.add(btn_openFile);
+		
+		btn_openFile.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				textPlayerController.exportMusicFile();
 			}
 		});
 	}
