@@ -70,6 +70,15 @@ public class TextPlayerView extends JPanel implements View
 	 */
 	public TextPlayerView(TextPlayerController textPlayerController, JFrame frame, ResourceBundle RB) throws IOException
 	{
+		if (textPlayerController == null)
+			throw new IllegalArgumentException("Controller cannot be null");
+		
+		if (frame == null)
+			throw new IllegalArgumentException("Frame cannot be null");
+		
+		if (RB == null)
+			throw new IllegalArgumentException("Resource bundle cannot be null");
+		
 		this.textPlayerController = textPlayerController;
 		this.frame = frame;
 		this.RB = RB;
@@ -119,6 +128,7 @@ public class TextPlayerView extends JPanel implements View
 		
 		
 		textArea.setText(content);
+		textArea.setCaretPosition(0);
 		lbl_filename_name.setText(textPlayerController.getFilename());
 	}
 	
@@ -223,6 +233,9 @@ public class TextPlayerView extends JPanel implements View
 	 */
 	private JButton make_btn_play(JPanel panel) throws IOException
 	{
+		if (panel == null)
+			throw new IllegalArgumentException("Panel cannot be null");
+		
 		return make_btn_ctrl(
 			panel, 
 			System.getProperty("user.dir")+"/src/assets/img/player/play.png"
@@ -241,6 +254,9 @@ public class TextPlayerView extends JPanel implements View
 	 */
 	private JButton make_btn_pause(JPanel panel) throws IOException
 	{
+		if (panel == null)
+			throw new IllegalArgumentException("Panel cannot be null");
+		
 		return make_btn_ctrl(
 			panel, 
 			System.getProperty("user.dir")+"/src/assets/img/player/pause.png"
@@ -259,6 +275,9 @@ public class TextPlayerView extends JPanel implements View
 	 */
 	private JButton make_btn_stop(JPanel panel) throws IOException
 	{
+		if (panel == null)
+			throw new IllegalArgumentException("Panel cannot be null");
+		
 		return make_btn_ctrl(
 			panel, 
 			System.getProperty("user.dir")+"/src/assets/img/player/stop.png"
@@ -277,6 +296,12 @@ public class TextPlayerView extends JPanel implements View
 	 */
 	private JButton make_btn_ctrl(JPanel panel, String filepath) throws IOException
 	{
+		if (panel == null)
+			throw new IllegalArgumentException("Panel cannot be null");
+		
+		if ((filepath == null) || filepath.isBlank())
+			throw new IllegalArgumentException("Filepath cannot be empty");
+		
 		JButton btn_ctrl = new JButton();
 		BufferedImage myPicture;
 		ImageIcon img;
@@ -366,6 +391,12 @@ public class TextPlayerView extends JPanel implements View
 	 */
 	private void make_fileInfo(JPanel panel, Object constraints)
 	{
+		if (panel == null)
+			throw new IllegalArgumentException("Panel cannot be null");
+		
+		if (constraints == null)
+			throw new IllegalArgumentException("Constraints cannot be null");
+		
 		JPanel pnl_filename = new JPanel();
 		JLabel lbl_filename_title;
 		
@@ -394,6 +425,12 @@ public class TextPlayerView extends JPanel implements View
 	 */
 	private void make_textArea(JPanel panel, Object constraints)
 	{
+		if (panel == null)
+			throw new IllegalArgumentException("Panel cannot be null");
+		
+		if (constraints == null)
+			throw new IllegalArgumentException("Constraints cannot be null");
+		
 		JScrollPane scrollPane = new JScrollPane();
 		String text = textPlayerController.getText()
 				.stream()
@@ -408,6 +445,7 @@ public class TextPlayerView extends JPanel implements View
 		textArea.setText(text);
 		textArea.setEditable(false);
 		textArea.setMargin(new Insets(10, 10, 10, 10));
+		textArea.setCaretPosition(0);
 		
 		// Sets scroll bar on text area
 		scrollPane.setViewportView(textArea);
@@ -424,6 +462,12 @@ public class TextPlayerView extends JPanel implements View
 	 */
 	private void make_progressBar(JPanel panel, Object constraints)
 	{
+		if (panel == null)
+			throw new IllegalArgumentException("Panel cannot be null");
+		
+		if (constraints == null)
+			throw new IllegalArgumentException("Constraints cannot be null");
+		
 		pb_music = new JProgressBar();
 		pb_music.setStringPainted(true);
 		
@@ -439,6 +483,9 @@ public class TextPlayerView extends JPanel implements View
 	 */
 	private void make_btn_changeFile(JPanel panel)
 	{
+		if (panel == null)
+			throw new IllegalArgumentException("Panel cannot be null");
+		
 		JButton btn_openFile = new JButton(RB.getString("FILE_OPEN"));
 		
 
@@ -459,6 +506,9 @@ public class TextPlayerView extends JPanel implements View
 	 */
 	private void make_btn_exportFileMusic(JPanel panel)
 	{
+		if (panel == null)
+			throw new IllegalArgumentException("Panel cannot be null");
+		
 		JButton btn_openFile = new JButton(RB.getString("EXPORT_TO_MIDI"));
 		
 
@@ -479,6 +529,9 @@ public class TextPlayerView extends JPanel implements View
 	 */
 	private void make_btn_textEntry(JPanel panel)
 	{
+		if (panel == null)
+			throw new IllegalArgumentException("Panel cannot be null");
+		
 		JButton btn_textEntry = new JButton(RB.getString("TEXT_ENTRY"));
 		
 		
@@ -493,6 +546,9 @@ public class TextPlayerView extends JPanel implements View
 	
 	private void change_content(IOType inputDialogType)
 	{
+		if (inputDialogType == null)
+			throw new IllegalArgumentException("Input dialog type cannot be null");
+		
 		InputContent inputContent = textPlayerController.getContent(inputDialogType);
 		
 

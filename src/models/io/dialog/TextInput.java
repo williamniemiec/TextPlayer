@@ -37,6 +37,18 @@ public class TextInput
 	//-------------------------------------------------------------------------
 	public TextInput(int width, int height, int x, int y)
 	{
+		if (width < 0)
+			throw new IllegalArgumentException("Width must be greater than zero");
+		
+		if (height < 0)
+			throw new IllegalArgumentException("Height must be greater than zero");
+		
+		if (x < 0)
+			throw new IllegalArgumentException("X-position must be greater than zero");
+		
+		if (y < 0)
+			throw new IllegalArgumentException("Y-position must be greater than zero");
+		
 		frameWidth = width;
 		frameHeight = height;
 		frameX = x;
@@ -57,6 +69,18 @@ public class TextInput
 	//-------------------------------------------------------------------------
 	public List<String> getInput(JFrame window, String windowTitle, String clearButtonTitle, String actionButtonTitle) 
 	{
+		if (window == null)
+			throw new IllegalArgumentException("Window cannot be null");
+		
+		if ((windowTitle == null) || windowTitle.isBlank())
+			throw new IllegalArgumentException("Window title cannot be empty");
+		
+		if ((clearButtonTitle == null) || clearButtonTitle.isBlank())
+			throw new IllegalArgumentException("Clear button title cannot be empty");
+		
+		if ((actionButtonTitle == null) || actionButtonTitle.isBlank())
+			throw new IllegalArgumentException("Action button title cannot be empty");
+		
 		JPanel pnl_control = createControlPanel(clearButtonTitle, actionButtonTitle);
 		
 		
@@ -76,6 +100,15 @@ public class TextInput
 	
 	private void createDialog(JFrame parent, String title, JPanel controlPanel)
 	{
+		if (parent == null)
+			throw new IllegalArgumentException("Parent cannot be null");
+		
+		if ((title == null) || title.isBlank())
+			throw new IllegalArgumentException("Title cannot be empty");
+		
+		if (controlPanel == null)
+			throw new IllegalArgumentException("Panel cannot be null");
+		
 		JScrollPane scrl_txtContent = new JScrollPane();
 		
 
@@ -101,6 +134,12 @@ public class TextInput
 	
 	private JPanel createControlPanel(String clearButtonTitle, String actionButtonTitle)
 	{
+		if ((clearButtonTitle == null) || clearButtonTitle.isBlank())
+			throw new IllegalArgumentException("Clear button title cannot be empty");
+		
+		if ((actionButtonTitle == null) || actionButtonTitle.isBlank())
+			throw new IllegalArgumentException("Action button title cannot be empty");
+		
 		JButton btn_action = new JButton(actionButtonTitle);
 		JButton btn_clear = new JButton(clearButtonTitle);
 		JPanel pnl_control = new JPanel();

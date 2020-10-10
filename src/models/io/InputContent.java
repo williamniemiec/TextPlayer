@@ -16,7 +16,10 @@ public class InputContent
 	//-------------------------------------------------------------------------
 	public InputContent(String name, List<String> content)
 	{
-		this.name = name;
+		if (content == null)
+			throw new IllegalArgumentException("Content cannot be null");
+		
+		this.name = (name == null) ? "" : name;
 		this.content = content;
 	}
 	

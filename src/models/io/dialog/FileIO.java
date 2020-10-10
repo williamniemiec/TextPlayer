@@ -22,6 +22,12 @@ public class FileIO
 	//-------------------------------------------------------------------------
 	public FileIO(String directory, String fileExtension)
 	{
+		if ((directory == null) || directory.isBlank())
+			throw new IllegalArgumentException("Directory cannot be empty");
+		
+		if ((fileExtension == null) || fileExtension.isBlank())
+			throw new IllegalArgumentException("File extension cannot be empty");
+		
 		this.directory = directory;
 		this.fileExtension = fileExtension;
 	}
@@ -39,6 +45,12 @@ public class FileIO
 	 */
 	public File getInput(JFrame window, String windowTitle)
 	{
+		if (window == null)
+			throw new IllegalArgumentException("Window cannot be null");
+		
+		if ((windowTitle == null) || windowTitle.isBlank())
+			throw new IllegalArgumentException("Window title cannot be empty");
+		
 		return chooseFile(window, windowTitle, IOType.FILE_LOAD);
 	}
 	
@@ -47,11 +59,26 @@ public class FileIO
 	 */
 	public File getOutput(JFrame window, String windowTitle)
 	{
+		if (window == null)
+			throw new IllegalArgumentException("Window cannot be null");
+		
+		if ((windowTitle == null) || windowTitle.isBlank())
+			throw new IllegalArgumentException("Window title cannot be empty");
+		
 		return chooseFile(window, windowTitle, IOType.FILE_STORE);
 	}
 	
 	private File chooseFile(JFrame window, String windowTitle, IOType ioType)
 	{
+		if (window == null)
+			throw new IllegalArgumentException("Window cannot be null");
+		
+		if ((windowTitle == null) || windowTitle.isBlank())
+			throw new IllegalArgumentException("Window title cannot be empty");
+		
+		if (ioType == null)
+			throw new IllegalArgumentException("ioType cannot be null");
+		
 		FileDialog fd;
 		File chosenFile = null;
 		
@@ -71,6 +98,9 @@ public class FileIO
 	@SuppressWarnings("incomplete-switch")
 	private int getFileDialogType(IOType ioType)
 	{
+		if (ioType == null)
+			throw new IllegalArgumentException("ioType cannot be null");
+		
 		int fileDialogType = -1;
 		
 		

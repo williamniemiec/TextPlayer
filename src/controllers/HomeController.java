@@ -92,6 +92,9 @@ public class HomeController extends Controller
 	
 	public void openPlayer(InputContent inputContent)
 	{
+		if (inputContent == null)
+			throw new IllegalArgumentException("Content cannot be null");
+		
 		Parser parser = new Parser(new JFugueMusicParser());
 		List<String> parsedContent = parser.parse(inputContent.getContent());
 		
@@ -106,6 +109,9 @@ public class HomeController extends Controller
 	
 	public InputContent getContent(IOType inputDialogType)
 	{
+		if (inputDialogType == null)
+			throw new IllegalArgumentException("Input dialog type cannot be null");
+		
 		InputContent content = null;
 		
 		
@@ -125,6 +131,9 @@ public class HomeController extends Controller
 	
 	private void onException(Exception e)
 	{
+		if (e == null)
+			throw new IllegalArgumentException("Exception cannot be null");
+		
 		JOptionPane.showMessageDialog(
 				mainFrame, 
 				e.getMessage(), 

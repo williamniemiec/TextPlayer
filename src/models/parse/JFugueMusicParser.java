@@ -173,9 +173,14 @@ public class JFugueMusicParser implements ParseType
 	 * @param		line Line to be processed
 	 * 
 	 * @return		Processed line
+	 * 
+	 * @throws		IllegalArgumentException If line is null
 	 */
 	private String parseOPlusMinus(String line)
 	{
+		if (line == null)
+			throw new IllegalArgumentException("Line cannot be null");
+		
 		Pattern p = Pattern.compile("[A-Ga-g]((O|o)\\+|(O|o)\\-)+");
 		Matcher m = p.matcher(line);
 		Pattern p2;
@@ -222,9 +227,14 @@ public class JFugueMusicParser implements ParseType
 	 * @param		line Line to be processed
 	 * 
 	 * @return		Processed line
+	 * 
+	 * @throws		IllegalArgumentException If line is null
 	 */
 	private String parseBPlusMinus(String line)
 	{
+		if (line == null)
+			throw new IllegalArgumentException("Line cannot be null");
+		
 		// Tem que ser em sequencia
 		Pattern p = Pattern.compile("((B|b)\\+|(B|b)\\-)");
 		Matcher m = p.matcher(line);
@@ -251,9 +261,14 @@ public class JFugueMusicParser implements ParseType
 	 * @param		line Line to be processed
 	 * 
 	 * @return		Processed line
+	 * 
+	 * @throws		IllegalArgumentException If line is null
 	 */
 	private String parseDotInterrogationMark(String line)
 	{
+		if (line == null)
+			throw new IllegalArgumentException("Line cannot be null");
+		
 		Pattern p = Pattern.compile("\\.|\\?");
 		Matcher m = p.matcher(line);
 		
@@ -271,9 +286,14 @@ public class JFugueMusicParser implements ParseType
 	 * @param		str String that will have its accents removed
 	 * 
 	 * @return		String without accentuation
+	 * 
+	 * @throws		IllegalArgumentException If str is null
 	 */
 	private String removeAccentuation(String str)
 	{
+		if (str == null)
+			throw new IllegalArgumentException("String cannot be null");
+		
 		str = str.replaceAll("[√„¿‡¡·¬‚]", "a");
 		str = str.replaceAll("[ Í»Ë…È]", "e");
 		str = str.replaceAll("[ÕÌÃÏŒÓ]", "i");
@@ -294,10 +314,15 @@ public class JFugueMusicParser implements ParseType
 	 * 
 	 * @param		line Line to be processed
 	 * 
-	 * @return		Processed lineLinha processada
+	 * @return		Processed line
+	 * 
+	 * @throws		IllegalArgumentException If line is null
 	 */
 	private String parsePlusMinus(String line)
 	{
+		if (line == null)
+			throw new IllegalArgumentException("Line cannot be null");
+		
 		// Tem que ser em sequencia
 		Pattern p = Pattern.compile("(\\+)|(\\-)");
 		Matcher m = p.matcher(line);
@@ -342,9 +367,14 @@ public class JFugueMusicParser implements ParseType
 	 * @param		line Line to be processed
 	 * 
 	 * @return		Processed line
+	 * 
+	 * @throws		IllegalArgumentException If line is null
 	 */
 	private String parseVogals(String line)
 	{
+		if (line == null)
+			throw new IllegalArgumentException("Line cannot be null");
+		
 		StringBuilder sb = new StringBuilder();
 		char[] lineChar = line.toCharArray();
 		
@@ -390,9 +420,14 @@ public class JFugueMusicParser implements ParseType
 	 * @param		line Line to be processed
 	 * 
 	 * @return		Processed line
+	 * 
+	 * @throws		IllegalArgumentException If line is null
 	 */
 	private String parseSpaces(String line)
 	{
+		if (line == null)
+			throw new IllegalArgumentException("Line cannot be null");
+		
 		return line.replaceAll(" ", putDelay());
 	}
 	
@@ -403,9 +438,14 @@ public class JFugueMusicParser implements ParseType
 	 * @param		line Line to be processed
 	 * 
 	 * @return		Processed line
+	 * 
+	 * @throws		IllegalArgumentException If line is null
 	 */
 	private String spaceTerms(String line)
 	{
+		if (line == null)
+			throw new IllegalArgumentException("Line cannot be null");
+		
 		char[] lineChar = line.toCharArray();
 		StringBuilder sb = new StringBuilder();
 		
@@ -439,9 +479,14 @@ public class JFugueMusicParser implements ParseType
 	 * @param		str String that will be its numbers removed
 	 * 
 	 * @return		String without numbers
+	 * 
+	 * @throws		IllegalArgumentException If line is null
 	 */
 	private String removeNumbers(String str) 
 	{
+		if (line == null)
+			throw new IllegalArgumentException("Line cannot be null");
+		
 		return str.replaceAll("[0-9]", " ");
 	}
 	

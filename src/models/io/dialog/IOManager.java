@@ -26,6 +26,12 @@ public class IOManager
 	//-------------------------------------------------------------------------
 	public static InputContent getContent(JFrame window, IOType ioType) throws IOException
 	{
+		if (window == null)
+			throw new IllegalArgumentException("Window cannot be null");
+		
+		if (ioType == null)
+			throw new IllegalArgumentException("ioType cannot be null");
+		
 		List<String> content = null;
 		String filename = "N/A";
 		
@@ -70,6 +76,12 @@ public class IOManager
 	
 	public static File getOutput(JFrame window, String extension)
 	{
+		if (window == null)
+			throw new IllegalArgumentException("Window cannot be null");
+		
+		if ((extension == null) || extension.isBlank())
+			throw new IllegalArgumentException("Extension cannot be empty");
+		
 		FileIO fi = new FileIO(extension);
 		
 		

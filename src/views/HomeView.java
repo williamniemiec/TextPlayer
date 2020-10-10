@@ -73,6 +73,15 @@ public class HomeView extends JPanel implements View
 	 */
 	public HomeView(HomeController homeController, JFrame frame, ResourceBundle RB) throws IOException
 	{
+		if (homeController == null)
+			throw new IllegalArgumentException("Controller cannot be null");
+		
+		if (frame == null)
+			throw new IllegalArgumentException("Frame cannot be null");
+		
+		if (RB == null)
+			throw new IllegalArgumentException("Resource bundle cannot be null");
+		
 		this.homeController = homeController;
 		this.frame = frame;
 		this.RB = RB;
@@ -289,6 +298,12 @@ public class HomeView extends JPanel implements View
 	 */
 	private void resize_background(int w, int h)
 	{
+		if (w < 0)
+			throw new IllegalArgumentException("Width must be greater than zero");
+		
+		if (h < 0)
+			throw new IllegalArgumentException("Height must be greater than zero");
+		
 		Image homeBackgroundImage = home_background_file.getScaledInstance(w, h, Image.SCALE_FAST);
 		
 		
@@ -317,6 +332,9 @@ public class HomeView extends JPanel implements View
 	 */
 	private void make_btn_textEntry(JPanel panel)
 	{
+		if (panel == null)
+			throw new IllegalArgumentException("Panel cannot be null");
+		
 		JButton btn_textEntry = new JButton(RB.getString("TEXT_ENTRY"));
 		
 		
@@ -337,6 +355,9 @@ public class HomeView extends JPanel implements View
 	 */
 	private void make_btn_openFile(JPanel panel)
 	{
+		if (panel == null)
+			throw new IllegalArgumentException("Panel cannot be null");
+		
 		JButton btn_openFile = new JButton(RB.getString("FILE_OPEN"));
 		
 
@@ -376,6 +397,9 @@ public class HomeView extends JPanel implements View
 	
 	private void open_view_player(IOType inputDialogType)
 	{
+		if (inputDialogType == null)
+			throw new IllegalArgumentException("Input dialog type cannot be null");
+		
 		InputContent inputContent = homeController.getContent(inputDialogType);
 
 		

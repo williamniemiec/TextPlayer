@@ -52,6 +52,15 @@ public class TextPlayerController extends Controller
 	 */
 	public TextPlayerController(List<String> musicalText, List<String> originalText, String filename)
 	{
+		if (musicalText == null)
+			throw new IllegalArgumentException("Musical text cannot be null");
+		
+		if (originalText == null)
+			throw new IllegalArgumentException("Original text cannot be null");
+		
+		if ((filename == null) || filename.isBlank())
+			throw new IllegalArgumentException("Filename cannot be empty");
+		
 		this.musicalText = musicalText;
 		this.originalText = originalText;
 		this.filename = filename;
@@ -116,6 +125,9 @@ public class TextPlayerController extends Controller
 	 */
 	public void changeText(InputContent newContent)
 	{
+		if (newContent == null)
+			throw new IllegalArgumentException("Content cannot be null");
+		
 		List<String> parsedFile;
 		Parser parser = new Parser(new JFugueMusicParser());
 		
@@ -134,6 +146,9 @@ public class TextPlayerController extends Controller
 	
 	public InputContent getContent(IOType inputDialogType)
 	{
+		if (inputDialogType == null)
+			throw new IllegalArgumentException("Input dialog type cannot be null");
+		
 		InputContent content = null;
 		
 		
@@ -186,6 +201,9 @@ public class TextPlayerController extends Controller
 	
 	private void onException(Exception e)
 	{
+		if (e == null)
+			throw new IllegalArgumentException("Exception cannot be null");
+		
 		JOptionPane.showMessageDialog(
 				mainFrame, 
 				e.getMessage(), 
