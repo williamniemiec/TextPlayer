@@ -8,6 +8,12 @@ import javax.swing.JFrame;
 import models.io.IOType;
 
 
+/**
+ * ...
+ * 
+ * @version		1.0.0
+ * @since		1.0.0
+ */
 public class FileIO 
 {
 	//-------------------------------------------------------------------------

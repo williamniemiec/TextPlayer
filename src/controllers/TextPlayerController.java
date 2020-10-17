@@ -2,6 +2,7 @@ package controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -10,7 +11,6 @@ import javax.swing.JOptionPane;
 
 import core.Controller;
 import models.io.IOType;
-import models.io.InputContent;
 import models.io.dialog.IOManager;
 import models.musicPlayer.JFugueMusicPlayer;
 import models.musicPlayer.MusicPlayer;
@@ -58,12 +58,14 @@ public class TextPlayerController extends Controller
 		if (originalText == null)
 			throw new IllegalArgumentException("Original text cannot be null");
 		
-		if ((filename == null) || filename.isBlank())
-			throw new IllegalArgumentException("Filename cannot be empty");
-		
 		this.musicalText = musicalText;
 		this.originalText = originalText;
-		this.filename = filename;
+		this.filename = (filename == null) ? "N/A" : filename;
+	}
+	
+	public TextPlayerController(List<String> musicalText, List<String> originalText)
+	{
+		this(musicalText, originalText, null);
 	}
 	
 	
@@ -121,45 +123,67 @@ public class TextPlayerController extends Controller
 	/**
 	 * Select another text to generate music.
 	 * 
-	 * @param		newContent New text along with its filename
+	 * @param		newText text Text to be converted to music
+	 * @param		filename Filename containing the text, or null if the text
+	 * did not come from a file
+	 * 
+	 * @throws		IllegalArgumentException If newText is null
 	 */
-	public void changeText(InputContent newContent)
+	private void changeText(List<String> newText, String filename)
 	{
-		if (newContent == null)
-			throw new IllegalArgumentException("Content cannot be null");
+		if (newText == null)
+			throw new IllegalArgumentException("New text cannot be null");
 		
 		List<String> parsedFile;
 		Parser parser = new Parser(new JFugueMusicParser());
 		
 		
 		// Process the file
-		parsedFile = parser.parse(newContent.getContent());
+		parsedFile = parser.parse(newText);
 		
 		// Loads processed file into the player
 		musicPlayer.change(parsedFile);
 		
 		// Updates view with informations about the loaded file
-		originalText = newContent.getContent();
-		filename = newContent.getName();
+		originalText = newText;
+		this.filename = (filename == null) ? "N/A" : filename;
 		textPlayerView.update_content();
 	}
 	
-	public InputContent getContent(IOType inputDialogType)
+	/**
+	 * Select another text to generate music.
+	 * 
+	 * @param		newText text Text to be converted to music
+	 * @param		filename Filename containing the text, or null if the text
+	 * did not come from a file
+	 * 
+	 * @throws		IllegalArgumentException If newText is null
+	 */
+	public void changeText(IOType inputDialogType)
 	{
-		if (inputDialogType == null)
-			throw new IllegalArgumentException("Input dialog type cannot be null");
-		
-		InputContent content = null;
+		String filename = null;
+		List<String> text = null;
 		
 		
-		try {
-			content = IOManager.getContent(mainFrame, inputDialogType);
-		} 
-		catch (IOException e) {
-			onException(e);
+		switch (inputDialogType) {
+			case FILE_LOAD:
+				File file = IOManager.getFile(mainFrame);
+				
+				try {
+					text = Files.readAllLines(file.toPath());
+				} 
+				catch (IOException e) {}
+				
+				break;
+			case TEXT:
+				text = IOManager.getText(mainFrame);
+				
+				break;
+			default:
+				break;
 		}
 		
-		return content;
+		changeText(text, filename);
 	}
 	
 	/**
@@ -199,6 +223,13 @@ public class TextPlayerController extends Controller
 		((JMenuItem)getComponent("mb_ctrl_playPause")).setEnabled(true);
 	}
 	
+	/**
+	 * Defines exception behavior.
+	 * 
+	 * @param		e Exception
+	 * 
+	 * @throws		IllegalArgumentException If exception is null
+	 */
 	private void onException(Exception e)
 	{
 		if (e == null)

@@ -1,7 +1,9 @@
 package controllers;
 
 import java.awt.Component;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -10,7 +12,6 @@ import javax.swing.JOptionPane;
 
 import core.Controller;
 import models.io.IOType;
-import models.io.InputContent;
 import models.io.dialog.IOManager;
 import models.parse.JFugueMusicParser;
 import models.parse.Parser;
@@ -90,45 +91,74 @@ public class HomeController extends Controller
 		((JMenuItem)getComponent("mb_file_close")).setEnabled(false);
 	}
 	
-	public void openPlayer(InputContent inputContent)
+	/**
+	 * Opens player view.
+	 * 
+	 * @param		inputDialogType Specifies how the text to be converted to 
+	 * music will be obtained
+	 * 
+	 * @throws		IllegalArgumentException If text is null
+	 */
+	public void openPlayer(IOType inputDialogType)
 	{
-		if (inputContent == null)
-			throw new IllegalArgumentException("Content cannot be null");
+		String filename = null;
+		List<String> text = null;
+		
+		
+		switch (inputDialogType) {
+			case FILE_LOAD:
+				File file = IOManager.getFile(mainFrame);
+				
+				try {
+					text = Files.readAllLines(file.toPath());
+				} 
+				catch (IOException e) {}
+				
+				break;
+			case TEXT:
+				text = IOManager.getText(mainFrame);
+				
+				break;
+			default:
+				break;
+		}
+		
+		openPlayer(text, filename);
+	}
+	
+	/**
+	 * Opens player view.
+	 * 
+	 * @param		text Text to be converted to music
+	 * @param		filename Filename containing the text, or null if the text
+	 * did not come from a file
+	 * 
+	 * @throws		IllegalArgumentException If text is null
+	 */
+	private void openPlayer(List<String> text, String filename)
+	{
+		if (text == null)
+			throw new IllegalArgumentException("Text cannot be null");
 		
 		Parser parser = new Parser(new JFugueMusicParser());
-		List<String> parsedContent = parser.parse(inputContent.getContent());
+		List<String> processedText = parser.parse(text);
 		
 		
 		textPlayerController = new TextPlayerController(
-				parsedContent, 
-				inputContent.getContent(), 
-				inputContent.getName()
+				processedText, 
+				text, 
+				filename
 		);
 		textPlayerController.run();
 	}
 	
-	public InputContent getContent(IOType inputDialogType)
-	{
-		if (inputDialogType == null)
-			throw new IllegalArgumentException("Input dialog type cannot be null");
-		
-		InputContent content = null;
-		
-		
-		KeyboardController.disable();
-		
-		try {
-			content = IOManager.getContent(mainFrame, inputDialogType);
-		}
-		catch (IOException e) {
-			onException(e);
-		}
-		
-		KeyboardController.enable();
-		
-		return content;
-	}
-	
+	/**
+	 * Defines exception behavior.
+	 * 
+	 * @param		e Exception
+	 * 
+	 * @throws		IllegalArgumentException If exception is null
+	 */
 	private void onException(Exception e)
 	{
 		if (e == null)

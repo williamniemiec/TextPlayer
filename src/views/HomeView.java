@@ -31,7 +31,6 @@ import core.Controller;
 import core.Model;
 import core.View;
 import models.io.IOType;
-import models.io.InputContent;
 
 
 /**
@@ -151,7 +150,7 @@ public class HomeView extends JPanel implements View
 		mb_file_textEntry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
 		mb_file_textEntry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				open_view_player(IOType.TEXT);
+				homeController.openPlayer(IOType.TEXT);
 			}
 		});
 		mb_file.add(mb_file_textEntry);
@@ -162,7 +161,7 @@ public class HomeView extends JPanel implements View
 		mb_file_openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
 		mb_file_openFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				open_view_player(IOType.FILE_LOAD);
+				homeController.openPlayer(IOType.FILE_LOAD);
 			}
 		});
 		mb_file.add(mb_file_openFile);
@@ -343,7 +342,7 @@ public class HomeView extends JPanel implements View
 		btn_textEntry.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				open_view_player(IOType.TEXT);
+				homeController.openPlayer(IOType.TEXT);
 			}
 		});
 	}
@@ -365,7 +364,7 @@ public class HomeView extends JPanel implements View
 		btn_openFile.setFocusPainted(false);
 		btn_openFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				open_view_player(IOType.FILE_LOAD);
+				homeController.openPlayer(IOType.FILE_LOAD);
 			}
 		});
 	}
@@ -393,17 +392,5 @@ public class HomeView extends JPanel implements View
 			@Override
 			public void componentHidden(ComponentEvent e) { }
 		});
-	}
-	
-	private void open_view_player(IOType inputDialogType)
-	{
-		if (inputDialogType == null)
-			throw new IllegalArgumentException("Input dialog type cannot be null");
-		
-		InputContent inputContent = homeController.getContent(inputDialogType);
-
-		
-		if (!(inputContent.getName() == null || inputContent.getContent() == null))
-			homeController.openPlayer(inputContent);
 	}
 }

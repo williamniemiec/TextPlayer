@@ -484,8 +484,8 @@ public class JFugueMusicParser implements ParseType
 	 */
 	private String removeNumbers(String str) 
 	{
-		if (line == null)
-			throw new IllegalArgumentException("Line cannot be null");
+		if (str == null)
+			throw new IllegalArgumentException("String cannot be null");
 		
 		return str.replaceAll("[0-9]", " ");
 	}

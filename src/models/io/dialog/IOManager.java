@@ -1,15 +1,10 @@
 package models.io.dialog;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.swing.JFrame;
-
-import models.io.IOType;
-import models.io.InputContent;
 
 
 public class IOManager 
@@ -24,54 +19,25 @@ public class IOManager
 	//-------------------------------------------------------------------------
 	//		Methods
 	//-------------------------------------------------------------------------
-	public static InputContent getContent(JFrame window, IOType ioType) throws IOException
+	public static File getFile(JFrame window)
 	{
-		if (window == null)
-			throw new IllegalArgumentException("Window cannot be null");
-		
-		if (ioType == null)
-			throw new IllegalArgumentException("ioType cannot be null");
-		
-		List<String> content = null;
-		String filename = "N/A";
+		FileIO fi = new FileIO("txt");
 		
 		
-		switch (ioType) {
-			case FILE_LOAD:
-				FileIO fi = new FileIO("txt");
-				File file;
-				
-				
-				file = fi.getInput(window, RB_IO.getString("FILE_LOAD_DIALOG_TITLE"));
-				
-				if (file != null) {
-					try {
-						content = Files.readAllLines(file.toPath());
-						filename = file.getName();
-					}
-					catch (IOException e) {
-						throw new IOException("File not found");
-					}
-				}
-				
-				break;
-			case TEXT:
-				TextInput ti = new TextInput();
-				
-				
-				content = ti.getInput(
-						window, 
-						RB_IO.getString("TEXT_ENTRY"), 
-						RB_IO.getString("CLEAR"), 
-						RB_IO.getString("PROCESS")
-				);
-				
-				break;
-			default:
-				throw new IllegalArgumentException("Unsupported type");
-		}
+		return fi.getInput(window, RB_IO.getString("FILE_LOAD_DIALOG_TITLE"));
+	}
+	
+	public static List<String> getText(JFrame window)
+	{
+		TextInput ti = new TextInput();
 		
-		return new InputContent(filename, content);
+		
+		return ti.getInput(
+				window, 
+				RB_IO.getString("TEXT_ENTRY"), 
+				RB_IO.getString("CLEAR"), 
+				RB_IO.getString("PROCESS")
+		);
 	}
 	
 	public static File getOutput(JFrame window, String extension)

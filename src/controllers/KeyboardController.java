@@ -9,6 +9,12 @@ import javax.swing.JMenuItem;
 import core.Controller;
 
 
+/**
+ * Responsible for keyboard management.
+ * 
+ * @version		1.0.0
+ * @since		1.0.0
+ */
 public class KeyboardController extends Controller
 {
 	//-------------------------------------------------------------------------
@@ -27,6 +33,9 @@ public class KeyboardController extends Controller
 		enable();
 	}
 	
+	/**
+	 * Enables keyboard listener.
+	 */
 	public static void enable()
 	{
 		if (keyboardHandler == null)
@@ -36,6 +45,9 @@ public class KeyboardController extends Controller
 		manager.addKeyEventDispatcher(keyboardHandler);
 	}
 	
+	/**
+	 * Disables keyboard listener.
+	 */
 	public static void disable()
 	{
 		manager.removeKeyEventDispatcher(keyboardHandler);

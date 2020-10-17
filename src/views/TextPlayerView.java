@@ -30,7 +30,6 @@ import controllers.TextPlayerController;
 import core.Model;
 import core.View;
 import models.io.IOType;
-import models.io.InputContent;
 import models.musicPlayer.MusicPlayer;
 
 
@@ -494,7 +493,7 @@ public class TextPlayerView extends JPanel implements View
 		btn_openFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				change_content(IOType.FILE_LOAD);
+				textPlayerController.changeText(IOType.FILE_LOAD);
 			}
 		});
 	}
@@ -539,20 +538,8 @@ public class TextPlayerView extends JPanel implements View
 		btn_textEntry.setFocusPainted(false);
 		btn_textEntry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				change_content(IOType.TEXT);
+				textPlayerController.changeText(IOType.TEXT);
 			}
 		});
-	}
-	
-	private void change_content(IOType inputDialogType)
-	{
-		if (inputDialogType == null)
-			throw new IllegalArgumentException("Input dialog type cannot be null");
-		
-		InputContent inputContent = textPlayerController.getContent(inputDialogType);
-		
-
-		if (!(inputContent.getName() == null || inputContent.getContent() == null))
-			textPlayerController.changeText(inputContent);
 	}
 }
