@@ -6,9 +6,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import models.music.JFugueMusicalNote;
 
 
 /**
@@ -25,8 +29,26 @@ public class JFugueMusicParser implements ParseType
 	private int bpm = 120;
 	private int volume = 50;
 	private List<String> instruments = new ArrayList<>();
-	private final char[] notes = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
+	//private final char[] notes = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
+	//private final Map<Character, Integer> octaves = new HashMap<>();
+	private final List<JFugueMusicalNote> musicalNotes = new ArrayList<>();
 
+	
+	//-------------------------------------------------------------------------
+	//		Initialization blocks
+	//-------------------------------------------------------------------------
+	{
+		musicalNotes.addAll(List.of(
+			new JFugueMusicalNote('A', 9),
+			new JFugueMusicalNote('B', 11),
+			new JFugueMusicalNote('C', 0),
+			new JFugueMusicalNote('D', 2),
+			new JFugueMusicalNote('E', 4),
+			new JFugueMusicalNote('F', 5),
+			new JFugueMusicalNote('G', 7)
+		));
+	}
+	
 	
 	//-------------------------------------------------------------------------
 	//		Methods
@@ -68,49 +90,53 @@ public class JFugueMusicParser implements ParseType
 	 * 		<td>Musical note 'Sol'</td>
 	 * 	</tr>
 	 * 	<tr align="center">
-	 * 		<td>Character</td>
-	 * 		<td>Pause / Silence</td>
+	 * 		<td>Space</td>
+	 * 		<td>Increases volume to double the current volume or sets default 
+	 * 		volume if it exceed the limit</td>
 	 * 	</tr>
 	 * 	<tr align="center">
-	 * 		<td>+</td>
-	 * 		<td>Increases volume to double the current volume</td>
-	 * 	</tr>
-	 * 	<tr align="center">
-	 * 		<td>-</td>
-	 * 		<td>Volume returns to initial value</td>
-	 * 	</tr>
-	 * 	<tr align="center">
-	 * 		<td>O, o, I, i, U or u</td>
+	 * 		<td>a, b, c, d, e, f, g</td>
 	 * 		<td>If the previous character was a musical note (from A to G) 
-	 * 		repeats the note; otherwise, pauses</td>
+	 * 		repeats the note; otherwise, silence or pause</td>
 	 * 	</tr>
 	 * 	<tr align="center">
-	 * 		<td>O+</td>
-	 * 		<td>Increases one octave</td>
+	 * 		<td>? or .</td>
+	 * 		<td>Increases one octave or sets default octave if it exceed the limit</td>
 	 * 	</tr>
 	 * 	<tr align="center">
-	 * 		<td>O-</td>
-	 * 		<td>Decreases one octave</td>
+	 * 		<td>!</td>
+	 * 		<td>Changes current instrument to Agogo (General MIDI #144)</td>
 	 * 	</tr>
 	 * 	<tr align="center">
-	 * 		<td>?</td>
-	 * 		<td>Random note</td>
+	 * 		<td>O, o, I, i, U, u</td>
+	 * 		<td>Changes current instrument to Harpsichord) (General MIDI #7)</td>
+	 * 	</tr>
+	 * 	<tr align="center">
+	 * 		<td>All consonants except those that are notes</td>
+	 * 		<td>If the previous character was a musical note (from A to G) 
+	 * 		repeats the note; otherwise, silence or pause</td>
+	 * 	</tr>
+	 * 	<tr align="center">
+	 * 		<td>Number</td>
+	 * 		<td>Change instrument to General MIDI instrument whose number is 
+	 * 		equal to the value of the CURRENT instrument + digit value</td>
 	 * 	</tr>
 	 * 	<tr align="center">
 	 * 		<td>NL (new line)</td>
-	 * 		<td>Changes current instrument</td>
+	 * 		<td>Changes current instrument to Tubular Bells (General MIDI #15)</td>
 	 * 	</tr>
 	 * 	<tr align="center">
-	 * 		<td>B+</td>
-	 * 		<td>Increases BPM by 50 units</td>
+	 * 		<td>;</td>
+	 * 		<td>Changes current instrument to Pan Flutes (General MIDI #76)</td>
 	 * 	</tr>
 	 * 	<tr align="center">
-	 * 		<td>B-</td>
-	 * 		<td>Decreases BPM by 50 units</td>
+	 * 		<td>,</td>
+	 * 		<td>Changes current instrument to Church Organ (General MIDI #20)</td>
 	 * 	</tr>
 	 * 	<tr align="center">
 	 * 		<td>Others</td>
-	 * 		<td>Ignores</td>
+	 * 		<td>If the previous character was a musical note (from A to G) 
+	 * 		repeats the note; otherwise, silence or pause</td>
 	 * 	</tr>
 	 * </table>
 	 * 
@@ -128,8 +154,6 @@ public class JFugueMusicParser implements ParseType
 		if (content == null || content.size() == 0)
 			throw new IllegalArgumentException("Content cannot be empty");
 		
-		//String line;
-//		StringBuilder processedContent = new StringBuilder();
 		List<String> processedContent = new ArrayList<>();
 
 		
@@ -137,20 +161,24 @@ public class JFugueMusicParser implements ParseType
 		// Problema: pode continuar na proxima linha
 		// pega letra anterior ao o+ / o- tb para aumentar / diminuir ela
 		// _ INDICARÁ QUE FOI ADD ALGO NA LINHA (METODOS ANTERIORES. SE ACHAR _, SÓ CONTINUAR PROCURANDO APÓS ACHAR OUTRO)
+		// USAR TEMPLATE PATTERN NAS FUNÇÕES
 		
-//		try (BufferedReader br = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
+		
 		for (String line : content) {
-//			line = br.readLine();
-			line = removeNumbers(line);
 			line = removeAccentuation(line);
-			line = parseSpaces(line);				
-			line = parseOPlusMinus(line);			// O+ | O-
-			line = parseBPlusMinus(line);			// B+ | B-
-			line = parseDotInterrogationMark(line);	// ? | .
-			line = parseVogals(line);				
-			line = parsePlusMinus(line);			// + | -
-			line = spaceTerms(line);				
-			line += changeInstrument();		
+			line = parseAtoG(line);
+			line = parseSpace(line);	
+			line = parseExclamationMark(line);
+			line = parseIOU(line);
+			line = parseConsonant(line);
+			line = parseNumber(line);
+			line = parseInterrogationMark(line);	
+			line = parseDot(line);
+			line = parseSemicolon(line);
+			line = parseComma(line);
+			line = parseElse(line);
+			line = spaceTerms(line);
+			line = parseNewLine(line);
 			
 			// Saves processed line
 			processedContent.add(line);
@@ -160,15 +188,8 @@ public class JFugueMusicParser implements ParseType
 	}
 	
 	/**
-	 * Performs line processing for the case of the following symbols:
-	 * <ul>
-	 * 	<li>O+</li>
-	 * 	<li>O-</li>
-	 * 	<li>o+</li>
-	 * 	<li>o-</li>
-	 * </ul>
-	 * An octave will be increased if the symbol is O+ or o+ and will be 
-	 * decreased by one octave if the symbol is O- or o-.
+	 * If the previous character was a musical note (from A to G) repeats the
+	 * note; otherwise, silence or pause.
 	 * 
 	 * @param		line Line to be processed
 	 * 
@@ -176,53 +197,258 @@ public class JFugueMusicParser implements ParseType
 	 * 
 	 * @throws		IllegalArgumentException If line is null
 	 */
-	private String parseOPlusMinus(String line)
+	private String parseAtoG(String line)
 	{
 		if (line == null)
 			throw new IllegalArgumentException("Line cannot be null");
 		
-		Pattern p = Pattern.compile("[A-Ga-g]((O|o)\\+|(O|o)\\-)+");
+		String regex_aTog = "[abcdefg]";
+		Pattern p = Pattern.compile(regex_aTog);
 		Matcher m = p.matcher(line);
-		Pattern p2;
-		Matcher m2;
-		int positiveOctaves, negativeOctaves;
-		char letter;
+		
+		StringBuilder sb = new StringBuilder();
+		String character;
+		boolean inJFugueCommand = false;
+		
+
+		for (int i=1; i<line.length(); i++) {
+			character = line.charAt(i) + "";
+			
+			if ((line.charAt(i) == '_')) {
+				inJFugueCommand = !inJFugueCommand;
+			}
+			else if (!inJFugueCommand) {
+				
+				if (character.matches(regex_aTog)) {
+					if (isNote(line.charAt(i-1))) {
+						character = increaseVolume();
+					}
+				}	
+			}
+			
+			sb.append(character);
+		}
+		
+		return sb.toString();
+	}
+	
+	/**
+	 * Increases volume to double the current volume or sets default volume if
+	 * it exceed the limit.
+	 * 
+	 * @param		line Line to be processed
+	 * 
+	 * @return		Processed line
+	 * 
+	 * @throws		IllegalArgumentException If line is null
+	 */
+	private String parseSpace(String line)
+	{
+		StringBuilder sb = new StringBuilder();
+		String character;
+		boolean inJFugueCommand = false;
+		
+
+		for (int i=0; i<line.length(); i++) {
+			character = line.charAt(i) + "";
+			
+			if ((line.charAt(i) == '_')) {
+				inJFugueCommand = !inJFugueCommand;
+			}
+			else if (!inJFugueCommand) {
+				
+				if (character.equals(" ")) {
+					character = increaseVolume();
+				}
+				
+			}
+			
+			sb.append(character);				
+		}
+		
+		return sb.toString();
+	}
+	
+	/**
+	 * Changes current instrument to Agogo) (General MIDI #114).
+	 * 
+	 * @param		line Line to be processed
+	 * 
+	 * @return		Processed line
+	 * 
+	 * @throws		IllegalArgumentException If line is null
+	 */
+	private String parseExclamationMark(String line)
+	{
+		StringBuilder sb = new StringBuilder();
+		String character;
+		boolean inJFugueCommand = false;
+		
+
+		for (int i=0; i<line.length(); i++) {
+			character = line.charAt(i) + "";
+			
+			if ((line.charAt(i) == '_')) {
+				inJFugueCommand = !inJFugueCommand;
+			}
+			else if (!inJFugueCommand) {
+				
+				if (character.equals("!")) {
+					character = changeInstrument(113);
+				}	
+			}
+			
+			sb.append(character);				
+		}
+		
+		return sb.toString();
+	}
+	
+	/**
+	 * Changes current instrument to Harpsichord) (General MIDI #7).
+	 * 
+	 * @param		line Line to be processed
+	 * 
+	 * @return		Processed line
+	 * 
+	 * @throws		IllegalArgumentException If line is null
+	 */
+	private String parseIOU(String line)
+	{
+		String regex_iou = "[iouIOU]";
+		
+		StringBuilder sb = new StringBuilder();
+		String character;
+		boolean inJFugueCommand = false;
 		
 		
-		// fica enquanto houver o+ / o- na linha COM UMA LETRA ANTES
-		// Tem q fazer contagem para ver qts o+ e qts o- tem para saber tam total da oitava
-		while (m.find()) {
-			System.out.println(m.group());
+		for (int i=0; i<line.length(); i++) {
+			character = line.charAt(i) + "";
 			
-			// Conta o+
-			p2 = Pattern.compile("(O|o)\\+");
-			m2 = p2.matcher(m.group());
-			positiveOctaves = (int) m2.results().count();
+			if ((line.charAt(i) == '_')) {
+				inJFugueCommand = !inJFugueCommand;
+			}
+			else if (!inJFugueCommand) {
+				if (character.matches(regex_iou)) {
+					character = changeInstrument(6);	// muda instrumento para Harpsichord
+				}	
+			}
 			
-			// Conta o-
-			p2 = Pattern.compile("(O|o)\\-");
-			m2 = p2.matcher(m.group());
-			negativeOctaves = (int) m2.results().count();		
-			
-			letter = m.group().charAt(0);
-			
-			line = line.replaceFirst("[A-Ga-g]((O|o)\\+|(O|o)\\-)+", setOctave(letter, positiveOctaves-negativeOctaves));	
-		}	
+			sb.append(character);
+		}
 		
+		return sb.toString();
+	}
+	
+	/**
+	 * If the previous character was a musical note (from A to G) repeats the 
+	 * note; otherwise, silence or pause.
+	 * 
+	 * @param		line Line to be processed
+	 * 
+	 * @return		Processed line
+	 * 
+	 * @throws		IllegalArgumentException If line is null
+	 */
+	private String parseConsonant(String line)
+	{
+		String regex_consonant = "[bcdfghjklmnpqrstvwxyz]";
+		Pattern p = Pattern.compile(regex_consonant);
+		Matcher m = p.matcher(line);
+		StringBuilder newLine = new StringBuilder();
+		boolean inJFugueCommand = false;
+		
+		for (int i=1; i<line.length(); i++) {
+			String currentChar = line.charAt(i) + "";
+			
+			
+			if ((line.charAt(i) == '_')) {
+				inJFugueCommand = !inJFugueCommand;
+			}
+			else if (!inJFugueCommand) {
+				char previousChar = line.charAt(i-1);
+				boolean isConsonant = currentChar.matches(regex_consonant) || 
+						currentChar.matches(regex_consonant.toUpperCase());
+				
+				
+				if (isConsonant && isNote(previousChar)) {
+					currentChar = previousChar + "";
+				}
+				else {
+					currentChar = putDelay();
+				}
+				
+			}
+			
+			newLine.append(currentChar);				
+		}
+		
+		return newLine.toString();
+	}
+	
+	/**
+	 * Change instrument to General MIDI instrument whose number is equal to 
+	 * the value of the CURRENT instrument + digit value.
+	 * 
+	 * @param		line Line to be processed
+	 * 
+	 * @return		Processed line
+	 * 
+	 * @throws		IllegalArgumentException If line is null
+	 */
+	private String parseNumber(String line)
+	{
+		String regex_numbers = "[0-9]+";
+		boolean inJFugueCommand = false;
+		List<Integer> idxNumbers = new ArrayList<>();
+		StringBuilder number = new StringBuilder();
+		int idxStart = -1;
+		
+		
+		for (int i=0; i<line.length(); i++) {
+			String character = line.charAt(i) + "";
+			
+			if ((line.charAt(i) == '_')) {
+				inJFugueCommand = !inJFugueCommand;
+			}
+			else if (!inJFugueCommand) {
+				if (character.matches(regex_numbers)) {
+					number.append(character);
+					idxStart = (idxStart < 0) ? i : idxStart;
+				}
+				else if (number.length() > 0) { // final do numero
+					String tmpLine = line.substring(0, idxStart);
+					
+					tmpLine += changeInstrument(Integer.parseInt(number.toString()) + currentInstrument);
+					tmpLine += line.substring(idxStart + number.length());
+					
+					line = tmpLine;
+					
+					idxStart = -1;
+					number.delete(0, number.length());
+				}	
+			}
+		}
+	}
+	
+	/**
+	 * Changes current instrument to Pan Flutes (General MIDI #76).
+	 * 
+	 * @param		line Line to be processed
+	 * 
+	 * @return		Processed line
+	 * 
+	 * @throws		IllegalArgumentException If line is null
+	 */
+	private String parseSemicolon(String line)
+	{		
+		line = line.replaceAll(";", changeInstrument(76));
 		
 		return line;
 	}
 	
 	/**
-	 * Performs line processing for the case of the following symbols:
-	 * <ul>
-	 * 	<li>B+</li>
-	 * 	<li>B-</li>
-	 * 	<li>b+</li>
-	 * 	<li>b-</li>
-	 * </ul>
-	 * BPM will be increased by 50 units if the symbol is B+ or b+ and will 
-	 * also be decreased by 50 units if the symbol is B- or b-.
+	 * Changes current instrument to Church Organ (General MIDI #20).
 	 * 
 	 * @param		line Line to be processed
 	 * 
@@ -230,33 +456,16 @@ public class JFugueMusicParser implements ParseType
 	 * 
 	 * @throws		IllegalArgumentException If line is null
 	 */
-	private String parseBPlusMinus(String line)
+	private String parseComma(String line)
 	{
-		if (line == null)
-			throw new IllegalArgumentException("Line cannot be null");
-		
-		// Tem que ser em sequencia
-		Pattern p = Pattern.compile("((B|b)\\+|(B|b)\\-)");
-		Matcher m = p.matcher(line);
-		Pattern bPlus = Pattern.compile("((B|b)\\+)");
-		Pattern bMinus = Pattern.compile("((B|b)\\-)");
-		
-		
-		while (m.find()) {
-			line = line.replaceFirst("((B|b)\\+)", increaseBPM());
-			line = line.replaceFirst("((B|b)\\-)", decreaseBPM());
-		}
+		line = line.replaceAll(",", changeInstrument(20));
 		
 		return line;
 	}
 	
 	/**
-	 * Performs line processing for the case of the following symbols:
-	 * <ul>
-	 * 	<li>.</li>
-	 * 	<li>?</li>
-	 * </ul>
-	 * When one of these symbols is found, it will be replaced by a random note.
+	 * If the previous character was a musical note (from A to G) repeats the 
+	 * note; otherwise, silence or pause.
 	 * 
 	 * @param		line Line to be processed
 	 * 
@@ -264,20 +473,99 @@ public class JFugueMusicParser implements ParseType
 	 * 
 	 * @throws		IllegalArgumentException If line is null
 	 */
-	private String parseDotInterrogationMark(String line)
+	private String parseElse(String line)
+	{
+		StringBuilder newLine = new StringBuilder();
+		boolean inJFugueCommand = false;
+		
+		
+		for (int i=1; i<line.length(); i++) {
+			String currentChar = line.charAt(i) + "";
+			
+			
+			if ((line.charAt(i) == '_')) {
+				inJFugueCommand = !inJFugueCommand;
+			}
+			else if (!inJFugueCommand) {
+				char previousChar = line.charAt(i-1);
+				
+				
+				if (isNote(previousChar)) {
+					currentChar = previousChar + "";
+				}
+				else {
+					currentChar = putDelay();
+				}				
+			}
+			
+			newLine.append(currentChar);				
+		}
+		
+		return newLine.toString();
+	}
+	
+	/**
+	 * Changes current instrument to Tubular Bells (General MIDI #15).
+	 * 
+	 * @param		line Line to be processed
+	 * 
+	 * @return		Processed line
+	 * 
+	 * @throws		IllegalArgumentException If line is null
+	 */
+	private String parseNewLine(String line)
+	{
+		return line + changeInstrument(15);
+	}
+	
+	/**
+	 * Increases one octave or sets default octave if it exceed the limit.
+	 * 
+	 * @param		line Line to be processed
+	 * 
+	 * @return		Processed line
+	 * 
+	 * @throws		IllegalArgumentException If line is null
+	 */
+	private String parseDot(String line)
+	{
+		return parseInterrogationMark(line);
+	}
+	
+	/**
+	 * Increases one octave or sets default octave if it exceed the limit.
+	 * 
+	 * @param		line Line to be processed
+	 * 
+	 * @return		Processed line
+	 * 
+	 * @throws		IllegalArgumentException If line is null
+	 */
+	private String parseInterrogationMark(String line)
 	{
 		if (line == null)
 			throw new IllegalArgumentException("Line cannot be null");
 		
-		Pattern p = Pattern.compile("\\.|\\?");
-		Matcher m = p.matcher(line);
+		
+		StringBuilder newLine = new StringBuilder();
+		boolean inJFugueCommand = false;
 		
 		
-		while (m.find()) {
-			line = line.replaceFirst("\\.|\\?", "_"+randomNote()+"_");
+		for (int i=1; i<line.length(); i++) {
+			String currentChar = line.charAt(i) + "";
+			
+			
+			if ((line.charAt(i) == '_')) {
+				inJFugueCommand = !inJFugueCommand;
+			}
+			else if (!inJFugueCommand) {
+				increaseOctave();				
+			}
+			
+			newLine.append(currentChar);				
 		}
 		
-		return line;
+		return newLine.toString();
 	}
 	
 	/**
@@ -318,26 +606,26 @@ public class JFugueMusicParser implements ParseType
 	 * 
 	 * @throws		IllegalArgumentException If line is null
 	 */
-	private String parsePlusMinus(String line)
-	{
-		if (line == null)
-			throw new IllegalArgumentException("Line cannot be null");
-		
-		// Tem que ser em sequencia
-		Pattern p = Pattern.compile("(\\+)|(\\-)");
-		Matcher m = p.matcher(line);
-		
-		
-		while (m.find()) {
-			if (m.group().contains("+")) 
-				line = line.replaceFirst("\\+", increaseVolume());
-			else
-				line = line.replaceFirst("\\-", decreaseVolume());
-		}
-		
-		return line;
-	}
-	
+//	private String parsePlusMinus(String line)
+//	{
+//		if (line == null)
+//			throw new IllegalArgumentException("Line cannot be null");
+//		
+//		// Tem que ser em sequencia
+//		Pattern p = Pattern.compile("(\\+)|(\\-)");
+//		Matcher m = p.matcher(line);
+//		
+//		
+//		while (m.find()) {
+//			if (m.group().contains("+")) 
+//				line = line.replaceFirst("\\+", increaseVolume());
+//			else
+//				line = line.replaceFirst("\\-", decreaseVolume());
+//		}
+//		
+//		return line;
+//	}
+//	
 	/**
 	 * Checks if a character is a vowel and not a musical note.
 	 * 
@@ -370,48 +658,48 @@ public class JFugueMusicParser implements ParseType
 	 * 
 	 * @throws		IllegalArgumentException If line is null
 	 */
-	private String parseVogals(String line)
-	{
-		if (line == null)
-			throw new IllegalArgumentException("Line cannot be null");
-		
-		StringBuilder sb = new StringBuilder();
-		char[] lineChar = line.toCharArray();
-		
-		
-		for (int i=0; i<lineChar.length; i++) {
-			// Ignora conchetes e tudo que tem dentro deles
-			if (lineChar[i] == '_') {
-				sb.append(lineChar[i]);
-				i++;
-				
-				while (i<lineChar.length && lineChar[i] != '_') {
-					sb.append(lineChar[i]);
-					i++;
-				}
-				
-				if (i<lineChar.length) {
-					sb.append(lineChar[i]);
-				}
-			} 
-			else {
-				
-				if (i > 0 && isVowelAndNotNote(lineChar[i])) {
-					if (isNote(lineChar[i-1])) {
-						sb.append(lineChar[i-1]);
-						sb.append(lineChar[i-1]);
-					}
-					
-					else
-						sb.append(putDelay());	// Coloca pausa
-				} 
-				else if (i<lineChar.length)
-					sb.append(lineChar[i]);
-				}
-			}
-
-		return sb.toString();
-	}
+//	private String parseVogals(String line)
+//	{
+//		if (line == null)
+//			throw new IllegalArgumentException("Line cannot be null");
+//		
+//		StringBuilder sb = new StringBuilder();
+//		char[] lineChar = line.toCharArray();
+//		
+//		
+//		for (int i=0; i<lineChar.length; i++) {
+//			// Ignora conchetes e tudo que tem dentro deles
+//			if (lineChar[i] == '_') {
+//				sb.append(lineChar[i]);
+//				i++;
+//				
+//				while (i<lineChar.length && lineChar[i] != '_') {
+//					sb.append(lineChar[i]);
+//					i++;
+//				}
+//				
+//				if (i<lineChar.length) {
+//					sb.append(lineChar[i]);
+//				}
+//			} 
+//			else {
+//				
+//				if (i > 0 && isVowelAndNotNote(lineChar[i])) {
+//					if (isNote(lineChar[i-1])) {
+//						sb.append(lineChar[i-1]);
+//						sb.append(lineChar[i-1]);
+//					}
+//					
+//					else
+//						sb.append(putDelay());	// Coloca pausa
+//				} 
+//				else if (i<lineChar.length)
+//					sb.append(lineChar[i]);
+//				}
+//			}
+//
+//		return sb.toString();
+//	}
 	
 	/**
 	 * Performs line processing for the case of spaces. When a space is found,
@@ -423,13 +711,13 @@ public class JFugueMusicParser implements ParseType
 	 * 
 	 * @throws		IllegalArgumentException If line is null
 	 */
-	private String parseSpaces(String line)
-	{
-		if (line == null)
-			throw new IllegalArgumentException("Line cannot be null");
-		
-		return line.replaceAll(" ", putDelay());
-	}
+//	private String parseSpaces(String line)
+//	{
+//		if (line == null)
+//			throw new IllegalArgumentException("Line cannot be null");
+//		
+//		return line.replaceAll(" ", putDelay());
+//	}
 	
 	/**
 	 * Given a processed line, performs the spacing of its terms, where the 
@@ -503,32 +791,32 @@ public class JFugueMusicParser implements ParseType
 	}
 	
 	/**
-	 * Generates JFugue command to change octave of a musical note depending on
-	 * the amount sent.
-	 * 
-	 * @param		note Musical note that will have its octave increased
-	 * @param		amountOctaves Number of octaves
+	 * Generates JFugue command to increase octave of all musical notes.
 	 * 
 	 * @return		JFugue command
 	 */
-	private String setOctave(char note, int amountOctaves)
+	private String increaseOctave()
 	{
-		String response;
+		for (JFugueMusicalNote note : musicalNotes) {
+			note.increaseOctave();
+		}
+		
+		
+		
+		
+		
+		
+		
+		int newOctave = currentOctave + 1;
+		int maxOctave = 10;
 		int defaultOctave = 5;
 		
 		
-		amountOctaves = defaultOctave + amountOctaves;
-		response = "_"+note+amountOctaves+"_";
-		
-		if (defaultOctave >= 10) {
-			response = "_"+note+"10"+"_";
+		if (newOctave > maxOctave) {
+			newOctave = defaultOctave;
 		}
 		
-		if (defaultOctave <= 0) {
-			response = "_"+note+"0"+"_";
-		}
-		
-		return response;
+		return generateCommand(String.valueOf(newOctave));
 	}
 	
 	/**
@@ -564,7 +852,7 @@ public class JFugueMusicParser implements ParseType
 	 */
 	private boolean isNote(char letter)
 	{
-		return letter >= 'A' && letter <= 'G' || letter >= 'a' && letter <= 'g';
+		return letter >= 'A' && letter <= 'G';
 	}
 	
 	/**
@@ -586,7 +874,7 @@ public class JFugueMusicParser implements ParseType
 			bpm = 120;
 		}
 		
-		return "_T["+bpm_constant+"]_";
+		return generateCommand("T["+bpm_constant+"]");
 	}
 	
 	/**
@@ -608,7 +896,7 @@ public class JFugueMusicParser implements ParseType
 			bpm = 120;
 		}
 		
-		return "_T["+bpm_constant+"]_";
+		return generateCommand("T["+bpm_constant+"]");
 	}
 	
 	/**
@@ -619,11 +907,11 @@ public class JFugueMusicParser implements ParseType
 	private String increaseVolume()
 	{
 		if (2*volume >= 100)
-			volume = 100;
+			volume = 50;		// Volume default
 		else
 			volume *= 2;
 		
-		return "_:CON(7, "+volume+")_";
+		return generateCommand(":CON(7, "+volume+")");
 	}
 	
 	/**
@@ -638,7 +926,7 @@ public class JFugueMusicParser implements ParseType
 		else
 			volume /= 2;
 		
-		return "_:CON(7, "+volume+")_";
+		return generateCommand(":CON(7, "+volume+")");
 	}
 	
 	/**
@@ -648,7 +936,7 @@ public class JFugueMusicParser implements ParseType
 	 */
 	private String putDelay()
 	{
-		return "_@1_";
+		return generateCommand("@1");
 	}
 	
 	/**
@@ -661,6 +949,18 @@ public class JFugueMusicParser implements ParseType
 		int num = (int) (Math.random()*instruments.size());
 		
 		
-		return "I["+instruments.get(num)+"]";
+		return generateCommand("I["+instruments.get(num)+"]");
+	}
+	
+	/**
+	 * Generates JFugue commands with tokens around.
+	 * 
+	 * @param		command JFugue command
+	 * 
+	 * @return		Command between two underscores
+	 */
+	private String generateCommand(String command)
+	{
+		return "_" + command + "_";
 	}
 }
