@@ -196,6 +196,14 @@ public class JFugueMusicParser implements ParseType
 		return processedContent;
 	}
 	
+	/**
+	 * Converts musical notes (from A to G) to musical notes in JFugue taking 
+	 * into account the current octave of each note. 
+	 * 
+	 * @param		currentChar Character being parsed
+	 * 
+	 * @return		Processed character
+	 */
 	private String parseMusicalNotes(String currentChar)
 	{
 		if (isNote(currentChar.charAt(0))) {
@@ -203,7 +211,6 @@ public class JFugueMusicParser implements ParseType
 			
 			currentChar = generateCommand("[" + musicalNote + "]");
 		}	
-
 		
 		return currentChar;
 	}
@@ -212,9 +219,10 @@ public class JFugueMusicParser implements ParseType
 	 * If the previous character was a musical note (from A to G) repeats the
 	 * note; otherwise, silence or pause.
 	 * 
-	 * @param		line Line to be processed
+	 * @param		currentChar Character being parsed
+	 * @param		previousChar Character previously parsed
 	 * 
-	 * @return		Processed line
+	 * @return		Processed character
 	 * 
 	 * @throws		IllegalArgumentException If line is null
 	 */
@@ -239,11 +247,9 @@ public class JFugueMusicParser implements ParseType
 	 * Increases volume to double the current volume or sets default volume if
 	 * it exceed the limit.
 	 * 
-	 * @param		line Line to be processed
+	 * @param		currentChar Character being parsed
 	 * 
-	 * @return		Processed line
-	 * 
-	 * @throws		IllegalArgumentException If line is null
+	 * @return		Processed character
 	 */
 	private String parseSpace(String currentChar)
 	{
@@ -257,11 +263,9 @@ public class JFugueMusicParser implements ParseType
 	/**
 	 * Changes current instrument to Agogo) (General MIDI #114).
 	 * 
-	 * @param		line Line to be processed
+	 * @param		currentChar Character being parsed
 	 * 
-	 * @return		Processed line
-	 * 
-	 * @throws		IllegalArgumentException If line is null
+	 * @return		Processed character
 	 */
 	private String parseExclamationMark(String currentChar)
 	{
@@ -276,11 +280,9 @@ public class JFugueMusicParser implements ParseType
 	/**
 	 * Changes current instrument to Harpsichord) (General MIDI #7).
 	 * 
-	 * @param		line Line to be processed
+	 * @param		currentChar Character being parsed
 	 * 
-	 * @return		Processed line
-	 * 
-	 * @throws		IllegalArgumentException If line is null
+	 * @return		Processed character
 	 */
 	private String parseIOU(String currentChar)
 	{
@@ -297,9 +299,10 @@ public class JFugueMusicParser implements ParseType
 	 * If the previous character was a musical note (from A to G) repeats the 
 	 * note; otherwise, silence or pause.
 	 * 
-	 * @param		line Line to be processed
+	 * @param		currentChar Character being parsed
+	 * @param		previousChar Character previously parsed
 	 * 
-	 * @return		Processed line
+	 * @return		Processed character
 	 * 
 	 * @throws		IllegalArgumentException If line is null
 	 */
@@ -327,11 +330,9 @@ public class JFugueMusicParser implements ParseType
 	 * Change instrument to General MIDI instrument whose number is equal to 
 	 * the value of the CURRENT instrument + digit value.
 	 * 
-	 * @param		line Line to be processed
+	 * @param		currentChar Character being parsed
 	 * 
-	 * @return		Processed line
-	 * 
-	 * @throws		IllegalArgumentException If line is null
+	 * @return		Processed character
 	 */
 	private String parseDigit(String currentChar)
 	{
@@ -348,11 +349,9 @@ public class JFugueMusicParser implements ParseType
 	/**
 	 * Changes current instrument to Pan Flutes (General MIDI #76).
 	 * 
-	 * @param		line Line to be processed
+	 * @param		currentChar Character being parsed
 	 * 
-	 * @return		Processed line
-	 * 
-	 * @throws		IllegalArgumentException If line is null
+	 * @return		Processed character
 	 */
 	private String parseSemicolon(String currentChar)
 	{
@@ -366,7 +365,7 @@ public class JFugueMusicParser implements ParseType
 	/**
 	 * Changes current instrument to Church Organ (General MIDI #20).
 	 * 
-	 * @param		character Character to be processed
+	 * @param		currentChar Character being parsed
 	 * 
 	 * @return		Processed character
 	 */
@@ -383,7 +382,8 @@ public class JFugueMusicParser implements ParseType
 	 * If the previous character was a musical note (from A to G) repeats the 
 	 * note; otherwise, silence or pause.
 	 * 
-	 * @param		character Character to be processed
+	 * @param		currentChar Character being parsed
+	 * @param		previousChar Character previously parsed
 	 * 
 	 * @return		Processed character
 	 */
@@ -419,7 +419,7 @@ public class JFugueMusicParser implements ParseType
 	/**
 	 * Increases one octave or sets default octave if it exceed the limit.
 	 * 
-	 * @param		character Character to be processed
+	 * @param		currentChar Character being parsed
 	 * 
 	 * @return		Processed character
 	 */
@@ -436,7 +436,7 @@ public class JFugueMusicParser implements ParseType
 	/**
 	 * Increases one octave or sets default octave if it exceed the limit.
 	 * 
-	 * @param		character Character to be processed
+	 * @param		currentChar Character being parsed
 	 * 
 	 * @return		Processed character
 	 */
