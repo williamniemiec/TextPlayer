@@ -11,11 +11,12 @@ import javax.swing.JOptionPane;
 
 import core.Controller;
 import models.io.IOType;
-import models.io.dialog.IOManager;
+import models.io.input.dialog.IOManager;
+import models.io.input.dialog.InputDialog;
 import models.musicPlayer.JFugueMusicPlayer;
 import models.musicPlayer.MusicPlayer;
-import models.parse.JFugueMusicParser;
-import models.parse.Parser;
+import models.parser.JFugueMusicParser;
+import models.parser.Parser;
 import views.TextPlayerView;
 
 
@@ -80,7 +81,9 @@ public class TextPlayerController extends Controller
 			textPlayerView = new TextPlayerView(this, mainFrame, RB);
 			
 			// Updates top bar buttons
-			updateControlsMenu();
+			setMenuBarItemStatus("mb_file_close", true);
+			setMenuBarItemStatus("mb_ctrl_playPause", true);
+			setMenuBarItemStatus("mb_ctrl_stop", false);
 			
 			// Creates music player
 			musicPlayer = new JFugueMusicPlayer(musicalText);
@@ -129,24 +132,49 @@ public class TextPlayerController extends Controller
 	 * 
 	 * @throws		IllegalArgumentException If newText is null
 	 */
-	private void changeText(List<String> newText, String filename)
+//	private void changeText(List<String> newText, String filename)
+//	{
+//		if (newText == null)
+//			throw new IllegalArgumentException("New text cannot be null");
+//		
+//		List<String> parsedFile;
+//		Parser parser = new Parser(new JFugueMusicParser());
+//		
+//		
+//		// Process the file
+//		parsedFile = parser.parse(newText);
+//		
+//		// Loads processed file into the player
+//		musicPlayer.change(parsedFile);
+//		
+//		// Updates view with informations about the loaded file
+//		originalText = newText;
+//		this.filename = (filename == null) ? "N/A" : filename;
+//		textPlayerView.update_content();
+//	}
+	
+	public void changeText(InputDialog id)
 	{
-		if (newText == null)
-			throw new IllegalArgumentException("New text cannot be null");
+		if (id == null)
+			throw new IllegalArgumentException("Input dialog cannot be null");
+		
+		if (!id.ask())
+			return;
 		
 		List<String> parsedFile;
 		Parser parser = new Parser(new JFugueMusicParser());
 		
 		
 		// Process the file
-		parsedFile = parser.parse(newText);
+		parsedFile = parser.parse(id.getContent());
 		
 		// Loads processed file into the player
 		musicPlayer.change(parsedFile);
 		
 		// Updates view with informations about the loaded file
-		originalText = newText;
-		this.filename = (filename == null) ? "N/A" : filename;
+		originalText = id.getContent();
+		filename = id.getTitle();
+		
 		textPlayerView.update_content();
 	}
 	
@@ -159,32 +187,32 @@ public class TextPlayerController extends Controller
 	 * 
 	 * @throws		IllegalArgumentException If newText is null
 	 */
-	public void changeText(IOType inputDialogType)
-	{
-		String filename = null;
-		List<String> text = null;
-		
-		
-		switch (inputDialogType) {
-			case FILE_LOAD:
-				File file = IOManager.getFile(mainFrame);
-				
-				try {
-					text = Files.readAllLines(file.toPath());
-				} 
-				catch (IOException e) {}
-				
-				break;
-			case TEXT:
-				text = IOManager.getText(mainFrame);
-				
-				break;
-			default:
-				break;
-		}
-		
-		changeText(text, filename);
-	}
+//	public void changeText(IOType inputDialogType)
+//	{
+//		String filename = null;
+//		List<String> text = null;
+//		
+//		
+//		switch (inputDialogType) {
+//			case FILE_LOAD:
+//				File file = IOManager.getFile(mainFrame);
+//				
+//				try {
+//					text = Files.readAllLines(file.toPath());
+//				} 
+//				catch (IOException e) {}
+//				
+//				break;
+//			case TEXT:
+//				text = IOManager.getText(mainFrame);
+//				
+//				break;
+//			default:
+//				break;
+//		}
+//		
+//		changeText(text, filename);
+//	}
 	
 	/**
 	 * Exports generated music to a MIDI file.
@@ -215,12 +243,19 @@ public class TextPlayerController extends Controller
 	}
 	
 	/**
-	 * Updates music player control buttons.
+	 * Defines whether a menu item should be enabled or not.
+	 * 
+	 * @param		menuBarItemLabel Menu item label
+	 * @param		enable True if the menu item should be enabled; false 
+	 * otherwise
 	 */
-	private void updateControlsMenu()
+	public void setMenuBarItemStatus(String menuBarItemLabel, boolean enable) 
 	{
-		((JMenuItem)getComponent("mb_file_close")).setEnabled(true);
-		((JMenuItem)getComponent("mb_ctrl_playPause")).setEnabled(true);
+		JMenuItem menuBarItem = ((JMenuItem)getComponent(menuBarItemLabel));
+		
+		
+		if (menuBarItem != null)
+			menuBarItem.setEnabled(enable);
 	}
 	
 	/**

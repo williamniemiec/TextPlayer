@@ -1,4 +1,4 @@
-package models.music;
+package models.parser.jfugue;
 
 import java.util.HashMap;
 import java.util.Map;

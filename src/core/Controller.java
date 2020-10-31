@@ -60,8 +60,8 @@ public abstract class Controller
 	 * @param		viewName Name of the view
 	 * @param		view View to be added
 	 * 
-	 * @throws		IllegalArgumentException If viewName is null or empty or if
-	 * view is null
+	 * @throws		IllegalArgumentException If viewName is null or empty, if
+	 * view is null or if view does not extends a {@link Component}
 	 */
 	public static final void addView(String viewName, View view)
 	{
@@ -70,6 +70,10 @@ public abstract class Controller
 		
 		if (view == null)
 			throw new IllegalArgumentException("View cannot be null");
+		
+		if (view instanceof Component) {
+			throw new IllegalArgumentException("View must extend a component");
+		}
 		
 		viewsViewer.add((Component)view, viewName);
 	}

@@ -1,9 +1,9 @@
-package models.io.dialog;
+package models.io.input.dialog;
 
 import java.awt.BorderLayout;
-import java.awt.Dialog.ModalityType;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
@@ -16,9 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-
-
-public class TextInput 
+public class TextInputDialog extends InputDialog 
 {
 	//-------------------------------------------------------------------------
 	//		Attributes
@@ -30,13 +28,16 @@ public class TextInput
 	private int frameHeight;
 	private int frameX;
 	private int frameY;
-	
+	private JFrame frame;
 	
 	//-------------------------------------------------------------------------
 	//		Constructor
 	//-------------------------------------------------------------------------
-	public TextInput(int width, int height, int x, int y)
+	public TextInputDialog(JFrame window, int width, int height, int x, int y)
 	{
+		if (window == null)
+			throw new IllegalArgumentException("Window cannot be null");
+			
 		if (width < 0)
 			throw new IllegalArgumentException("Width must be greater than zero");
 		
@@ -49,45 +50,41 @@ public class TextInput
 		if (y < 0)
 			throw new IllegalArgumentException("Y-position must be greater than zero");
 		
+		frame = window;
 		frameWidth = width;
 		frameHeight = height;
 		frameX = x;
 		frameY = y;
 	}
 	
-	public TextInput()
+	public TextInputDialog(JFrame window)
 	{
-		frameWidth = 600;
-		frameHeight = 250;
-		frameX = 150;
-		frameY = 150;
+		this(window, 600, 250, 150, 150);
 	}
 	
-	
-	//-------------------------------------------------------------------------
-	//		Methods
-	//-------------------------------------------------------------------------
-	public List<String> getInput(JFrame window, String windowTitle, String clearButtonTitle, String actionButtonTitle) 
+	@Override
+	public boolean ask() 
 	{
-		if (window == null)
-			throw new IllegalArgumentException("Window cannot be null");
-		
-		if ((windowTitle == null) || windowTitle.isBlank())
-			throw new IllegalArgumentException("Window title cannot be empty");
-		
-		if ((clearButtonTitle == null) || clearButtonTitle.isBlank())
-			throw new IllegalArgumentException("Clear button title cannot be empty");
-		
-		if ((actionButtonTitle == null) || actionButtonTitle.isBlank())
-			throw new IllegalArgumentException("Action button title cannot be empty");
-		
-		JPanel pnl_control = createControlPanel(clearButtonTitle, actionButtonTitle);
+		JPanel pnl_control = createControlPanel();
 		
 		
-		createDialog(window, windowTitle, pnl_control);
+		createDialog(pnl_control);
 		
+		return true;
+	}
+
+	@Override
+	public String getTitle() 
+	{
+		return actionPressed ? "N/A" : null;
+	}
+
+	@Override
+	public List<String> getContent()
+	{
 		return actionPressed ? Arrays.asList(txt_content.getText().split("\\n")) : null;
 	}
+
 	
 	private void clearText()
 	{
@@ -98,14 +95,8 @@ public class TextInput
 		}
 	}
 	
-	private void createDialog(JFrame parent, String title, JPanel controlPanel)
+	private void createDialog(JPanel controlPanel)
 	{
-		if (parent == null)
-			throw new IllegalArgumentException("Parent cannot be null");
-		
-		if ((title == null) || title.isBlank())
-			throw new IllegalArgumentException("Title cannot be empty");
-		
 		if (controlPanel == null)
 			throw new IllegalArgumentException("Panel cannot be null");
 		
@@ -122,7 +113,7 @@ public class TextInput
 		scrl_txtContent.setViewportView(txt_content);
 		
 		// Creates dialog
-		textInputWindow = new JDialog(parent, title);
+		textInputWindow = new JDialog(frame, RB.getString("TEXT_ENTRY"));
 		textInputWindow.setLayout(new BorderLayout(0, 0));
 		textInputWindow.add(scrl_txtContent, BorderLayout.CENTER);
 		textInputWindow.add(controlPanel, BorderLayout.SOUTH);
@@ -132,16 +123,10 @@ public class TextInput
 		textInputWindow.setVisible(true);
 	}
 	
-	private JPanel createControlPanel(String clearButtonTitle, String actionButtonTitle)
+	private JPanel createControlPanel()
 	{
-		if ((clearButtonTitle == null) || clearButtonTitle.isBlank())
-			throw new IllegalArgumentException("Clear button title cannot be empty");
-		
-		if ((actionButtonTitle == null) || actionButtonTitle.isBlank())
-			throw new IllegalArgumentException("Action button title cannot be empty");
-		
-		JButton btn_action = new JButton(actionButtonTitle);
-		JButton btn_clear = new JButton(clearButtonTitle);
+		JButton btn_action = new JButton(RB.getString("PROCESS"));
+		JButton btn_clear = new JButton(RB.getString("CLEAR"));
 		JPanel pnl_control = new JPanel();
 		
 		

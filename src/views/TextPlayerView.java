@@ -29,7 +29,8 @@ import javax.swing.SwingConstants;
 import controllers.TextPlayerController;
 import core.Model;
 import core.View;
-import models.io.IOType;
+import models.io.input.dialog.FileInputDialog;
+import models.io.input.dialog.TextInputDialog;
 import models.musicPlayer.MusicPlayer;
 
 
@@ -113,6 +114,11 @@ public class TextPlayerView extends JPanel implements View
 		btn_ctrl_play.setEnabled(!mp.isPlaying());
 		btn_ctrl_pause.setEnabled(!mp.isPaused());
 		btn_ctrl_stop.setEnabled(!mp.isStopped());
+		
+		// Updates menu bar items
+		textPlayerController.setMenuBarItemStatus("mb_ctrl_playPause", mp.isPlaying() || mp.isPaused());
+		textPlayerController.setMenuBarItemStatus("mb_ctrl_stop", !mp.isStopped());
+		textPlayerController.setMenuBarItemStatus("mb_file_close", true);
 	}
 	
 	/**
@@ -191,33 +197,9 @@ public class TextPlayerView extends JPanel implements View
 		add(pnl_down, BorderLayout.SOUTH);
 		pnl_down.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		// Play button
-		btn_ctrl_play = make_btn_play(pnl_down);
-		btn_ctrl_play.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				textPlayerController.play();
-			}
-		});
-		btn_ctrl_play.setEnabled(true);
-		
-		// Pause button
-		btn_ctrl_pause = make_btn_pause(pnl_down);
-		btn_ctrl_pause.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				textPlayerController.pause();
-			}
-		});
-		
-		// Stop button
-		btn_ctrl_stop = make_btn_stop(pnl_down);
-		btn_ctrl_stop.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				textPlayerController.stop();
-			}
-		});
+		make_btn_play(pnl_down);
+		make_btn_pause(pnl_down);
+		make_btn_stop(pnl_down);
 	}
 	
 	/**
@@ -225,20 +207,27 @@ public class TextPlayerView extends JPanel implements View
 	 * 
 	 * @param		panel Panel to which the button will be placed
 	 * 
-	 * @return		Created button
-	 * 
 	 * @throws		IOException If an error occurs during reading play control
 	 * icon
 	 */
-	private JButton make_btn_play(JPanel panel) throws IOException
+	private void make_btn_play(JPanel panel) throws IOException
 	{
 		if (panel == null)
 			throw new IllegalArgumentException("Panel cannot be null");
 		
-		return make_btn_ctrl(
-			panel, 
-			System.getProperty("user.dir")+"/src/assets/img/player/play.png"
+		btn_ctrl_play = make_btn_ctrl(
+				panel, 
+				System.getProperty("user.dir")+"/src/assets/img/player/play.png"
 		);
+		
+		btn_ctrl_play.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				textPlayerController.play();
+			}
+		});
+		
+		btn_ctrl_play.setEnabled(true);
 	}
 	
 	/**
@@ -246,41 +235,51 @@ public class TextPlayerView extends JPanel implements View
 	 * 
 	 * @param		panel Panel to which the button will be placed
 	 * 
-	 * @return		Created button
-	 * 
 	 * @throws		IOException If an error occurs during reading pause control
 	 * icon
 	 */
-	private JButton make_btn_pause(JPanel panel) throws IOException
+	private void make_btn_pause(JPanel panel) throws IOException
 	{
 		if (panel == null)
 			throw new IllegalArgumentException("Panel cannot be null");
 		
-		return make_btn_ctrl(
-			panel, 
-			System.getProperty("user.dir")+"/src/assets/img/player/pause.png"
+		btn_ctrl_pause = make_btn_ctrl(
+				panel, 
+				System.getProperty("user.dir")+"/src/assets/img/player/pause.png"
 		);
+		
+		btn_ctrl_pause.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				textPlayerController.pause();
+			}
+		});
 	}
 	
 	/**
 	 * Creates stop button.
 	 * 
 	 * @param		panel Panel to which the button will be placed
-	 * 
-	 * @return		Created button
-	 * 
+
 	 * @throws		IOException If an error occurs during reading stop control
 	 * icon
 	 */
-	private JButton make_btn_stop(JPanel panel) throws IOException
+	private void make_btn_stop(JPanel panel) throws IOException
 	{
 		if (panel == null)
 			throw new IllegalArgumentException("Panel cannot be null");
 		
-		return make_btn_ctrl(
-			panel, 
-			System.getProperty("user.dir")+"/src/assets/img/player/stop.png"
+		btn_ctrl_stop = make_btn_ctrl(
+				panel, 
+				System.getProperty("user.dir")+"/src/assets/img/player/stop.png"
 		);
+		
+		btn_ctrl_stop.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				textPlayerController.stop();
+			}
+		});
 	}
 	
 	/**
@@ -493,7 +492,7 @@ public class TextPlayerView extends JPanel implements View
 		btn_openFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				textPlayerController.changeText(IOType.FILE_LOAD);
+				textPlayerController.changeText(new FileInputDialog(frame, "txt"));
 			}
 		});
 	}
@@ -538,7 +537,7 @@ public class TextPlayerView extends JPanel implements View
 		btn_textEntry.setFocusPainted(false);
 		btn_textEntry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				textPlayerController.changeText(IOType.TEXT);
+				textPlayerController.changeText(new TextInputDialog(frame));
 			}
 		});
 	}

@@ -30,7 +30,8 @@ import controllers.HomeController;
 import core.Controller;
 import core.Model;
 import core.View;
-import models.io.IOType;
+import models.io.input.dialog.FileInputDialog;
+import models.io.input.dialog.TextInputDialog;
 
 
 /**
@@ -103,8 +104,7 @@ public class HomeView extends JPanel implements View
 	@Override
 	public void update(Model model, Object data) 
 	{
-		//homeController.updateMenuBar();
-		System.out.println("update");
+		homeController.updateMenuBar();
 	}
 	
 	/**
@@ -119,6 +119,19 @@ public class HomeView extends JPanel implements View
 		frame.setTitle("Text Player");
 
 		make_menuBar();
+	}
+	
+	/**
+	 * Creates main screen.
+	 * 
+	 * @throws		IOException If an error occurs during reading home image 
+	 */
+	private void make_home() throws IOException
+	{
+		setLayout(new BorderLayout(0, 0));
+
+		make_background();
+		make_input_options();
 	}
 	
 	/**
@@ -139,55 +152,15 @@ public class HomeView extends JPanel implements View
 	 */
 	private void make_mn_file()
 	{
-		JMenuItem mb_file_textEntry, mb_file_openFile, mb_file_close, btn_file_exit;
 		JMenu mb_file = new JMenu(RB.getString("FILE"));
 		
 		
+		make_btn_mn_textEntry(mb_file);
+		make_btn_mn_openFile(mb_file);
+		make_btn_mn_close(mb_file);
+		make_btn_mn_exit(mb_file);
+		
 		mb.add(mb_file);
-		
-		// Creates 'Text entry' button
-		mb_file_textEntry = new JMenuItem(RB.getString("TEXT_ENTRY"));
-		mb_file_textEntry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
-		mb_file_textEntry.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				homeController.openPlayer(IOType.TEXT);
-			}
-		});
-		mb_file.add(mb_file_textEntry);
-		homeController.addMainFrameComponent("mb_file_textEntry", mb_file_textEntry);
-		
-		// Creates 'Open file' button
-		mb_file_openFile = new JMenuItem(RB.getString("OPEN_FILE"));
-		mb_file_openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
-		mb_file_openFile.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				homeController.openPlayer(IOType.FILE_LOAD);
-			}
-		});
-		mb_file.add(mb_file_openFile);
-		homeController.addMainFrameComponent("mb_file_openFile", mb_file_openFile);
-		
-		// Creates 'Close' button
-		mb_file_close = new JMenuItem(RB.getString("CLOSE"));
-		mb_file_close.setEnabled(false);
-		mb_file_close.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.CTRL_DOWN_MASK));
-		mb_file_close.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				Controller.loadView("HomeView");
-			}
-		});
-		mb_file.add(mb_file_close);
-		homeController.addMainFrameComponent("mb_file_close", mb_file_close);
-		
-		// Creates 'Exit' button
-		btn_file_exit = new JMenuItem(RB.getString("EXIT"));
-		btn_file_exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, KeyEvent.ALT_DOWN_MASK));
-		btn_file_exit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				frame.dispose();
-			}
-		});
-		mb_file.add(btn_file_exit);
 	}
 	
 	/**
@@ -195,23 +168,13 @@ public class HomeView extends JPanel implements View
 	 */
 	private void make_mn_controller()
 	{
-		JMenuItem mb_ctrl_playPause, mb_ctrl_stop;
 		JMenu mn_ctrl = new JMenu(RB.getString("CONTROL"));
+		
+		
+		make_btn_mn_playPause(mn_ctrl);
+		make_btn_mn_stop(mn_ctrl);
+		
 		mb.add(mn_ctrl);
-		
-		// Creates 'Play / Pause' button
-		mb_ctrl_playPause = new JMenuItem(RB.getString("PLAY") + "/" + RB.getString("PAUSE"));
-		mb_ctrl_playPause.setEnabled(false);
-		mb_ctrl_playPause.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0));
-		mn_ctrl.add(mb_ctrl_playPause);
-		homeController.addMainFrameComponent("mb_ctrl_playPause", mb_ctrl_playPause);
-		
-		// Creates 'Stop' button
-		mb_ctrl_stop = new JMenuItem(RB.getString("STOP"));
-		mb_ctrl_stop.setEnabled(false);
-		mb_ctrl_stop.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, 0));
-		mn_ctrl.add(mb_ctrl_stop);
-		homeController.addMainFrameComponent("mb_ctrl_stop", mb_ctrl_stop);
 	}
 	
 	/**
@@ -235,30 +198,121 @@ public class HomeView extends JPanel implements View
 	}
 	
 	/**
-	 * Open about screen.
+	 * Creates text entry menu button and adds it to a JMenu.
+	 * 
+	 * @param		menu Menu that the button will be added
 	 */
-	private void show_about()
+	private void make_btn_mn_textEntry(JMenu menu)
 	{
-		JOptionPane.showMessageDialog(
-				frame,
-				RB.getString("VERSION") +" " + VERSION + "\n\n" +RB.getString("MADE_BY") + ":\n"
-				+ "-> Matheus Hiroyuki Suwa Moura \n"
-				+ "-> William Niemiec", RB.getString("ABOUT"),
-				JOptionPane.INFORMATION_MESSAGE
-		);
+		JMenuItem mb_file_textEntry;
+		
+		
+		mb_file_textEntry = new JMenuItem(RB.getString("TEXT_ENTRY"));
+		mb_file_textEntry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
+		mb_file_textEntry.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				homeController.openPlayer(new TextInputDialog(frame));
+			}
+		});
+		menu.add(mb_file_textEntry);
+		homeController.addMainFrameComponent("mb_file_textEntry", mb_file_textEntry);
 	}
 	
 	/**
-	 * Creates main screen.
+	 * Creates text entry menu button and adds it to a JMenu.
 	 * 
-	 * @throws		IOException If an error occurs during reading home image 
+	 * @param		menu Menu that the button will be added
 	 */
-	private void make_home() throws IOException
+	private void make_btn_mn_openFile(JMenu menu)
 	{
-		setLayout(new BorderLayout(0, 0));
-
-		make_background();
-		make_input_options();
+		JMenuItem mb_file_openFile;
+		
+		
+		mb_file_openFile = new JMenuItem(RB.getString("OPEN_FILE"));
+		mb_file_openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
+		mb_file_openFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				homeController.openPlayer(new FileInputDialog(frame, "txt"));
+			}
+		});
+		menu.add(mb_file_openFile);
+		homeController.addMainFrameComponent("mb_file_openFile", mb_file_openFile);
+	}
+	
+	/**
+	 * Creates close menu button and adds it to a JMenu.
+	 * 
+	 * @param		menu Menu that the button will be added
+	 */
+	private void make_btn_mn_close(JMenu menu)
+	{
+		JMenuItem mb_file_close;
+		
+		
+		mb_file_close = new JMenuItem(RB.getString("CLOSE"));
+		mb_file_close.setEnabled(false);
+		mb_file_close.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.CTRL_DOWN_MASK));
+		mb_file_close.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				Controller.loadView("HomeView");
+			}
+		});
+		menu.add(mb_file_close);
+		homeController.addMainFrameComponent("mb_file_close", mb_file_close);
+	}
+	
+	/**
+	 * Creates exit menu button and adds it to a JMenu.
+	 * 
+	 * @param		menu Menu that the button will be added
+	 */
+	private void make_btn_mn_exit(JMenu menu)
+	{
+		JMenuItem btn_file_exit;
+		
+		
+		btn_file_exit = new JMenuItem(RB.getString("EXIT"));
+		btn_file_exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, KeyEvent.ALT_DOWN_MASK));
+		btn_file_exit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				frame.dispose();
+			}
+		});
+		menu.add(btn_file_exit);
+	}
+	
+	/**
+	 * Creates play / pause menu button.
+	 * 
+	 * @param		menu Menu that the button will be added
+	 */
+	private void make_btn_mn_playPause(JMenu menu)
+	{
+		JMenuItem mb_ctrl_playPause;
+		
+		
+		mb_ctrl_playPause = new JMenuItem(RB.getString("PLAY") + "/" + RB.getString("PAUSE"));
+		mb_ctrl_playPause.setEnabled(false);
+		mb_ctrl_playPause.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0));
+		menu.add(mb_ctrl_playPause);
+		homeController.addMainFrameComponent("mb_ctrl_playPause", mb_ctrl_playPause);
+	}
+	
+	/**
+	 * Creates stop menu button.
+	 * 
+	 * @param		menu Menu that the button will be added
+	 */
+	private void make_btn_mn_stop(JMenu menu)
+	{
+		JMenuItem mb_ctrl_stop;
+		
+		
+		mb_ctrl_stop = new JMenuItem(RB.getString("STOP"));
+		mb_ctrl_stop.setEnabled(false);
+		mb_ctrl_stop.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, 0));
+		menu.add(mb_ctrl_stop);
+		homeController.addMainFrameComponent("mb_ctrl_stop", mb_ctrl_stop);
 	}
 	
 	/**
@@ -270,6 +324,7 @@ public class HomeView extends JPanel implements View
 	{
 		File homeImageFile = new File(System.getProperty("user.dir")+"/src/assets/img/home/logo.jpg");
 		ImageIcon homeImage;
+		
 		
 		try {
 			home_background_file = ImageIO.read(homeImageFile);
@@ -287,26 +342,6 @@ public class HomeView extends JPanel implements View
 		
 		home_background = new JLabel(homeImage);
 		add(home_background);
-	}
-	
-	/**
-	 * Sets dimensions of main screen background.
-	 * 
-	 * @param		w Background width
-	 * @param		h Background height
-	 */
-	private void resize_background(int w, int h)
-	{
-		if (w < 0)
-			throw new IllegalArgumentException("Width must be greater than zero");
-		
-		if (h < 0)
-			throw new IllegalArgumentException("Height must be greater than zero");
-		
-		Image homeBackgroundImage = home_background_file.getScaledInstance(w, h, Image.SCALE_FAST);
-		
-		
-		home_background.setIcon(new ImageIcon(homeBackgroundImage));
 	}
 	
 	/**
@@ -342,7 +377,8 @@ public class HomeView extends JPanel implements View
 		btn_textEntry.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				homeController.openPlayer(IOType.TEXT);
+//				homeController.openPlayer(IOType.TEXT);
+				homeController.openPlayer(new TextInputDialog(frame));
 			}
 		});
 	}
@@ -364,9 +400,44 @@ public class HomeView extends JPanel implements View
 		btn_openFile.setFocusPainted(false);
 		btn_openFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				homeController.openPlayer(IOType.FILE_LOAD);
+//				homeController.openPlayer(IOType.FILE_LOAD);
+				homeController.openPlayer(new FileInputDialog(frame, "txt"));
 			}
 		});
+	}
+	
+	/**
+	 * Sets dimensions of main screen background.
+	 * 
+	 * @param		w Background width
+	 * @param		h Background height
+	 */
+	private void resize_background(int w, int h)
+	{
+		if (w < 0)
+			throw new IllegalArgumentException("Width must be greater than zero");
+		
+		if (h < 0)
+			throw new IllegalArgumentException("Height must be greater than zero");
+		
+		Image homeBackgroundImage = home_background_file.getScaledInstance(w, h, Image.SCALE_FAST);
+		
+		
+		home_background.setIcon(new ImageIcon(homeBackgroundImage));
+	}
+	
+	/**
+	 * Open about screen.
+	 */
+	private void show_about()
+	{
+		JOptionPane.showMessageDialog(
+				frame,
+				RB.getString("VERSION") +" " + VERSION + "\n\n" +RB.getString("MADE_BY") + ":\n"
+				+ "-> Matheus Hiroyuki Suwa Moura \n"
+				+ "-> William Niemiec", RB.getString("ABOUT"),
+				JOptionPane.INFORMATION_MESSAGE
+		);
 	}
 	
 	/**

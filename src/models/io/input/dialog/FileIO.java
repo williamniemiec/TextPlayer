@@ -1,4 +1,4 @@
-package models.io.dialog;
+package models.io.input.dialog;
 
 import java.awt.FileDialog;
 import java.io.File;

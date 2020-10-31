@@ -11,10 +11,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import core.Controller;
-import models.io.IOType;
-import models.io.dialog.IOManager;
-import models.parse.JFugueMusicParser;
-import models.parse.Parser;
+import models.io.input.dialog.IOManager;
+import models.io.input.dialog.InputDialog;
+import models.parser.JFugueMusicParser;
+import models.parser.Parser;
 import views.HomeView;
 
 
@@ -99,31 +99,51 @@ public class HomeController extends Controller
 	 * 
 	 * @throws		IllegalArgumentException If text is null
 	 */
-	public void openPlayer(IOType inputDialogType)
+//	public void openPlayer(IOType inputDialogType)
+//	{
+//		String filename = null;
+//		List<String> text = null;
+//		
+//		
+//		switch (inputDialogType) {
+//			case FILE_LOAD:
+//				File file = IOManager.getFile(mainFrame);
+//				
+//				try {
+//					text = Files.readAllLines(file.toPath());
+//					filename = file.getName();
+//				} 
+//				catch (IOException e) {}
+//				
+//				break;
+//			case TEXT:
+//				text = IOManager.getText(mainFrame);
+//				
+//				break;
+//			default:
+//				break;
+//		}
+//		
+//		openPlayer(text, filename);
+//	}
+	
+	public void openPlayer(InputDialog id)
 	{
-		String filename = null;
-		List<String> text = null;
+		if (!id.ask())
+			return;
+		
+		Parser parser = new Parser(new JFugueMusicParser());
+		List<String> processedText;
 		
 		
-		switch (inputDialogType) {
-			case FILE_LOAD:
-				File file = IOManager.getFile(mainFrame);
-				
-				try {
-					text = Files.readAllLines(file.toPath());
-				} 
-				catch (IOException e) {}
-				
-				break;
-			case TEXT:
-				text = IOManager.getText(mainFrame);
-				
-				break;
-			default:
-				break;
-		}
+		processedText = parser.parse(id.getContent());
 		
-		openPlayer(text, filename);
+		textPlayerController = new TextPlayerController(
+				processedText, 
+				id.getContent(), 
+				id.getTitle()
+		);
+		textPlayerController.run();
 	}
 	
 	/**
@@ -132,25 +152,23 @@ public class HomeController extends Controller
 	 * @param		text Text to be converted to music
 	 * @param		filename Filename containing the text, or null if the text
 	 * did not come from a file
-	 * 
-	 * @throws		IllegalArgumentException If text is null
 	 */
-	private void openPlayer(List<String> text, String filename)
-	{
-		if (text == null)
-			throw new IllegalArgumentException("Text cannot be null");
-		
-		Parser parser = new Parser(new JFugueMusicParser());
-		List<String> processedText = parser.parse(text);
-		
-		
-		textPlayerController = new TextPlayerController(
-				processedText, 
-				text, 
-				filename
-		);
-		textPlayerController.run();
-	}
+//	public void openPlayer(List<String> text, String filename)
+//	{
+//		if ((text == null) || text.isEmpty())
+//			return;
+//		
+//		Parser parser = new Parser(new JFugueMusicParser());
+//		List<String> processedText = parser.parse(text);
+//		
+//		
+//		textPlayerController = new TextPlayerController(
+//				processedText, 
+//				text, 
+//				filename
+//		);
+//		textPlayerController.run();
+//	}
 	
 	/**
 	 * Defines exception behavior.

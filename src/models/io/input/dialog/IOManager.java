@@ -1,4 +1,4 @@
-package models.io.dialog;
+package models.io.input.dialog;
 
 import java.io.File;
 import java.util.List;
@@ -40,7 +40,7 @@ public class IOManager
 		);
 	}
 	
-	public static File getOutput(JFrame window, String extension)
+//	public static File getOutput(JFrame window, String extension)
 	{
 		if (window == null)
 			throw new IllegalArgumentException("Window cannot be null");

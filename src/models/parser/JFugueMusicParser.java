@@ -1,4 +1,4 @@
-package models.parse;
+package models.parser;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import models.music.JFugueMusicalNote;
+import models.parser.jfugue.JFugueMusicalNote;
 
 
 /**
