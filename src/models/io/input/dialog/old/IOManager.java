@@ -1,4 +1,4 @@
-package models.io.input.dialog;
+package models.io.input.dialog.old;
 
 import java.io.File;
 import java.util.List;

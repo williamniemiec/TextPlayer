@@ -5,37 +5,40 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.swing.JFrame;
-
-import models.io.IOType;
 
 public class FileInputDialog extends InputDialog 
 {
 	//-------------------------------------------------------------------------
 	//		Attributes
 	//-------------------------------------------------------------------------
-	private static final ResourceBundle RB;
+	private static final ResourceBundle RB = 
+			ResourceBundle.getBundle("resources.lang.io.input.dialog.file");
 	private JFrame frame;
 	private Path directory;
 	private String fileExtension;
+	private FileInputType fileInputType;
+	private File chosenFile;
 	
 	
 	//-------------------------------------------------------------------------
 	//		Constructor
 	//-------------------------------------------------------------------------
-	public FileInputDialog(JFrame window, Path directory, String fileExtension)
+	public FileInputDialog(JFrame window, Path directory, String fileExtension, FileInputType type)
 	{
 		frame = window;
 		this.directory = directory;
 		this.fileExtension = fileExtension;
+		fileInputType = type;
 	}
 	
-	public FileInputDialog(JFrame window, String fileExtension)
+	public FileInputDialog(JFrame window, String fileExtension, FileInputType type)
 	{
-		this(window, null, fileExtension);
+		this(window, null, fileExtension, type);
 	}
 	
 	
@@ -46,10 +49,14 @@ public class FileInputDialog extends InputDialog
 	public boolean ask() 
 	{
 		FileDialog fd;
-		boolean error = false;
+		boolean success = false;
 		
 		
-		fd = new FileDialog(frame, RB.getString("FILE_LOAD_DIALOG_TITLE"), FileDialog.LOAD);
+		fd = new FileDialog(
+				frame, 
+				RB.getString(fileInputType.getResourceBundleKey()), 
+				fileInputType.getFileDialogType()
+		);
 		
 		if (directory != null)
 			fd.setDirectory(directory.toString());
@@ -58,19 +65,46 @@ public class FileInputDialog extends InputDialog
 		fd.setVisible(true);
 		
 		if (fd.getFile() != null) {
-			File chosenFile = new File(fd.getDirectory() + fd.getFile());
-					
+			chosenFile = new File(fd.getDirectory() + fd.getFile());
+			success = true;
+		}
+		
+		return success;
+	}
+
+	@Override
+	public String getTitle()
+	{
+		if (chosenFile == null)
+			throw new IllegalStateException("No file has been choosen");
+		
+		return chosenFile.getName();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @implNote	Lazy initialization
+	 */
+	@Override
+	public List<String> getContent()
+	{
+		if (chosenFile == null)
+			throw new IllegalStateException("No file has been choosen");
 			
+		if (content == null) {
 			try {
 				content = Files.readAllLines(chosenFile.toPath());
 			} 
 			catch (IOException e) {
-				error = true;
+				content = new ArrayList<>();
 			}
-			
-			title = chosenFile.getName();
 		}
 		
-		return !error;
+		return content;
+	}
+	
+	public File getFile()
+	{
+		return chosenFile;
 	}
 }

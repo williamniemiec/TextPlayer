@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -21,6 +22,8 @@ public class TextInputDialog extends InputDialog
 	//-------------------------------------------------------------------------
 	//		Attributes
 	//-------------------------------------------------------------------------
+	private static final ResourceBundle RB = 
+			ResourceBundle.getBundle("resources.lang.io.input.dialog.text");
 	private boolean actionPressed;
 	private JTextArea txt_content;
 	private JDialog textInputWindow;
@@ -37,7 +40,7 @@ public class TextInputDialog extends InputDialog
 	{
 		if (window == null)
 			throw new IllegalArgumentException("Window cannot be null");
-			
+		
 		if (width < 0)
 			throw new IllegalArgumentException("Width must be greater than zero");
 		
@@ -113,7 +116,7 @@ public class TextInputDialog extends InputDialog
 		scrl_txtContent.setViewportView(txt_content);
 		
 		// Creates dialog
-		textInputWindow = new JDialog(frame, RB.getString("TEXT_ENTRY"));
+		textInputWindow = new JDialog(frame, RB.getString("DIALOG_TITLE"));
 		textInputWindow.setLayout(new BorderLayout(0, 0));
 		textInputWindow.add(scrl_txtContent, BorderLayout.CENTER);
 		textInputWindow.add(controlPanel, BorderLayout.SOUTH);
