@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.InputEvent;
@@ -50,17 +48,18 @@ public class HomeView extends JPanel implements View
 	//		Attributes
 	//-------------------------------------------------------------------------
 	private static final long serialVersionUID = 100L;
+	private static final ResourceBundle lang = 
+			ResourceBundle.getBundle("resources.lang.home.home");
 	private static final int MAIN_FRAME_WIDTH = 800;
 	private static final int MAIN_FRAME_HEIGHT = 500;
 	private static final int MAIN_FRAME_X = 100;
 	private static final int MAIN_FRAME_Y = 100;
 	private static final String VERSION = "1.0.0";	
-	private HomeController homeController;
+	private transient HomeController homeController;
 	private JFrame window;
 	private JMenuBar mb;
 	private JLabel lblHomeBackground;
 	private transient BufferedImage imgHomeBackground;
-	private final transient ResourceBundle lang;
 	
 	
 	//-------------------------------------------------------------------------
@@ -74,7 +73,7 @@ public class HomeView extends JPanel implements View
 	 * 
 	 * @throws		IOException If an error occurs during reading home image 
 	 */
-	public HomeView(HomeController homeController, JFrame frame, ResourceBundle lang) throws IOException
+	public HomeView(HomeController homeController, JFrame frame) throws IOException
 	{
 		if (homeController == null)
 			throw new IllegalArgumentException("Controller cannot be null");
@@ -82,12 +81,8 @@ public class HomeView extends JPanel implements View
 		if (frame == null)
 			throw new IllegalArgumentException("Frame cannot be null");
 		
-		if (lang == null)
-			throw new IllegalArgumentException("Resource bundle cannot be null");
-		
 		this.homeController = homeController;
 		this.window = frame;
-		this.lang = lang;
 		
 		makeMainFrame();
 		makeHome();
@@ -192,9 +187,7 @@ public class HomeView extends JPanel implements View
 		mbAbout.setContentAreaFilled(false);
 		mbAbout.setBorderPainted(false);
 		mbAbout.setFocusable(false);
-		mbAbout.addActionListener((ActionEvent e) -> {
-				showAbout();
-		});
+		mbAbout.addActionListener(event -> showAbout());
 		mb.add(mbAbout);
 	}
 	
@@ -210,7 +203,7 @@ public class HomeView extends JPanel implements View
 		
 		mbItemTextEntry = new JMenuItem(lang.getString("TEXT_ENTRY"));
 		mbItemTextEntry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
-		mbItemTextEntry.addActionListener((event) -> 
+		mbItemTextEntry.addActionListener(event -> 
 				homeController.openPlayer(new TextInputDialog(window))
 		);
 		menu.add(mbItemTextEntry);
@@ -229,7 +222,7 @@ public class HomeView extends JPanel implements View
 		
 		mbItemOpenFile = new JMenuItem(lang.getString("OPEN_FILE"));
 		mbItemOpenFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
-		mbItemOpenFile.addActionListener((event) -> 
+		mbItemOpenFile.addActionListener(event -> 
 				homeController.openPlayer(new FileInputDialog(window, "txt", FileInputType.LOAD))
 		);
 		menu.add(mbItemOpenFile);
@@ -249,7 +242,7 @@ public class HomeView extends JPanel implements View
 		mbItemCloseFileFile = new JMenuItem(lang.getString("CLOSE"));
 		mbItemCloseFileFile.setEnabled(false);
 		mbItemCloseFileFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
-		mbItemCloseFileFile.addActionListener((event) -> Controller.loadView("HomeView"));
+		mbItemCloseFileFile.addActionListener(event -> Controller.loadView("HomeView"));
 		menu.add(mbItemCloseFileFile);
 		homeController.addMainFrameComponent("mb_file_close", mbItemCloseFileFile);
 	}
@@ -266,7 +259,7 @@ public class HomeView extends JPanel implements View
 		
 		mbItemExit = new JMenuItem(lang.getString("EXIT"));
 		mbItemExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_DOWN_MASK));
-		mbItemExit.addActionListener((event) -> window.dispose());
+		mbItemExit.addActionListener(event -> window.dispose());
 		menu.add(mbItemExit);
 	}
 	
@@ -363,7 +356,7 @@ public class HomeView extends JPanel implements View
 		
 		panel.add(btnTextEntry);
 		btnTextEntry.setFocusPainted(false);
-		btnTextEntry.addActionListener((event) -> 
+		btnTextEntry.addActionListener(event -> 
 				homeController.openPlayer(new TextInputDialog(window))
 		);
 	}
@@ -383,7 +376,7 @@ public class HomeView extends JPanel implements View
 
 		panel.add(btnOpenFile);
 		btnOpenFile.setFocusPainted(false);
-		btnOpenFile.addActionListener((event) -> 
+		btnOpenFile.addActionListener(event -> 
 				homeController.openPlayer(new FileInputDialog(window, "txt", FileInputType.LOAD))
 		);
 	}

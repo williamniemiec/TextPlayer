@@ -7,8 +7,6 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +28,7 @@ import controllers.TextPlayerController;
 import core.Model;
 import core.View;
 import models.io.input.dialog.FileInputDialog;
+import models.io.input.dialog.FileInputType;
 import models.io.input.dialog.TextInputDialog;
 import models.musicPlayer.MusicPlayer;
 
@@ -40,21 +39,22 @@ import models.musicPlayer.MusicPlayer;
  * @version		1.0.0
  * @since		1.0.0
  */
-@SuppressWarnings("serial")
 public class TextPlayerView extends JPanel implements View 
 {
 	//-------------------------------------------------------------------------
 	//		Attributes
 	//-------------------------------------------------------------------------
-	private final ResourceBundle RB;
-	private TextPlayerController textPlayerController;
+	private static final long serialVersionUID = 100L;
+	private static final ResourceBundle lang = 
+			ResourceBundle.getBundle("resources.lang.textplayer.textplayer");
+	private transient TextPlayerController textPlayerController;
 	private JFrame frame;
-	private JLabel lbl_filename_name;
+	private JLabel lblFilename;
 	private JTextArea textArea;
-	private JProgressBar pb_music;
-	private JButton btn_ctrl_play;
-	private JButton btn_ctrl_pause;
-	private JButton btn_ctrl_stop;
+	private JProgressBar pbMusic;
+	private JButton btnCtrlPlay;
+	private JButton btnCtrlPause;
+	private JButton btnCtrlStop;
 	
 
 	//-------------------------------------------------------------------------
@@ -68,25 +68,21 @@ public class TextPlayerView extends JPanel implements View
 	 * 
 	 * @throws		IOException If an error while creating header or controls
 	 */
-	public TextPlayerView(TextPlayerController textPlayerController, JFrame frame, ResourceBundle RB) throws IOException
+	public TextPlayerView(TextPlayerController textPlayerController, JFrame frame) throws IOException
 	{
 		if (textPlayerController == null)
 			throw new IllegalArgumentException("Controller cannot be null");
 		
 		if (frame == null)
 			throw new IllegalArgumentException("Frame cannot be null");
-		
-		if (RB == null)
-			throw new IllegalArgumentException("Resource bundle cannot be null");
-		
+
 		this.textPlayerController = textPlayerController;
 		this.frame = frame;
-		this.RB = RB;
 		
-		make_panel();
-		make_header();
-		make_controls();
-		make_centralPanel();
+		makePanel();
+		makeHeader();
+		makeControls();
+		makeCenterPanel();
 	}
 	
 	
@@ -108,12 +104,12 @@ public class TextPlayerView extends JPanel implements View
 		
 		
 		// Updates progress bar
-		pb_music.setValue((int)(musicPosition/musicLength));
+		pbMusic.setValue((int)(musicPosition/musicLength));
 				
 		// Updates control player buttons
-		btn_ctrl_play.setEnabled(!mp.isPlaying());
-		btn_ctrl_pause.setEnabled(!mp.isPaused());
-		btn_ctrl_stop.setEnabled(!mp.isStopped());
+		btnCtrlPlay.setEnabled(!mp.isPlaying());
+		btnCtrlPause.setEnabled(!mp.isPaused());
+		btnCtrlStop.setEnabled(!mp.isStopped());
 		
 		// Updates menu bar items
 		textPlayerController.setMenuBarItemStatus("mb_ctrl_playPause", mp.isPlaying() || mp.isPaused());
@@ -124,7 +120,7 @@ public class TextPlayerView extends JPanel implements View
 	/**
 	 * Updates the section that displays the text data.
 	 */
-	public void update_content() 
+	public void updateContent() 
 	{
 		String content = textPlayerController.getText()
 				.stream()
@@ -134,13 +130,13 @@ public class TextPlayerView extends JPanel implements View
 		
 		textArea.setText(content);
 		textArea.setCaretPosition(0);
-		lbl_filename_name.setText(textPlayerController.getFilename());
+		lblFilename.setText(textPlayerController.getFilename());
 	}
 	
 	/**
 	 * Creates {@link JPanel} of the view.
 	 */
-	private void make_panel()
+	private void makePanel()
 	{
 		setBorder(null);
 		setBounds(frame.getX(), frame.getY(), frame.getWidth(), frame.getHeight());
@@ -152,36 +148,36 @@ public class TextPlayerView extends JPanel implements View
 	 * 
 	 * @throws		IOException If an error occurs during reading header image  
 	 */
-	private void make_header() throws IOException
+	private void makeHeader() throws IOException
 	{
-		JPanel pnl_top = new JPanel();
+		JPanel pnlTop = new JPanel();
 		FlowLayout flowLayout;
-		BufferedImage myPicture;
-		JLabel lbl_musicPlayer;
+		BufferedImage imgHeader;
+		JLabel lblMusicPlayer;
 		ImageIcon img;
 		
 		
-		pnl_top.setBackground(new Color(64, 64, 64));
-		flowLayout = (FlowLayout) pnl_top.getLayout();
+		pnlTop.setBackground(new Color(64, 64, 64));
+		flowLayout = (FlowLayout) pnlTop.getLayout();
 		flowLayout.setVgap(0);
 		flowLayout.setHgap(0);
 		
 		// Places the banner in the header
 		try {
-			myPicture = ImageIO.read(new File(System.getProperty("user.dir")+"/src/assets/img/player/header_logo.jpg"));
+			imgHeader = ImageIO.read(new File(System.getProperty("user.dir")+"/src/assets/img/player/header_logo.jpg"));
 		}
 		catch (IOException e) {
 			throw new IOException("Error while reading header image");
 		}
 		
-		lbl_musicPlayer = new JLabel();
-		pnl_top.add(lbl_musicPlayer, BorderLayout.NORTH);
+		lblMusicPlayer = new JLabel();
+		pnlTop.add(lblMusicPlayer, BorderLayout.NORTH);
 		
-		img = new ImageIcon(myPicture.getScaledInstance(frame.getWidth(), frame.getHeight()/3, Image.SCALE_SMOOTH));
-		lbl_musicPlayer.setIcon(img);
+		img = new ImageIcon(imgHeader.getScaledInstance(frame.getWidth(), frame.getHeight()/3, Image.SCALE_SMOOTH));
+		lblMusicPlayer.setIcon(img);
 		
 		// Adds banner to the view
-		add(pnl_top, BorderLayout.NORTH);
+		add(pnlTop, BorderLayout.NORTH);
 	}
 	
 	/**
@@ -189,97 +185,84 @@ public class TextPlayerView extends JPanel implements View
 	 * 
 	 * @throws		IOException If an error occurs during reading control icon   
 	 */
-	private void make_controls() throws IOException
+	private void makeControls() throws IOException
 	{
-		JPanel pnl_down = new JPanel();
+		JPanel pnlDown = new JPanel();
 		
 		
-		add(pnl_down, BorderLayout.SOUTH);
-		pnl_down.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		add(pnlDown, BorderLayout.SOUTH);
+		pnlDown.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		make_btn_play(pnl_down);
-		make_btn_pause(pnl_down);
-		make_btn_stop(pnl_down);
+		makeCtrlBtnPlay(pnlDown);
+		makeCtrlBtnPause(pnlDown);
+		makeCtrlBtnStop(pnlDown);
 	}
 	
 	/**
-	 * Creates play button.
+	 * Creates play control button.
 	 * 
 	 * @param		panel Panel to which the button will be placed
 	 * 
 	 * @throws		IOException If an error occurs during reading play control
 	 * icon
 	 */
-	private void make_btn_play(JPanel panel) throws IOException
+	private void makeCtrlBtnPlay(JPanel panel) throws IOException
 	{
 		if (panel == null)
 			throw new IllegalArgumentException("Panel cannot be null");
 		
-		btn_ctrl_play = make_btn_ctrl(
+		btnCtrlPlay = makeCtrlBtn(
 				panel, 
 				System.getProperty("user.dir")+"/src/assets/img/player/play.png"
 		);
 		
-		btn_ctrl_play.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				textPlayerController.play();
-			}
-		});
+		btnCtrlPlay.addActionListener((event) ->
+				textPlayerController.play()
+		);
 		
-		btn_ctrl_play.setEnabled(true);
+		btnCtrlPlay.setEnabled(true);
 	}
 	
 	/**
-	 * Creates pause button.
+	 * Creates pause control button.
 	 * 
 	 * @param		panel Panel to which the button will be placed
 	 * 
 	 * @throws		IOException If an error occurs during reading pause control
 	 * icon
 	 */
-	private void make_btn_pause(JPanel panel) throws IOException
+	private void makeCtrlBtnPause(JPanel panel) throws IOException
 	{
 		if (panel == null)
 			throw new IllegalArgumentException("Panel cannot be null");
 		
-		btn_ctrl_pause = make_btn_ctrl(
+		btnCtrlPause = makeCtrlBtn(
 				panel, 
 				System.getProperty("user.dir")+"/src/assets/img/player/pause.png"
 		);
 		
-		btn_ctrl_pause.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				textPlayerController.pause();
-			}
-		});
+		btnCtrlPause.addActionListener(event ->	textPlayerController.pause());
 	}
 	
 	/**
-	 * Creates stop button.
+	 * Creates stop control button.
 	 * 
 	 * @param		panel Panel to which the button will be placed
 
 	 * @throws		IOException If an error occurs during reading stop control
 	 * icon
 	 */
-	private void make_btn_stop(JPanel panel) throws IOException
+	private void makeCtrlBtnStop(JPanel panel) throws IOException
 	{
 		if (panel == null)
 			throw new IllegalArgumentException("Panel cannot be null");
 		
-		btn_ctrl_stop = make_btn_ctrl(
+		btnCtrlStop = makeCtrlBtn(
 				panel, 
 				System.getProperty("user.dir")+"/src/assets/img/player/stop.png"
 		);
 		
-		btn_ctrl_stop.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				textPlayerController.stop();
-			}
-		});
+		btnCtrlStop.addActionListener(event -> textPlayerController.stop());
 	}
 	
 	/**
@@ -292,7 +275,7 @@ public class TextPlayerView extends JPanel implements View
 	 * 
 	 * @throws		IOException If an error occurs during reading control icon   
 	 */
-	private JButton make_btn_ctrl(JPanel panel, String filepath) throws IOException
+	private JButton makeCtrlBtn(JPanel panel, String filepath) throws IOException
 	{
 		if (panel == null)
 			throw new IllegalArgumentException("Panel cannot be null");
@@ -300,12 +283,12 @@ public class TextPlayerView extends JPanel implements View
 		if ((filepath == null) || filepath.isBlank())
 			throw new IllegalArgumentException("Filepath cannot be empty");
 		
-		JButton btn_ctrl = new JButton();
+		JButton btnCtrl = new JButton();
 		BufferedImage myPicture;
 		ImageIcon img;
 		
 		
-		panel.add(btn_ctrl);
+		panel.add(btnCtrl);
 		
 		try {
 			myPicture = ImageIO.read(new File(filepath));
@@ -315,41 +298,43 @@ public class TextPlayerView extends JPanel implements View
 		}
 		
 		img = new ImageIcon(myPicture.getScaledInstance(50, 50, Image.SCALE_SMOOTH));
-		btn_ctrl.setEnabled(false);
-		btn_ctrl.setIcon(img);
-		btn_ctrl.setContentAreaFilled(false);
-		btn_ctrl.setFocusPainted(true);
-		btn_ctrl.setBorderPainted(false);
-		btn_ctrl.setOpaque(false);
+		btnCtrl.setEnabled(false);
+		btnCtrl.setIcon(img);
+		btnCtrl.setContentAreaFilled(false);
+		btnCtrl.setFocusPainted(true);
+		btnCtrl.setBorderPainted(false);
+		btnCtrl.setOpaque(false);
 		
-		return btn_ctrl;
+		return btnCtrl;
 	}
 	
 	/**
-	 * Creates central area.
+	 * Creates center area.
 	 */
-	private void make_centralPanel()
+	private void makeCenterPanel()
 	{
-		JPanel pnl_center, pnl_center_center, pnl_options;
+		JPanel pnlCenter;
+		JPanel pnlCenterCenter;
+		JPanel pnlOptions;
 		
 		
 		// Panel responsible for the central section of the view
-		pnl_center = new JPanel();
-		pnl_center.setBorder(null);
-		pnl_center.setLayout(new BorderLayout(0, 0));
-		add(pnl_center);
+		pnlCenter = new JPanel();
+		pnlCenter.setBorder(null);
+		pnlCenter.setLayout(new BorderLayout(0, 0));
+		add(pnlCenter);
 		
 		// Panel that will be in the center of the center section panel
-		pnl_center_center = new JPanel(new BorderLayout(0,0));
-		pnl_center_center.setLayout(new BorderLayout(0, 0));
-		pnl_center.add(pnl_center_center, BorderLayout.CENTER);
+		pnlCenterCenter = new JPanel(new BorderLayout(0,0));
+		pnlCenterCenter.setLayout(new BorderLayout(0, 0));
+		pnlCenter.add(pnlCenterCenter, BorderLayout.CENTER);
 		
-		pnl_options = make_pnl_options();
-		pnl_center_center.add(pnl_options, BorderLayout.NORTH);
+		pnlOptions = makePnlOptions();
+		pnlCenterCenter.add(pnlOptions, BorderLayout.NORTH);
 		
-		make_fileInfo(pnl_center, BorderLayout.NORTH);
-		make_textArea(pnl_center_center, BorderLayout.CENTER);
-		make_progressBar(pnl_center, BorderLayout.SOUTH);
+		makeFileInfo(pnlCenter, BorderLayout.NORTH);
+		makeTextArea(pnlCenterCenter, BorderLayout.CENTER);
+		makeProgressBar(pnlCenter, BorderLayout.SOUTH);
 	}
 	
 	/**
@@ -357,27 +342,29 @@ public class TextPlayerView extends JPanel implements View
 	 * 
 	 * @return		Options panel
 	 */
-	private JPanel make_pnl_options()
+	private JPanel makePnlOptions()
 	{
-		JPanel pnl_options, pnl_options_top, pnl_options_bottom;
+		JPanel pnlOptions;
+		JPanel pnlOptionsTop;
+		JPanel pnlOptionsBottom;
 		
 		
-		pnl_options_top = new JPanel();
-		pnl_options_top.setLayout(new GridLayout(0, 2, 0, 0));
+		pnlOptionsTop = new JPanel();
+		pnlOptionsTop.setLayout(new GridLayout(0, 2, 0, 0));
 		
-		pnl_options_bottom = new JPanel();
-		pnl_options_bottom.setLayout(new GridLayout(0, 1, 0, 0));
+		pnlOptionsBottom = new JPanel();
+		pnlOptionsBottom.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		pnl_options = new JPanel();
-		pnl_options.setLayout(new BorderLayout(0, 0));
-		pnl_options.add(pnl_options_top, BorderLayout.NORTH);
-		pnl_options.add(pnl_options_bottom, BorderLayout.SOUTH);
+		pnlOptions = new JPanel();
+		pnlOptions.setLayout(new BorderLayout(0, 0));
+		pnlOptions.add(pnlOptionsTop, BorderLayout.NORTH);
+		pnlOptions.add(pnlOptionsBottom, BorderLayout.SOUTH);
 		
-		make_btn_textEntry(pnl_options_top);
-		make_btn_changeFile(pnl_options_top);
-		make_btn_exportFileMusic(pnl_options_bottom);
+		makeBtnTextEntry(pnlOptionsTop);
+		makeBtnChangeFile(pnlOptionsTop);
+		makeBtnExportFileMusic(pnlOptionsBottom);
 		
-		return pnl_options;
+		return pnlOptions;
 	}
 	
 	/**
@@ -387,7 +374,7 @@ public class TextPlayerView extends JPanel implements View
 	 * @param		constraints Position where this section will be added to 
 	 * the panel
 	 */
-	private void make_fileInfo(JPanel panel, Object constraints)
+	private void makeFileInfo(JPanel panel, Object constraints)
 	{
 		if (panel == null)
 			throw new IllegalArgumentException("Panel cannot be null");
@@ -395,23 +382,23 @@ public class TextPlayerView extends JPanel implements View
 		if (constraints == null)
 			throw new IllegalArgumentException("Constraints cannot be null");
 		
-		JPanel pnl_filename = new JPanel();
-		JLabel lbl_filename_title;
+		JPanel pnlFilename = new JPanel();
+		JLabel lblFilenameTitle;
 		
 		
-		pnl_filename.setLayout(new BorderLayout(0, 0));
+		pnlFilename.setLayout(new BorderLayout(0, 0));
 		
-		lbl_filename_title = new JLabel(RB.getString("FILENAME") + ": ");
-		lbl_filename_title.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_filename_title.setFont(new Font("Tahoma", Font.BOLD, 15));
-		pnl_filename.add(lbl_filename_title, BorderLayout.WEST);
+		lblFilenameTitle = new JLabel(lang.getString("FILENAME") + ": ");
+		lblFilenameTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		lblFilenameTitle.setFont(new Font("Tahoma", Font.BOLD, 15));
+		pnlFilename.add(lblFilenameTitle, BorderLayout.WEST);
 		
-		lbl_filename_name = new JLabel(textPlayerController.getFilename());
-		lbl_filename_name.setHorizontalAlignment(SwingConstants.CENTER);
-		lbl_filename_name.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		pnl_filename.add(lbl_filename_name, BorderLayout.CENTER);
+		lblFilename = new JLabel(textPlayerController.getFilename());
+		lblFilename.setHorizontalAlignment(SwingConstants.CENTER);
+		lblFilename.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		pnlFilename.add(lblFilename, BorderLayout.CENTER);
 		
-		panel.add(pnl_filename, constraints);
+		panel.add(pnlFilename, constraints);
 	}
 	
 	/**
@@ -421,7 +408,7 @@ public class TextPlayerView extends JPanel implements View
 	 * @param		constraints Position where this section will be added to 
 	 * the panel
 	 */
-	private void make_textArea(JPanel panel, Object constraints)
+	private void makeTextArea(JPanel panel, Object constraints)
 	{
 		if (panel == null)
 			throw new IllegalArgumentException("Panel cannot be null");
@@ -432,7 +419,7 @@ public class TextPlayerView extends JPanel implements View
 		JScrollPane scrollPane = new JScrollPane();
 		String text = textPlayerController.getText()
 				.stream()
-				.map((line) -> line + "\n")
+				.map(line -> line + "\n")
 				.collect(Collectors.joining(""));
 		
 		
@@ -458,7 +445,7 @@ public class TextPlayerView extends JPanel implements View
 	 * @param		constraints Position where this section will be added to 
 	 * the panel
 	 */
-	private void make_progressBar(JPanel panel, Object constraints)
+	private void makeProgressBar(JPanel panel, Object constraints)
 	{
 		if (panel == null)
 			throw new IllegalArgumentException("Panel cannot be null");
@@ -466,12 +453,12 @@ public class TextPlayerView extends JPanel implements View
 		if (constraints == null)
 			throw new IllegalArgumentException("Constraints cannot be null");
 		
-		pb_music = new JProgressBar();
-		pb_music.setStringPainted(true);
+		pbMusic = new JProgressBar();
+		pbMusic.setStringPainted(true);
 		
-		pb_music.setForeground(new Color(238,90,9));
-		pb_music.setValue(0);
-		panel.add(pb_music, constraints);
+		pbMusic.setForeground(new Color(238,90,9));
+		pbMusic.setValue(0);
+		panel.add(pbMusic, constraints);
 	}
 	
 	/**
@@ -479,22 +466,19 @@ public class TextPlayerView extends JPanel implements View
 	 * 
 	 * @param		panel Panel that the button will be added
 	 */
-	private void make_btn_changeFile(JPanel panel)
+	private void makeBtnChangeFile(JPanel panel)
 	{
 		if (panel == null)
 			throw new IllegalArgumentException("Panel cannot be null");
 		
-		JButton btn_openFile = new JButton(RB.getString("FILE_OPEN"));
+		JButton btnOpenFile = new JButton(lang.getString("FILE_OPEN"));
 		
 
-		panel.add(btn_openFile);
+		panel.add(btnOpenFile);
 		
-		btn_openFile.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				textPlayerController.changeText(new FileInputDialog(frame, "txt"));
-			}
-		});
+		btnOpenFile.addActionListener(event ->
+				textPlayerController.changeText(new FileInputDialog(frame, "txt", FileInputType.LOAD))
+		);
 	}
 	
 	/**
@@ -502,22 +486,19 @@ public class TextPlayerView extends JPanel implements View
 	 * 
 	 * @param		panel Panel that the button will be added
 	 */
-	private void make_btn_exportFileMusic(JPanel panel)
+	private void makeBtnExportFileMusic(JPanel panel)
 	{
 		if (panel == null)
 			throw new IllegalArgumentException("Panel cannot be null");
 		
-		JButton btn_openFile = new JButton(RB.getString("EXPORT_TO_MIDI"));
+		JButton btnOpenFile = new JButton(lang.getString("EXPORT_TO_MIDI"));
 		
 
-		panel.add(btn_openFile);
+		panel.add(btnOpenFile);
 		
-		btn_openFile.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				textPlayerController.exportMusicFile();
-			}
-		});
+		btnOpenFile.addActionListener(event ->
+				textPlayerController.exportMusicFile()
+		);
 	}
 	
 	/**
@@ -525,20 +506,18 @@ public class TextPlayerView extends JPanel implements View
 	 * 
 	 * @param		panel Panel that the button will be added
 	 */
-	private void make_btn_textEntry(JPanel panel)
+	private void makeBtnTextEntry(JPanel panel)
 	{
 		if (panel == null)
 			throw new IllegalArgumentException("Panel cannot be null");
 		
-		JButton btn_textEntry = new JButton(RB.getString("TEXT_ENTRY"));
+		JButton btnTextEntry = new JButton(lang.getString("TEXT_ENTRY"));
 		
 		
-		panel.add(btn_textEntry);
-		btn_textEntry.setFocusPainted(false);
-		btn_textEntry.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				textPlayerController.changeText(new TextInputDialog(frame));
-			}
-		});
+		panel.add(btnTextEntry);
+		btnTextEntry.setFocusPainted(false);
+		btnTextEntry.addActionListener(event -> 
+				textPlayerController.changeText(new TextInputDialog(frame))
+		);
 	}
 }

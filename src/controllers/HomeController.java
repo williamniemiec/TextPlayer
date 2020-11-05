@@ -1,17 +1,13 @@
 package controllers;
 
 import java.awt.Component;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import core.Controller;
-import models.io.input.dialog.IOManager;
 import models.io.input.dialog.InputDialog;
 import models.parser.JFugueMusicParser;
 import models.parser.Parser;
@@ -25,17 +21,7 @@ import views.HomeView;
  * @since		1.0.0
  */
 public class HomeController extends Controller 
-{
-	//-------------------------------------------------------------------------
-	//		Attributes
-	//-------------------------------------------------------------------------
-	private static final ResourceBundle RB = 
-			ResourceBundle.getBundle("resources.lang.home.home");
-	private HomeView homeView;
-	private TextPlayerController textPlayerController;
-	
-	
-	
+{	
 	//-------------------------------------------------------------------------
 	//		Methods
 	//-------------------------------------------------------------------------
@@ -43,14 +29,15 @@ public class HomeController extends Controller
 	public void run()
 	{
 		try {
-			// Initializes HomeView
-			homeView = new HomeView(this, mainFrame, RB);
+			HomeView homeView = new HomeView(this, mainFrame);
+			KeyboardController keyboardController;
+			
+			
 			addView("HomeView", homeView);
 			
-			KeyboardController keyboardController = new KeyboardController();
+			keyboardController = new KeyboardController();
 			keyboardController.run();
 			
-			// Sets program windows as visible
 			mainFrame.setVisible(true);		
 		} 
 		catch (IOException e) {
@@ -94,81 +81,28 @@ public class HomeController extends Controller
 	/**
 	 * Opens player view.
 	 * 
-	 * @param		inputDialogType Specifies how the text to be converted to 
+	 * @param		dialog Specifies how the text to be converted to 
 	 * music will be obtained
-	 * 
-	 * @throws		IllegalArgumentException If text is null
 	 */
-//	public void openPlayer(IOType inputDialogType)
-//	{
-//		String filename = null;
-//		List<String> text = null;
-//		
-//		
-//		switch (inputDialogType) {
-//			case FILE_LOAD:
-//				File file = IOManager.getFile(mainFrame);
-//				
-//				try {
-//					text = Files.readAllLines(file.toPath());
-//					filename = file.getName();
-//				} 
-//				catch (IOException e) {}
-//				
-//				break;
-//			case TEXT:
-//				text = IOManager.getText(mainFrame);
-//				
-//				break;
-//			default:
-//				break;
-//		}
-//		
-//		openPlayer(text, filename);
-//	}
-	
-	public void openPlayer(InputDialog id)
+	public void openPlayer(InputDialog dialog)
 	{
-		if (!id.ask())
+		if (!dialog.ask())
 			return;
 		
 		Parser parser = new Parser(new JFugueMusicParser());
 		List<String> processedText;
+		TextPlayerController textPlayerController;
 		
 		
-		processedText = parser.parse(id.getContent());
+		processedText = parser.parse(dialog.getContent());
 		
 		textPlayerController = new TextPlayerController(
 				processedText, 
-				id.getContent(), 
-				id.getTitle()
+				dialog.getContent(), 
+				dialog.getTitle()
 		);
 		textPlayerController.run();
 	}
-	
-	/**
-	 * Opens player view.
-	 * 
-	 * @param		text Text to be converted to music
-	 * @param		filename Filename containing the text, or null if the text
-	 * did not come from a file
-	 */
-//	public void openPlayer(List<String> text, String filename)
-//	{
-//		if ((text == null) || text.isEmpty())
-//			return;
-//		
-//		Parser parser = new Parser(new JFugueMusicParser());
-//		List<String> processedText = parser.parse(text);
-//		
-//		
-//		textPlayerController = new TextPlayerController(
-//				processedText, 
-//				text, 
-//				filename
-//		);
-//		textPlayerController.run();
-//	}
 	
 	/**
 	 * Defines exception behavior.

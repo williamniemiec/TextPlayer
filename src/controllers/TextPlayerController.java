@@ -2,16 +2,14 @@ package controllers;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import core.Controller;
-import models.io.IOType;
-import models.io.input.dialog.IOManager;
+import models.io.input.dialog.FileInputDialog;
+import models.io.input.dialog.FileInputType;
 import models.io.input.dialog.InputDialog;
 import models.musicPlayer.JFugueMusicPlayer;
 import models.musicPlayer.MusicPlayer;
@@ -31,8 +29,6 @@ public class TextPlayerController extends Controller
 	//-------------------------------------------------------------------------
 	//		Attributes
 	//-------------------------------------------------------------------------
-	private static final ResourceBundle RB = 
-			ResourceBundle.getBundle("resources.lang.textplayer.textplayer");
 	private List<String> musicalText;
 	private TextPlayerView textPlayerView;
 	private MusicPlayer musicPlayer;
@@ -77,8 +73,7 @@ public class TextPlayerController extends Controller
 	public void run() 
 	{
 		try {
-			// Initializes TextPlayerView
-			textPlayerView = new TextPlayerView(this, mainFrame, RB);
+			textPlayerView = new TextPlayerView(this, mainFrame);
 			
 			// Updates top bar buttons
 			setMenuBarItemStatus("mb_file_close", true);
@@ -126,39 +121,17 @@ public class TextPlayerController extends Controller
 	/**
 	 * Select another text to generate music.
 	 * 
-	 * @param		newText text Text to be converted to music
-	 * @param		filename Filename containing the text, or null if the text
-	 * did not come from a file
+	 * @param		dialog Specifies how the text to be converted to 
+	 * music will be obtained
 	 * 
 	 * @throws		IllegalArgumentException If newText is null
 	 */
-//	private void changeText(List<String> newText, String filename)
-//	{
-//		if (newText == null)
-//			throw new IllegalArgumentException("New text cannot be null");
-//		
-//		List<String> parsedFile;
-//		Parser parser = new Parser(new JFugueMusicParser());
-//		
-//		
-//		// Process the file
-//		parsedFile = parser.parse(newText);
-//		
-//		// Loads processed file into the player
-//		musicPlayer.change(parsedFile);
-//		
-//		// Updates view with informations about the loaded file
-//		originalText = newText;
-//		this.filename = (filename == null) ? "N/A" : filename;
-//		textPlayerView.update_content();
-//	}
-	
-	public void changeText(InputDialog id)
+	public void changeText(InputDialog dialog)
 	{
-		if (id == null)
+		if (dialog == null)
 			throw new IllegalArgumentException("Input dialog cannot be null");
 		
-		if (!id.ask())
+		if (!dialog.ask())
 			return;
 		
 		List<String> parsedFile;
@@ -166,53 +139,17 @@ public class TextPlayerController extends Controller
 		
 		
 		// Process the file
-		parsedFile = parser.parse(id.getContent());
+		parsedFile = parser.parse(dialog.getContent());
 		
 		// Loads processed file into the player
 		musicPlayer.change(parsedFile);
 		
 		// Updates view with informations about the loaded file
-		originalText = id.getContent();
-		filename = id.getTitle();
+		originalText = dialog.getContent();
+		filename = dialog.getTitle();
 		
-		textPlayerView.update_content();
+		textPlayerView.updateContent();
 	}
-	
-	/**
-	 * Select another text to generate music.
-	 * 
-	 * @param		newText text Text to be converted to music
-	 * @param		filename Filename containing the text, or null if the text
-	 * did not come from a file
-	 * 
-	 * @throws		IllegalArgumentException If newText is null
-	 */
-//	public void changeText(IOType inputDialogType)
-//	{
-//		String filename = null;
-//		List<String> text = null;
-//		
-//		
-//		switch (inputDialogType) {
-//			case FILE_LOAD:
-//				File file = IOManager.getFile(mainFrame);
-//				
-//				try {
-//					text = Files.readAllLines(file.toPath());
-//				} 
-//				catch (IOException e) {}
-//				
-//				break;
-//			case TEXT:
-//				text = IOManager.getText(mainFrame);
-//				
-//				break;
-//			default:
-//				break;
-//		}
-//		
-//		changeText(text, filename);
-//	}
 	
 	/**
 	 * Exports generated music to a MIDI file.
@@ -225,11 +162,15 @@ public class TextPlayerController extends Controller
 	public void exportMusicFile()
 	{
 		String extension = "midi";
-		File outputFile = IOManager.getOutput(mainFrame, extension);
+		File outputFile;
+		FileInputDialog inputDialog = new FileInputDialog(mainFrame, extension, FileInputType.STORE);
+		boolean wasFileChoosen = inputDialog.ask();
 		
 		
-		if (outputFile == null)
+		if (!wasFileChoosen)
 			return;
+				
+		outputFile = inputDialog.getFile();
 		
 		try {
 			if (!outputFile.getName().endsWith(extension))
