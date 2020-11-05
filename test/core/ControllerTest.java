@@ -14,7 +14,7 @@ public class ControllerTest
 	public void testComponent() 
 	{
 		String componentName = "foo";
-		Component componentValue = (Component) new JButton();
+		Component componentValue = new JButton();
 		
 		
 		Controller.addComponent(componentName, componentValue);
@@ -78,7 +78,13 @@ public class ControllerTest
 	public void testViewNoExtendsComponent() 
 	{
 		String viewName = "foo";
-		View view = new TestView();
+		View view = new View() {
+			@Override
+			public void update(Model model, Object data)
+			{
+				
+			}
+		};
 		
 		
 		Controller.addView(viewName, view);
