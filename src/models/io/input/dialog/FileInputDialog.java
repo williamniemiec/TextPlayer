@@ -11,15 +11,22 @@ import java.util.ResourceBundle;
 
 import javax.swing.JFrame;
 
+
+/**
+ * Responsible for obtaining a file input through a dialog window.
+ * 
+ * @version		1.0.0
+ * @since		1.0.0
+ */
 public class FileInputDialog extends InputDialog 
 {
 	//-------------------------------------------------------------------------
 	//		Attributes
 	//-------------------------------------------------------------------------
-	private static final ResourceBundle RB = 
+	private static final ResourceBundle lang = 
 			ResourceBundle.getBundle("resources.lang.io.input.dialog.file");
 	private JFrame frame;
-	private Path directory;
+	private Path workingDirectory;
 	private String fileExtension;
 	private FileInputType fileInputType;
 	private File chosenFile;
@@ -28,14 +35,27 @@ public class FileInputDialog extends InputDialog
 	//-------------------------------------------------------------------------
 	//		Constructor
 	//-------------------------------------------------------------------------
-	public FileInputDialog(JFrame window, Path directory, String fileExtension, FileInputType type)
+	/**
+	 * @param		window Window that will be the parent of the window dialog
+	 * @param		workingDirectory Initial directory
+	 * @param		fileExtension File extension
+	 * @param		type Operation type (indicates whether the file will be
+	 * saved or loaded)
+	 */
+	public FileInputDialog(JFrame window, Path workingDirectory, String fileExtension, FileInputType type)
 	{
 		frame = window;
-		this.directory = directory;
+		this.workingDirectory = workingDirectory;
 		this.fileExtension = fileExtension;
 		fileInputType = type;
 	}
 	
+	/**
+	 * @param		window Window that will be the parent of the window dialog
+	 * @param		fileExtension File extension
+	 * @param		type Operation type (indicates whether the file will be
+	 * saved or loaded)
+	 */
 	public FileInputDialog(JFrame window, String fileExtension, FileInputType type)
 	{
 		this(window, null, fileExtension, type);
@@ -46,7 +66,7 @@ public class FileInputDialog extends InputDialog
 	//		Methods
 	//-------------------------------------------------------------------------
 	@Override
-	public boolean ask() 
+	public boolean openDialog() 
 	{
 		FileDialog fd;
 		boolean success = false;
@@ -54,12 +74,12 @@ public class FileInputDialog extends InputDialog
 		
 		fd = new FileDialog(
 				frame, 
-				RB.getString(fileInputType.getResourceBundleKey()), 
+				lang.getString(fileInputType.getLangKey()), 
 				fileInputType.getFileDialogType()
 		);
 		
-		if (directory != null)
-			fd.setDirectory(directory.toString());
+		if (workingDirectory != null)
+			fd.setDirectory(workingDirectory.toString());
 		
 		fd.setFile("*." + fileExtension);
 		fd.setVisible(true);
@@ -72,6 +92,15 @@ public class FileInputDialog extends InputDialog
 		return success;
 	}
 
+	
+	//-------------------------------------------------------------------------
+	//		Getters
+	//-------------------------------------------------------------------------
+	/**
+	 * Gets filename.
+	 * 
+	 * @return		Filename or null if 
+	 */
 	@Override
 	public String getTitle()
 	{
@@ -103,6 +132,11 @@ public class FileInputDialog extends InputDialog
 		return content;
 	}
 	
+	/**
+	 * Gets chosen file.
+	 * 
+	 * @return		Chosen file or null if no file has been chosen
+	 */
 	public File getFile()
 	{
 		return chosenFile;

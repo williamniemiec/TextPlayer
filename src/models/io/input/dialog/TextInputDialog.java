@@ -1,11 +1,9 @@
 package models.io.input.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.Dialog.ModalityType;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.Dialog.ModalityType;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -16,26 +14,42 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.WindowConstants;
 
+
+/**
+ * Responsible for obtaining a text input through a dialog window.
+ * 
+ * @version		1.0.0
+ * @since		1.0.0
+ */
 public class TextInputDialog extends InputDialog 
 {
 	//-------------------------------------------------------------------------
 	//		Attributes
 	//-------------------------------------------------------------------------
-	private static final ResourceBundle RB = 
+	private static final ResourceBundle lang = 
 			ResourceBundle.getBundle("resources.lang.io.input.dialog.text");
-	private boolean actionPressed;
-	private JTextArea txt_content;
+	private boolean wasProcessButtonPressed;
+	private JTextArea txtContent;
 	private JDialog textInputWindow;
-	private int frameWidth;
-	private int frameHeight;
-	private int frameX;
-	private int frameY;
-	private JFrame frame;
+	private JFrame window;
+	private int windowWidth;
+	private int windowHeight;
+	private int windowX;
+	private int windowY;
+	
 	
 	//-------------------------------------------------------------------------
 	//		Constructor
 	//-------------------------------------------------------------------------
+	/**
+	 * @param		Window that will be the parent of the window dialog
+	 * @param		width Window width
+	 * @param		height Window height
+	 * @param		x Initial horizontal position
+	 * @param		y Initial vertical position
+	 */
 	public TextInputDialog(JFrame window, int width, int height, int x, int y)
 	{
 		if (window == null)
@@ -53,107 +67,158 @@ public class TextInputDialog extends InputDialog
 		if (y < 0)
 			throw new IllegalArgumentException("Y-position must be greater than zero");
 		
-		frame = window;
-		frameWidth = width;
-		frameHeight = height;
-		frameX = x;
-		frameY = y;
+		this.window = window;
+		windowWidth = width;
+		windowHeight = height;
+		windowX = x;
+		windowY = y;
 	}
 	
+	/**
+	 * @param		window Window that will be the parent of the window dialog
+	 * 
+	 * @implNote	Using this constructor, window parameters will be:
+	 * <table border=1>
+	 * 	<tr>
+	 * 		<th>Name</th>
+	 * 		<th>Value</th>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>Width</td>
+	 * 		<td>600</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>Height</td>
+	 * 		<td>250</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>Initial horizontal position</td>
+	 * 		<td>150</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td>Initial vertical position</td>
+	 * 		<td>150</td>
+	 * 	</tr>
+	 * </table>
+	 */
 	public TextInputDialog(JFrame window)
 	{
 		this(window, 600, 250, 150, 150);
 	}
 	
+	
+	//-------------------------------------------------------------------------
+	//		Methods
+	//-------------------------------------------------------------------------
+	/**
+	 * {@inheritDoc}}
+	 */
 	@Override
-	public boolean ask() 
+	public boolean openDialog() 
 	{
-		JPanel pnl_control = createControlPanel();
+		JPanel pnlControl = createControlPanel();
 		
 		
-		createDialog(pnl_control);
+		createDialog(pnlControl);
 		
 		return true;
 	}
-
-	@Override
-	public String getTitle() 
-	{
-		return actionPressed ? "N/A" : null;
-	}
-
-	@Override
-	public List<String> getContent()
-	{
-		return actionPressed ? Arrays.asList(txt_content.getText().split("\\n")) : null;
-	}
-
 	
-	private void clearText()
+	/**
+	 * Creates control panel that will contain the available actions.
+	 * 
+	 * @return		Control panel
+	 */
+	private JPanel createControlPanel()
 	{
-		if (txt_content != null) {
-			txt_content.setText("");
-			txt_content.setCaretPosition(0);
-			txt_content.requestFocus();
-		}
+		JButton btnAction = new JButton(lang.getString("PROCESS"));
+		JButton btnClear = new JButton(lang.getString("CLEAR"));
+		JPanel pnlControl = new JPanel();
+		
+		
+		btnAction.setFocusPainted(false);
+		btnAction.addActionListener(event -> {
+				wasProcessButtonPressed = true;
+				textInputWindow.dispose();
+		});
+		
+		btnClear.setFocusPainted(false);
+		btnClear.addActionListener(event -> clearText());
+		
+		pnlControl.setLayout(new GridLayout(0, 2, 0, 0));
+		pnlControl.add(btnClear);
+		pnlControl.add(btnAction);
+		
+		return pnlControl;
 	}
 	
-	private void createDialog(JPanel controlPanel)
+	/**
+	 * Creates text input dialog.
+	 * 
+	 * @param		pnlControl Control panel containing buttons with the 
+	 * available actions.
+	 */
+	private void createDialog(JPanel pnlControl)
 	{
-		if (controlPanel == null)
+		if (pnlControl == null)
 			throw new IllegalArgumentException("Panel cannot be null");
 		
-		JScrollPane scrl_txtContent = new JScrollPane();
+		JScrollPane scrlTxtContent = new JScrollPane();
 		
 
 		// Creates text area		
-		txt_content = new JTextArea();
-		txt_content.setLineWrap(true);
-		txt_content.setWrapStyleWord(true);
-		txt_content.setMargin(new Insets(10, 10, 10, 10));
+		txtContent = new JTextArea();
+		txtContent.setLineWrap(true);
+		txtContent.setWrapStyleWord(true);
+		txtContent.setMargin(new Insets(10, 10, 10, 10));
 		
 		// Sets scroll bar on text area
-		scrl_txtContent.setViewportView(txt_content);
+		scrlTxtContent.setViewportView(txtContent);
 		
 		// Creates dialog
-		textInputWindow = new JDialog(frame, RB.getString("DIALOG_TITLE"));
+		textInputWindow = new JDialog(window, lang.getString("DIALOG_TITLE"));
 		textInputWindow.setLayout(new BorderLayout(0, 0));
-		textInputWindow.add(scrl_txtContent, BorderLayout.CENTER);
-		textInputWindow.add(controlPanel, BorderLayout.SOUTH);
-		textInputWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		textInputWindow.setBounds(frameX, frameY, frameWidth, frameHeight);
+		textInputWindow.add(scrlTxtContent, BorderLayout.CENTER);
+		textInputWindow.add(pnlControl, BorderLayout.SOUTH);
+		textInputWindow.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		textInputWindow.setBounds(windowX, windowY, windowWidth, windowHeight);
 		textInputWindow.setModalityType(ModalityType.APPLICATION_MODAL);
 		textInputWindow.setVisible(true);
 	}
 	
-	private JPanel createControlPanel()
+	/**
+	 * Erases all text from the text area.
+	 */
+	private void clearText()
 	{
-		JButton btn_action = new JButton(RB.getString("PROCESS"));
-		JButton btn_clear = new JButton(RB.getString("CLEAR"));
-		JPanel pnl_control = new JPanel();
-		
-		
-		btn_action.setFocusPainted(false);
-		btn_action.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				actionPressed = true;
-				textInputWindow.dispose();
-			}
-		});
-		
-		btn_clear.setFocusPainted(false);
-		btn_clear.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				clearText();
-			}
-		});
-		
-		pnl_control.setLayout(new GridLayout(0, 2, 0, 0));
-		pnl_control.add(btn_clear);
-		pnl_control.add(btn_action);
-		
-		return pnl_control;
+		if (txtContent != null) {
+			txtContent.setText("");
+			txtContent.setCaretPosition(0);
+			txtContent.requestFocus();
+		}
+	}
+	
+	
+	//-------------------------------------------------------------------------
+	//		Getters
+	//-------------------------------------------------------------------------
+	/**
+	 * @return		"N/A" if the 'process' button was pressed; null otherwise
+	 */
+	@Override
+	public String getTitle() 
+	{
+		return wasProcessButtonPressed ? "N/A" : null;
+	}
+
+	/**
+	 * Gets text input.
+	 * 
+	 * @return		Text input or null if 'process' button was not pressed
+	 */
+	@Override
+	public List<String> getContent()
+	{
+		return wasProcessButtonPressed ? Arrays.asList(txtContent.getText().split("\\n")) : null;
 	}
 }
