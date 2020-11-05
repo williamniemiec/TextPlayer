@@ -25,7 +25,7 @@ public class FileInputDialog extends InputDialog
 	//-------------------------------------------------------------------------
 	private static final ResourceBundle lang = 
 			ResourceBundle.getBundle("resources.lang.io.input.dialog.file");
-	private JFrame frame;
+	private JFrame window;
 	private Path workingDirectory;
 	private String fileExtension;
 	private FileInputType fileInputType;
@@ -44,7 +44,7 @@ public class FileInputDialog extends InputDialog
 	 */
 	public FileInputDialog(JFrame window, Path workingDirectory, String fileExtension, FileInputType type)
 	{
-		frame = window;
+		this.window = window;
 		this.workingDirectory = workingDirectory;
 		this.fileExtension = fileExtension;
 		fileInputType = type;
@@ -73,7 +73,7 @@ public class FileInputDialog extends InputDialog
 		
 		
 		fd = new FileDialog(
-				frame, 
+				window, 
 				lang.getString(fileInputType.getLangKey()), 
 				fileInputType.getFileDialogType()
 		);

@@ -14,7 +14,6 @@ public abstract class InputDialog
 	//-------------------------------------------------------------------------
 	//		Attributes
 	//-------------------------------------------------------------------------
-	protected boolean wasAsked;
 	protected String title;
 	protected List<String> content;
 	
