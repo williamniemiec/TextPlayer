@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -25,12 +26,14 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.WindowConstants;
 
 import controllers.HomeController;
 import core.Controller;
 import core.Model;
 import core.View;
 import models.io.input.dialog.FileInputDialog;
+import models.io.input.dialog.FileInputType;
 import models.io.input.dialog.TextInputDialog;
 
 
@@ -41,23 +44,23 @@ import models.io.input.dialog.TextInputDialog;
  * @version		1.0.0
  * @since		1.0.0
  */
-@SuppressWarnings("serial")
 public class HomeView extends JPanel implements View
 {
 	//-------------------------------------------------------------------------
 	//		Attributes
 	//-------------------------------------------------------------------------
-	private final ResourceBundle RB;
-	private final static int MAIN_FRAME_WIDTH = 800;
-	private final static int MAIN_FRAME_HEIGHT = 500;
-	private final static int MAIN_FRAME_X = 100;
-	private final static int MAIN_FRAME_Y = 100;
-	private final static String VERSION = "1.0.0";
+	private static final long serialVersionUID = 100L;
+	private static final int MAIN_FRAME_WIDTH = 800;
+	private static final int MAIN_FRAME_HEIGHT = 500;
+	private static final int MAIN_FRAME_X = 100;
+	private static final int MAIN_FRAME_Y = 100;
+	private static final String VERSION = "1.0.0";	
 	private HomeController homeController;
-	private JFrame frame;
+	private JFrame window;
 	private JMenuBar mb;
-	private JLabel home_background;
-	private BufferedImage home_background_file;
+	private JLabel lblHomeBackground;
+	private transient BufferedImage imgHomeBackground;
+	private final transient ResourceBundle lang;
 	
 	
 	//-------------------------------------------------------------------------
@@ -71,7 +74,7 @@ public class HomeView extends JPanel implements View
 	 * 
 	 * @throws		IOException If an error occurs during reading home image 
 	 */
-	public HomeView(HomeController homeController, JFrame frame, ResourceBundle RB) throws IOException
+	public HomeView(HomeController homeController, JFrame frame, ResourceBundle lang) throws IOException
 	{
 		if (homeController == null)
 			throw new IllegalArgumentException("Controller cannot be null");
@@ -79,15 +82,15 @@ public class HomeView extends JPanel implements View
 		if (frame == null)
 			throw new IllegalArgumentException("Frame cannot be null");
 		
-		if (RB == null)
+		if (lang == null)
 			throw new IllegalArgumentException("Resource bundle cannot be null");
 		
 		this.homeController = homeController;
-		this.frame = frame;
-		this.RB = RB;
+		this.window = frame;
+		this.lang = lang;
 		
-		make_mainFrame();
-		make_home();
+		makeMainFrame();
+		makeHome();
 		autoresize();
 			
 		frame.setVisible(true);
@@ -110,15 +113,15 @@ public class HomeView extends JPanel implements View
 	/**
 	 * Creates main frame of the application.
 	 */
-	private void make_mainFrame()
+	private void makeMainFrame()
 	{
-		frame.setOpacity(1.0f);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setBounds(MAIN_FRAME_X, MAIN_FRAME_Y, MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT);
-		frame.setMinimumSize(new Dimension(MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT));
-		frame.setTitle("Text Player");
+		window.setOpacity(1.0f);
+		window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		window.setBounds(MAIN_FRAME_X, MAIN_FRAME_Y, MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT);
+		window.setMinimumSize(new Dimension(MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT));
+		window.setTitle("Text Player");
 
-		make_menuBar();
+		makeMenuBar();
 	}
 	
 	/**
@@ -126,75 +129,73 @@ public class HomeView extends JPanel implements View
 	 * 
 	 * @throws		IOException If an error occurs during reading home image 
 	 */
-	private void make_home() throws IOException
+	private void makeHome() throws IOException
 	{
 		setLayout(new BorderLayout(0, 0));
 
-		make_background();
-		make_input_options();
+		makeBackground();
+		makeInputOptions();
 	}
 	
 	/**
 	 * Creates top bar.
 	 */
-	private void make_menuBar()
+	private void makeMenuBar()
 	{
 		mb = new JMenuBar();
-		frame.setJMenuBar(mb);
+		window.setJMenuBar(mb);
 		
-		make_mn_file();
-		make_mn_controller();
-		make_mn_about();		
+		makeMenuBarOptionFile();
+		makeMenuBarOptionController();
+		makeMenuBarOptionAbout();		
 	}
 	
 	/**
 	 * Creates the 'File' menu in the top bar.
 	 */
-	private void make_mn_file()
+	private void makeMenuBarOptionFile()
 	{
-		JMenu mb_file = new JMenu(RB.getString("FILE"));
+		JMenu mbFile = new JMenu(lang.getString("FILE"));
 		
 		
-		make_btn_mn_textEntry(mb_file);
-		make_btn_mn_openFile(mb_file);
-		make_btn_mn_close(mb_file);
-		make_btn_mn_exit(mb_file);
+		makeMenuOptionTextEntry(mbFile);
+		makeMenuOptionOpenFile(mbFile);
+		makeMenuOptionClose(mbFile);
+		makeMenuOptionExit(mbFile);
 		
-		mb.add(mb_file);
+		mb.add(mbFile);
 	}
 	
 	/**
 	 * Creates the 'Control' menu in the top bar.
 	 */
-	private void make_mn_controller()
+	private void makeMenuBarOptionController()
 	{
-		JMenu mn_ctrl = new JMenu(RB.getString("CONTROL"));
+		JMenu mbCtrl = new JMenu(lang.getString("CONTROL"));
 		
 		
-		make_btn_mn_playPause(mn_ctrl);
-		make_btn_mn_stop(mn_ctrl);
+		makeMenuOptionPlayPause(mbCtrl);
+		makeMenuOptionStop(mbCtrl);
 		
-		mb.add(mn_ctrl);
+		mb.add(mbCtrl);
 	}
 	
 	/**
 	 * Creates the 'About' menu in the top bar.
 	 */
-	private void make_mn_about()
+	private void makeMenuBarOptionAbout()
 	{
-		JButton mn_about = new JButton(RB.getString("ABOUT"));
+		JButton mbAbout = new JButton(lang.getString("ABOUT"));
 		
 		
-		mn_about.setOpaque(true);
-		mn_about.setContentAreaFilled(false);
-		mn_about.setBorderPainted(false);
-		mn_about.setFocusable(false);
-		mn_about.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				show_about();
-			}
+		mbAbout.setOpaque(true);
+		mbAbout.setContentAreaFilled(false);
+		mbAbout.setBorderPainted(false);
+		mbAbout.setFocusable(false);
+		mbAbout.addActionListener((ActionEvent e) -> {
+				showAbout();
 		});
-		mb.add(mn_about);
+		mb.add(mbAbout);
 	}
 	
 	/**
@@ -202,20 +203,18 @@ public class HomeView extends JPanel implements View
 	 * 
 	 * @param		menu Menu that the button will be added
 	 */
-	private void make_btn_mn_textEntry(JMenu menu)
+	private void makeMenuOptionTextEntry(JMenu menu)
 	{
-		JMenuItem mb_file_textEntry;
+		JMenuItem mbItemTextEntry;
 		
 		
-		mb_file_textEntry = new JMenuItem(RB.getString("TEXT_ENTRY"));
-		mb_file_textEntry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
-		mb_file_textEntry.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				homeController.openPlayer(new TextInputDialog(frame));
-			}
-		});
-		menu.add(mb_file_textEntry);
-		homeController.addMainFrameComponent("mb_file_textEntry", mb_file_textEntry);
+		mbItemTextEntry = new JMenuItem(lang.getString("TEXT_ENTRY"));
+		mbItemTextEntry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
+		mbItemTextEntry.addActionListener((event) -> 
+				homeController.openPlayer(new TextInputDialog(window))
+		);
+		menu.add(mbItemTextEntry);
+		homeController.addMainFrameComponent("mb_file_textEntry", mbItemTextEntry);
 	}
 	
 	/**
@@ -223,20 +222,18 @@ public class HomeView extends JPanel implements View
 	 * 
 	 * @param		menu Menu that the button will be added
 	 */
-	private void make_btn_mn_openFile(JMenu menu)
+	private void makeMenuOptionOpenFile(JMenu menu)
 	{
-		JMenuItem mb_file_openFile;
+		JMenuItem mbItemOpenFile;
 		
 		
-		mb_file_openFile = new JMenuItem(RB.getString("OPEN_FILE"));
-		mb_file_openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
-		mb_file_openFile.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				homeController.openPlayer(new FileInputDialog(frame, "txt"));
-			}
-		});
-		menu.add(mb_file_openFile);
-		homeController.addMainFrameComponent("mb_file_openFile", mb_file_openFile);
+		mbItemOpenFile = new JMenuItem(lang.getString("OPEN_FILE"));
+		mbItemOpenFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
+		mbItemOpenFile.addActionListener((event) -> 
+				homeController.openPlayer(new FileInputDialog(window, "txt", FileInputType.LOAD))
+		);
+		menu.add(mbItemOpenFile);
+		homeController.addMainFrameComponent("mb_file_openFile", mbItemOpenFile);
 	}
 	
 	/**
@@ -244,21 +241,17 @@ public class HomeView extends JPanel implements View
 	 * 
 	 * @param		menu Menu that the button will be added
 	 */
-	private void make_btn_mn_close(JMenu menu)
+	private void makeMenuOptionClose(JMenu menu)
 	{
-		JMenuItem mb_file_close;
+		JMenuItem mbItemCloseFileFile;
 		
 		
-		mb_file_close = new JMenuItem(RB.getString("CLOSE"));
-		mb_file_close.setEnabled(false);
-		mb_file_close.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.CTRL_DOWN_MASK));
-		mb_file_close.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				Controller.loadView("HomeView");
-			}
-		});
-		menu.add(mb_file_close);
-		homeController.addMainFrameComponent("mb_file_close", mb_file_close);
+		mbItemCloseFileFile = new JMenuItem(lang.getString("CLOSE"));
+		mbItemCloseFileFile.setEnabled(false);
+		mbItemCloseFileFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
+		mbItemCloseFileFile.addActionListener((event) -> Controller.loadView("HomeView"));
+		menu.add(mbItemCloseFileFile);
+		homeController.addMainFrameComponent("mb_file_close", mbItemCloseFileFile);
 	}
 	
 	/**
@@ -266,19 +259,15 @@ public class HomeView extends JPanel implements View
 	 * 
 	 * @param		menu Menu that the button will be added
 	 */
-	private void make_btn_mn_exit(JMenu menu)
+	private void makeMenuOptionExit(JMenu menu)
 	{
-		JMenuItem btn_file_exit;
+		JMenuItem mbItemExit;
 		
 		
-		btn_file_exit = new JMenuItem(RB.getString("EXIT"));
-		btn_file_exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, KeyEvent.ALT_DOWN_MASK));
-		btn_file_exit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				frame.dispose();
-			}
-		});
-		menu.add(btn_file_exit);
+		mbItemExit = new JMenuItem(lang.getString("EXIT"));
+		mbItemExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_DOWN_MASK));
+		mbItemExit.addActionListener((event) -> window.dispose());
+		menu.add(mbItemExit);
 	}
 	
 	/**
@@ -286,16 +275,16 @@ public class HomeView extends JPanel implements View
 	 * 
 	 * @param		menu Menu that the button will be added
 	 */
-	private void make_btn_mn_playPause(JMenu menu)
+	private void makeMenuOptionPlayPause(JMenu menu)
 	{
-		JMenuItem mb_ctrl_playPause;
+		JMenuItem mbItemPlayPause;
 		
 		
-		mb_ctrl_playPause = new JMenuItem(RB.getString("PLAY") + "/" + RB.getString("PAUSE"));
-		mb_ctrl_playPause.setEnabled(false);
-		mb_ctrl_playPause.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0));
-		menu.add(mb_ctrl_playPause);
-		homeController.addMainFrameComponent("mb_ctrl_playPause", mb_ctrl_playPause);
+		mbItemPlayPause = new JMenuItem(lang.getString("PLAY") + "/" + lang.getString("PAUSE"));
+		mbItemPlayPause.setEnabled(false);
+		mbItemPlayPause.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0));
+		menu.add(mbItemPlayPause);
+		homeController.addMainFrameComponent("mb_ctrl_playPause", mbItemPlayPause);
 	}
 	
 	/**
@@ -303,16 +292,16 @@ public class HomeView extends JPanel implements View
 	 * 
 	 * @param		menu Menu that the button will be added
 	 */
-	private void make_btn_mn_stop(JMenu menu)
+	private void makeMenuOptionStop(JMenu menu)
 	{
-		JMenuItem mb_ctrl_stop;
+		JMenuItem mbItemStop;
 		
 		
-		mb_ctrl_stop = new JMenuItem(RB.getString("STOP"));
-		mb_ctrl_stop.setEnabled(false);
-		mb_ctrl_stop.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, 0));
-		menu.add(mb_ctrl_stop);
-		homeController.addMainFrameComponent("mb_ctrl_stop", mb_ctrl_stop);
+		mbItemStop = new JMenuItem(lang.getString("STOP"));
+		mbItemStop.setEnabled(false);
+		mbItemStop.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, 0));
+		menu.add(mbItemStop);
+		homeController.addMainFrameComponent("mb_ctrl_stop", mbItemStop);
 	}
 	
 	/**
@@ -320,43 +309,43 @@ public class HomeView extends JPanel implements View
 	 * 
 	 * @throws		IOException If an error occurs during reading home image   
 	 */
-	private void make_background() throws IOException
+	private void makeBackground() throws IOException
 	{
 		File homeImageFile = new File(System.getProperty("user.dir")+"/src/assets/img/home/logo.jpg");
 		ImageIcon homeImage;
 		
 		
 		try {
-			home_background_file = ImageIO.read(homeImageFile);
+			imgHomeBackground = ImageIO.read(homeImageFile);
 		}
 		catch (IOException e) {
 			throw new IOException("Error while reading home image");
 		}
 		
 		homeImage = new ImageIcon(
-				home_background_file.getScaledInstance(
+				imgHomeBackground.getScaledInstance(
 						MAIN_FRAME_WIDTH, 
 						MAIN_FRAME_HEIGHT, 
 						Image.SCALE_FAST
 		));
 		
-		home_background = new JLabel(homeImage);
-		add(home_background);
+		lblHomeBackground = new JLabel(homeImage);
+		add(lblHomeBackground);
 	}
 	
 	/**
 	 * Creates input options.
 	 */
-	private void make_input_options()
+	private void makeInputOptions()
 	{
-		JPanel pnl_input = new JPanel();
+		JPanel pnlInput = new JPanel();
 		
 		
-		pnl_input.setLayout(new GridLayout(0, 2, 0, 0));
-		add(pnl_input, BorderLayout.SOUTH);
+		pnlInput.setLayout(new GridLayout(0, 2, 0, 0));
+		add(pnlInput, BorderLayout.SOUTH);
 		
-		make_btn_textEntry(pnl_input);
-		make_btn_openFile(pnl_input);
+		makeBtnTextEntry(pnlInput);
+		makeBtnOpenFile(pnlInput);
 	}
 	
 	/**
@@ -364,23 +353,19 @@ public class HomeView extends JPanel implements View
 	 * 
 	 * @param		panel Panel that the button will be added
 	 */
-	private void make_btn_textEntry(JPanel panel)
+	private void makeBtnTextEntry(JPanel panel)
 	{
 		if (panel == null)
 			throw new IllegalArgumentException("Panel cannot be null");
 		
-		JButton btn_textEntry = new JButton(RB.getString("TEXT_ENTRY"));
+		JButton btnTextEntry = new JButton(lang.getString("TEXT_ENTRY"));
 		
 		
-		panel.add(btn_textEntry);
-		btn_textEntry.setFocusPainted(false);
-		btn_textEntry.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-//				homeController.openPlayer(IOType.TEXT);
-				homeController.openPlayer(new TextInputDialog(frame));
-			}
-		});
+		panel.add(btnTextEntry);
+		btnTextEntry.setFocusPainted(false);
+		btnTextEntry.addActionListener((event) -> 
+				homeController.openPlayer(new TextInputDialog(window))
+		);
 	}
 	
 	/**
@@ -388,22 +373,19 @@ public class HomeView extends JPanel implements View
 	 * 
 	 * @param		panel Panel that the button will be added
 	 */
-	private void make_btn_openFile(JPanel panel)
+	private void makeBtnOpenFile(JPanel panel)
 	{
 		if (panel == null)
 			throw new IllegalArgumentException("Panel cannot be null");
 		
-		JButton btn_openFile = new JButton(RB.getString("FILE_OPEN"));
+		JButton btnOpenFile = new JButton(lang.getString("FILE_OPEN"));
 		
 
-		panel.add(btn_openFile);
-		btn_openFile.setFocusPainted(false);
-		btn_openFile.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-//				homeController.openPlayer(IOType.FILE_LOAD);
-				homeController.openPlayer(new FileInputDialog(frame, "txt"));
-			}
-		});
+		panel.add(btnOpenFile);
+		btnOpenFile.setFocusPainted(false);
+		btnOpenFile.addActionListener((event) -> 
+				homeController.openPlayer(new FileInputDialog(window, "txt", FileInputType.LOAD))
+		);
 	}
 	
 	/**
@@ -412,7 +394,7 @@ public class HomeView extends JPanel implements View
 	 * @param		w Background width
 	 * @param		h Background height
 	 */
-	private void resize_background(int w, int h)
+	private void resizeBackground(int w, int h)
 	{
 		if (w < 0)
 			throw new IllegalArgumentException("Width must be greater than zero");
@@ -420,22 +402,22 @@ public class HomeView extends JPanel implements View
 		if (h < 0)
 			throw new IllegalArgumentException("Height must be greater than zero");
 		
-		Image homeBackgroundImage = home_background_file.getScaledInstance(w, h, Image.SCALE_FAST);
+		Image homeBackgroundImage = imgHomeBackground.getScaledInstance(w, h, Image.SCALE_FAST);
 		
 		
-		home_background.setIcon(new ImageIcon(homeBackgroundImage));
+		lblHomeBackground.setIcon(new ImageIcon(homeBackgroundImage));
 	}
 	
 	/**
 	 * Open about screen.
 	 */
-	private void show_about()
+	private void showAbout()
 	{
 		JOptionPane.showMessageDialog(
-				frame,
-				RB.getString("VERSION") +" " + VERSION + "\n\n" +RB.getString("MADE_BY") + ":\n"
+				window,
+				lang.getString("VERSION") +" " + VERSION + "\n\n" +lang.getString("MADE_BY") + ":\n"
 				+ "-> Matheus Hiroyuki Suwa Moura \n"
-				+ "-> William Niemiec", RB.getString("ABOUT"),
+				+ "-> William Niemiec", lang.getString("ABOUT"),
 				JOptionPane.INFORMATION_MESSAGE
 		);
 	}
@@ -448,20 +430,30 @@ public class HomeView extends JPanel implements View
 	{
 		this.addComponentListener(new ComponentListener() {
 			@Override
-			public void componentShown(ComponentEvent e) {
+			public void componentShown(ComponentEvent e) 
+			{
 				homeController.updateMenuBar();
 			}
 			
 			@Override
-			public void componentResized(ComponentEvent e) {
-				resize_background(frame.getWidth(), frame.getHeight());
+			public void componentResized(ComponentEvent e) 
+			{
+				resizeBackground(window.getWidth(), window.getHeight());
 			}
 
 			@Override
-			public void componentMoved(ComponentEvent e) { }
+			public void componentMoved(ComponentEvent e) 
+			{
+				// Do nothing because when the frame is moved, there is no need
+				// to resize the background image or update the menu bar
+			}
 
 			@Override
-			public void componentHidden(ComponentEvent e) { }
+			public void componentHidden(ComponentEvent e)
+			{
+				// Do nothing because when the frame is hidden, there is no need
+				// to resize the background image or update the menu bar
+			}
 		});
 	}
 }
