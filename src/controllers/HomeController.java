@@ -86,7 +86,7 @@ public class HomeController extends Controller
 	 */
 	public void openPlayer(InputDialog dialog)
 	{
-		if (!dialog.ask())
+		if (!dialog.openDialog())
 			return;
 		
 		Parser parser = new Parser(new JFugueMusicParser());

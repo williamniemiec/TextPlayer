@@ -41,7 +41,7 @@ public abstract class Controller
 	/**
 	 * Puts views viewer in the main window.
 	 */
-	{
+	static {
 		mainFrame.add(viewsViewer);
 	}
 	
@@ -71,7 +71,7 @@ public abstract class Controller
 		if (view == null)
 			throw new IllegalArgumentException("View cannot be null");
 		
-		if (view instanceof Component) {
+		if (!(view instanceof Component)) {
 			throw new IllegalArgumentException("View must extend a component");
 		}
 		

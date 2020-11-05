@@ -140,16 +140,17 @@ public class JFugueMusicParser implements ParseType
 	@Override
 	public List<String> parse(List<String> content)
 	{
-		if (content == null || content.size() == 0)
+		if (content == null || content.isEmpty())
 			throw new IllegalArgumentException("Content cannot be empty");
 		
 		List<String> processedContent = new ArrayList<>();
-		StringBuilder newLine, workingLine;
+		StringBuilder newLine;
+		StringBuilder workingLine;
 
 
 		for (String line : content) {
-			String currentChar, previousChar;
-			
+			String currentChar;
+			String previousChar;
 			
 			line = removeAccentuation(line);
 			
@@ -228,10 +229,10 @@ public class JFugueMusicParser implements ParseType
 	 */
 	private String parseAtoG(String currentChar, String previousChar)
 	{
-		String regex_aTog = "[a-g]";
+		final String REGEX_aTOg = "[a-g]";
 
 		
-		if (currentChar.matches(regex_aTog)) {
+		if (currentChar.matches(REGEX_aTOg)) {
 			if (isNote(previousChar.charAt(0))) {
 				currentChar = previousChar;
 			}
@@ -286,10 +287,10 @@ public class JFugueMusicParser implements ParseType
 	 */
 	private String parseIOU(String currentChar)
 	{
-		String regex_iou = "[iouIOU]";
+		final String REGEX_IOU = "[iouIOU]";
 		
-		if (currentChar.matches(regex_iou)) {
-			currentChar = changeInstrument(6);	// muda instrumento para Harpsichord
+		if (currentChar.matches(REGEX_IOU)) {
+			currentChar = changeInstrument(6);
 		}
 		
 		return currentChar;
@@ -308,9 +309,9 @@ public class JFugueMusicParser implements ParseType
 	 */
 	private String parseConsonant(String currentChar, String previousChar)
 	{
-		String regex_consonant = "[bcdfghjklmnpqrstvwxyz]";
-		boolean isConsonant = currentChar.matches(regex_consonant) || 
-				currentChar.matches(regex_consonant.toUpperCase());
+		final String REGEX_CONSONANT = "[bcdfghjklmnpqrstvwxyz]";
+		boolean isConsonant = currentChar.matches(REGEX_CONSONANT) || 
+				currentChar.matches(REGEX_CONSONANT.toUpperCase());
 				
 				
 		if (isConsonant) {
@@ -336,10 +337,10 @@ public class JFugueMusicParser implements ParseType
 	 */
 	private String parseDigit(String currentChar)
 	{
-		String regex_numbers = "[0-9]+";
+		final String REGEX_NUMBERS = "[0-9]+";
 		
 		
-		if (currentChar.matches(regex_numbers)) {
+		if (currentChar.matches(REGEX_NUMBERS)) {
 			currentChar = changeInstrument(Integer.parseInt(currentChar) + currentInstrument);
 		}
 		
@@ -389,9 +390,10 @@ public class JFugueMusicParser implements ParseType
 	 */
 	private String parseElse(String currentChar, String previousChar)
 	{
-		String regex_else = "[^a-zA-Z0-9\\s!\\?;.,]";
+		final String REGEX_ELSE = "[^a-zA-Z0-9\\s!\\?;.,]";
 		
-		if (currentChar.matches(regex_else)) {
+		
+		if (currentChar.matches(REGEX_ELSE)) {
 			if (isNote(previousChar.charAt(0))) {
 				currentChar = previousChar + "";
 			}
@@ -467,7 +469,7 @@ public class JFugueMusicParser implements ParseType
 		str = str.replaceAll("[√„¿‡¡·¬‚]", "a");
 		str = str.replaceAll("[ Í»Ë…È]", "e");
 		str = str.replaceAll("[ÕÌÃÏŒÓ]", "i");
-		str = str.replaceAll("[’Ù”Û“Ú’ı]", "o");
+		str = str.replaceAll("[’Ùı”Û“Ú]", "o");
 		str = str.replaceAll("[€˚⁄˙Ÿ˘]", "u");
 		
 		return str;

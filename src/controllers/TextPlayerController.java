@@ -131,7 +131,7 @@ public class TextPlayerController extends Controller
 		if (dialog == null)
 			throw new IllegalArgumentException("Input dialog cannot be null");
 		
-		if (!dialog.ask())
+		if (!dialog.openDialog())
 			return;
 		
 		List<String> parsedFile;
@@ -164,7 +164,7 @@ public class TextPlayerController extends Controller
 		String extension = "midi";
 		File outputFile;
 		FileInputDialog inputDialog = new FileInputDialog(mainFrame, extension, FileInputType.STORE);
-		boolean wasFileChoosen = inputDialog.ask();
+		boolean wasFileChoosen = inputDialog.openDialog();
 		
 		
 		if (!wasFileChoosen)

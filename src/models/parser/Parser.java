@@ -20,7 +20,6 @@ public class Parser implements Model
 	//		Attributes
 	//-------------------------------------------------------------------------
 	private ParseType parseType;
-	private List<String> parsedText;
 	private List<View> views;
 	
 	
@@ -91,10 +90,12 @@ public class Parser implements Model
 	 */
 	public List<String> parse(List<String> content)
 	{
-		if (content == null || content.size() == 0)
+		if (content == null || content.isEmpty())
 			throw new IllegalArgumentException("Content cannot be empty");
 		
-		parsedText = parseType.parse(content);
+		List<String> parsedText = parseType.parse(content);
+		
+		
 		notifyViews();
 		
 		return parsedText;

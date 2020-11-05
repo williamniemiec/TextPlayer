@@ -124,7 +124,7 @@ public class TextPlayerView extends JPanel implements View
 	{
 		String content = textPlayerController.getText()
 				.stream()
-				.map((line) -> line + "\n")
+				.map(line -> line + "\n")
 				.collect(Collectors.joining(""));
 		
 		
