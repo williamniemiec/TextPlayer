@@ -2,6 +2,8 @@ package models.musicPlayer;
 
 import org.jfugue.pattern.PatternProducer;
 import org.jfugue.player.Player;
+import org.jfugue.player.ManagedPlayer;
+import org.jfugue.midi.MidiFileManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +27,7 @@ public class JFugueMusicPlayer extends MusicPlayer
 	 */
 	private List<String> processedText;
 	private Player player = new Player();
+	private ManagedPlayer player1 = new ManagedPlayer();
 	
 	
 	//-----------------------------------------------------------------------
@@ -77,7 +80,7 @@ public class JFugueMusicPlayer extends MusicPlayer
 	@Override
 	public MusicPlayer pause()
 	{
-		player.pause();
+		player1.pause();
 		
 		notifyViews();
 		
@@ -91,7 +94,7 @@ public class JFugueMusicPlayer extends MusicPlayer
 	@Override
 	public MusicPlayer stop()
 	{
-		player.stop();
+		player1.finish();
 		
 		notifyViews();
 		
@@ -113,8 +116,9 @@ public class JFugueMusicPlayer extends MusicPlayer
 		
 		if (!outputFile.getName().endsWith("midi"))
 			throw new IllegalArgumentException("Output file extension must be '.midi'");
-		
-		player.saveMidi(outputFile);
+
+		MidiFileManager fileManager = new MidiFileManager();
+		fileManager.save(processedText, outputFile);
 		
 		notifyViews();
 		
@@ -142,7 +146,8 @@ public class JFugueMusicPlayer extends MusicPlayer
 	@Override
 	public long getMusicLength()
 	{
-		//...
+		long tickLength;
+		return tickLength = player1.getTickLength(processedText);
 	}
 	
 	/**
@@ -152,7 +157,8 @@ public class JFugueMusicPlayer extends MusicPlayer
 	@Override
 	public long getMusicPosition()
 	{
-		//...
+		long tickPosition;
+		return tickPosition = player1.getTickPosition(processedText);
 	}
 	
 	/**
@@ -162,7 +168,7 @@ public class JFugueMusicPlayer extends MusicPlayer
 	@Override
 	public boolean isPlaying()
 	{
-		return player.isPlaying();
+		return player1.isPlaying();
 	}
 	
 	/**
@@ -172,7 +178,7 @@ public class JFugueMusicPlayer extends MusicPlayer
 	@Override
 	public boolean isPaused()
 	{
-		return player.isPaused();
+		return player1.isPaused();
 	}
 	
 	/**
@@ -182,6 +188,6 @@ public class JFugueMusicPlayer extends MusicPlayer
 	@Override
 	public boolean isStopped()
 	{
-		return player.isStopped();
+		return player1.isFinished();
 	}
 }
