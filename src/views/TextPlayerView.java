@@ -99,12 +99,22 @@ public class TextPlayerView extends JPanel implements View
 			return;
 		
 		MusicPlayer mp = (MusicPlayer) model;
-		long musicLength = mp.getMusicLength();
-		long musicPosition = mp.getMusicPosition();
+		long musicLength = mp.getMusicLength(); 
+		long musicPosition = mp.getMusicPosition(); 
 		
+		System.out.println("length: "+musicLength);
+		System.out.println("positiion: "+musicPosition);
 		
 		// Updates progress bar
-		pbMusic.setValue((int)(musicPosition/musicLength));
+		if (musicLength == 0) {
+			if (mp.isFinished())
+				pbMusic.setValue(100);
+			else
+				pbMusic.setValue(0);
+		}
+		else {
+			pbMusic.setValue((int)(100 * musicPosition/musicLength));
+		}
 				
 		// Updates control player buttons
 		btnCtrlPlay.setEnabled(!mp.isPlaying());

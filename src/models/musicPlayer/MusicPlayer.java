@@ -130,4 +130,11 @@ public abstract class MusicPlayer implements Model
 	 * @return		If the player is stopped.
 	 */
 	public abstract boolean isStopped();
+
+	/**
+	 * Checks if the player has reached the end of the song.
+	 * 
+	 * @return		True if the player played all the music; false otherwise
+	 */
+	public abstract boolean isFinished();
 }

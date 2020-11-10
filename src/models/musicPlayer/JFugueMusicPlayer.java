@@ -1,14 +1,14 @@
 package models.musicPlayer;
 
-import org.jfugue.pattern.PatternProducer;
-import org.jfugue.player.Player;
-import org.jfugue.player.ManagedPlayer;
-import org.jfugue.midi.MidiFileManager;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jfugue.Pattern;
+import org.jfugue.Player;
+
+import models.util.Clock;
 
 
 /**
@@ -17,17 +17,16 @@ import java.util.List;
  * @version		1.0.0
  * @since		1.0.0
  */
-public class JFugueMusicPlayer extends MusicPlayer
+public class JFugueMusicPlayer extends MusicPlayer implements Runnable
 {
 	//-----------------------------------------------------------------------
 	//		Attributes
 	//-----------------------------------------------------------------------
-	/**
-	 * Text that the player will read and play.
-	 */
-	private List<String> processedText;
-	private Player player = new Player();
-	private ManagedPlayer player1 = new ManagedPlayer();
+	private Player player;
+	private Pattern musicPattern;
+	private boolean pause;
+	private boolean finished;
+	private boolean stop;
 	
 	
 	//-----------------------------------------------------------------------
@@ -45,22 +44,36 @@ public class JFugueMusicPlayer extends MusicPlayer
 		if (processedText == null)
 			throw new IllegalArgumentException("Processed text cannot be null");
 			
-		this.processedText = processedText;
 		views = new ArrayList<>();
+		
+		updateText(processedText);
 	}
 	
 	
 	//-----------------------------------------------------------------------
 	//		Methods
 	//-----------------------------------------------------------------------
-	
-	//---------------------------------------------------------------------
-
-	public void playJfuguePlayer()
+	@Override
+	public void run()
 	{
-		player.play(processedText.toString());
+		int tickUpdateId = 1;
+		int tickUpdateInterval = 100;
+		
+		
+		Clock.setInterval(() -> {
+			if (!pause)
+				notifyViews();
+		}, tickUpdateId, tickUpdateInterval);
+		
+		player.play(musicPattern);
+		
+		finished = true;
+		player.close();
+		Clock.clearInterval(tickUpdateId);
+		
+		notifyViews();
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 * @see			MusicPlayer#play()
@@ -68,9 +81,29 @@ public class JFugueMusicPlayer extends MusicPlayer
 	@Override
 	public MusicPlayer play()
 	{
-		notifyViews();
+		finished = false;
+		stop = false;
+		
+		if (pause) {
+			pause = false;
+			player.resume();
+		}
+		else {
+			Thread threadPlay = new Thread(this);
 
-		//...
+			
+			player = new Player();
+			threadPlay.start();
+			
+			try {
+				Thread.sleep(400);
+			} 
+			catch (InterruptedException e) {}
+		}
+		
+		notifyViews();
+		
+		return this;
 	}
 
 	/**
@@ -80,9 +113,12 @@ public class JFugueMusicPlayer extends MusicPlayer
 	@Override
 	public MusicPlayer pause()
 	{
-		player1.pause();
-		
-		notifyViews();
+		if (!player.isFinished()) {
+			pause = true;
+			player.pause();
+			
+			notifyViews();
+		}
 		
 		return this;
 	}
@@ -94,9 +130,12 @@ public class JFugueMusicPlayer extends MusicPlayer
 	@Override
 	public MusicPlayer stop()
 	{
-		player1.finish();
-		
-		notifyViews();
+		if (!player.isFinished()) {
+			pause = false;
+			stop = true;
+			player.stop();
+			notifyViews();
+		}
 		
 		return this;
 	}
@@ -117,8 +156,7 @@ public class JFugueMusicPlayer extends MusicPlayer
 		if (!outputFile.getName().endsWith("midi"))
 			throw new IllegalArgumentException("Output file extension must be '.midi'");
 
-		MidiFileManager fileManager = new MidiFileManager();
-		fileManager.save(processedText, outputFile);
+		player.saveMidi(musicPattern, outputFile);
 		
 		notifyViews();
 		
@@ -132,7 +170,9 @@ public class JFugueMusicPlayer extends MusicPlayer
 	@Override
 	public MusicPlayer change(List<String> text)
 	{
-		//...
+		stop();
+		updateText(text);
+		this.play();
 		
 		notifyViews();
 		
@@ -146,8 +186,7 @@ public class JFugueMusicPlayer extends MusicPlayer
 	@Override
 	public long getMusicLength()
 	{
-		long tickLength;
-		return tickLength = player1.getTickLength(processedText);
+		return player.getSequencer().getTickLength();
 	}
 	
 	/**
@@ -157,8 +196,7 @@ public class JFugueMusicPlayer extends MusicPlayer
 	@Override
 	public long getMusicPosition()
 	{
-		long tickPosition;
-		return tickPosition = player1.getTickPosition(processedText);
+		return player.getSequencer().getTickPosition();
 	}
 	
 	/**
@@ -168,7 +206,7 @@ public class JFugueMusicPlayer extends MusicPlayer
 	@Override
 	public boolean isPlaying()
 	{
-		return player1.isPlaying();
+		return player.isPlaying();
 	}
 	
 	/**
@@ -178,7 +216,7 @@ public class JFugueMusicPlayer extends MusicPlayer
 	@Override
 	public boolean isPaused()
 	{
-		return player1.isPaused();
+		return player.isPaused();
 	}
 	
 	/**
@@ -188,6 +226,21 @@ public class JFugueMusicPlayer extends MusicPlayer
 	@Override
 	public boolean isStopped()
 	{
-		return player1.isFinished();
+		return player.isFinished();
+	}
+
+	@Override
+	public boolean isFinished()
+	{
+		return finished && !stop;
+	}
+	
+	private void updateText(List<String> processedText)
+	{
+		String text = String.join("", processedText);
+		
+		
+		musicPattern = new Pattern(text);
+		finished = false;
 	}
 }
