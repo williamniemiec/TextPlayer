@@ -131,12 +131,13 @@ public class TextInputDialog extends InputDialog
 	 */
 	private JPanel createControlPanel()
 	{
-		JButton btnAction = new JButton(lang.getString("PROCESS"));
+		JButton btnAction = new JButton(lang.getString("DONE"));
 		JButton btnClear = new JButton(lang.getString("CLEAR"));
 		JPanel pnlControl = new JPanel();
 		
 		
 		btnAction.setFocusPainted(false);
+		btnAction.setFocusable(false);
 		btnAction.addActionListener(event -> {
 				wasProcessButtonPressed = true;
 				textInputWindow.dispose();
@@ -144,6 +145,7 @@ public class TextInputDialog extends InputDialog
 		
 		btnClear.setFocusPainted(false);
 		btnClear.addActionListener(event -> clearText());
+		btnClear.setFocusable(false);
 		
 		pnlControl.setLayout(new GridLayout(0, 2, 0, 0));
 		pnlControl.add(btnClear);

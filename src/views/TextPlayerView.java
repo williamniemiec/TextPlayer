@@ -102,8 +102,6 @@ public class TextPlayerView extends JPanel implements View
 		long musicLength = mp.getMusicLength(); 
 		long musicPosition = mp.getMusicPosition(); 
 		
-		System.out.println("length: "+musicLength);
-		System.out.println("positiion: "+musicPosition);
 		
 		// Updates progress bar
 		if (musicLength == 0) {
@@ -226,11 +224,10 @@ public class TextPlayerView extends JPanel implements View
 				System.getProperty("user.dir")+"/src/assets/img/player/play.png"
 		);
 		
-		btnCtrlPlay.addActionListener((event) ->
-				textPlayerController.play()
-		);
+		btnCtrlPlay.addActionListener(event -> textPlayerController.play());
 		
 		btnCtrlPlay.setEnabled(true);
+		btnCtrlPlay.setFocusable(false);
 	}
 	
 	/**
@@ -252,6 +249,7 @@ public class TextPlayerView extends JPanel implements View
 		);
 		
 		btnCtrlPause.addActionListener(event ->	textPlayerController.pause());
+		btnCtrlPause.setFocusable(false);
 	}
 	
 	/**
@@ -273,6 +271,7 @@ public class TextPlayerView extends JPanel implements View
 		);
 		
 		btnCtrlStop.addActionListener(event -> textPlayerController.stop());
+		btnCtrlStop.setFocusable(false);
 	}
 	
 	/**
@@ -314,6 +313,7 @@ public class TextPlayerView extends JPanel implements View
 		btnCtrl.setFocusPainted(true);
 		btnCtrl.setBorderPainted(false);
 		btnCtrl.setOpaque(false);
+		btnCtrl.setFocusable(false);
 		
 		return btnCtrl;
 	}
@@ -465,9 +465,9 @@ public class TextPlayerView extends JPanel implements View
 		
 		pbMusic = new JProgressBar();
 		pbMusic.setStringPainted(true);
-		
 		pbMusic.setForeground(new Color(238,90,9));
 		pbMusic.setValue(0);
+		
 		panel.add(pbMusic, constraints);
 	}
 	
@@ -486,6 +486,7 @@ public class TextPlayerView extends JPanel implements View
 
 		panel.add(btnOpenFile);
 		
+		btnOpenFile.setFocusable(false);
 		btnOpenFile.addActionListener(event ->
 				textPlayerController.changeText(new FileInputDialog(frame, "txt", FileInputType.LOAD))
 		);
@@ -501,14 +502,13 @@ public class TextPlayerView extends JPanel implements View
 		if (panel == null)
 			throw new IllegalArgumentException("Panel cannot be null");
 		
-		JButton btnOpenFile = new JButton(lang.getString("EXPORT_TO_MIDI"));
+		JButton btnExportFile = new JButton(lang.getString("EXPORT_TO_MIDI"));
 		
 
-		panel.add(btnOpenFile);
+		panel.add(btnExportFile);
 		
-		btnOpenFile.addActionListener(event ->
-				textPlayerController.exportMusicFile()
-		);
+		btnExportFile.setFocusable(false);
+		btnExportFile.addActionListener(event -> textPlayerController.exportMusicFile());
 	}
 	
 	/**

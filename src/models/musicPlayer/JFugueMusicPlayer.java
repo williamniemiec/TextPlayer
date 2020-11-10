@@ -113,12 +113,13 @@ public class JFugueMusicPlayer extends MusicPlayer implements Runnable
 	@Override
 	public MusicPlayer pause()
 	{
-		if (!player.isFinished()) {
-			pause = true;
-			player.pause();
-			
-			notifyViews();
-		}
+		if ((player == null) || player.isFinished())
+			return this;
+		
+		pause = true;
+		player.pause();
+		
+		notifyViews();
 		
 		return this;
 	}
@@ -130,12 +131,14 @@ public class JFugueMusicPlayer extends MusicPlayer implements Runnable
 	@Override
 	public MusicPlayer stop()
 	{
-		if (!player.isFinished()) {
-			pause = false;
-			stop = true;
-			player.stop();
-			notifyViews();
-		}
+		if ((player == null) || player.isFinished())
+			return this;
+			
+		pause = false;
+		stop = true;
+		player.stop();
+		
+		notifyViews();
 		
 		return this;
 	}
@@ -153,7 +156,7 @@ public class JFugueMusicPlayer extends MusicPlayer implements Runnable
 		if (outputFile == null)
 			throw new IllegalArgumentException("Output file cannot be null");
 		
-		if (!outputFile.getName().endsWith("midi"))
+		if (!outputFile.getName().endsWith(".midi"))
 			throw new IllegalArgumentException("Output file extension must be '.midi'");
 
 		player.saveMidi(musicPattern, outputFile);
@@ -172,7 +175,6 @@ public class JFugueMusicPlayer extends MusicPlayer implements Runnable
 	{
 		stop();
 		updateText(text);
-		this.play();
 		
 		notifyViews();
 		
@@ -186,6 +188,9 @@ public class JFugueMusicPlayer extends MusicPlayer implements Runnable
 	@Override
 	public long getMusicLength()
 	{
+		if (player == null)
+			return 0;
+		
 		return player.getSequencer().getTickLength();
 	}
 	
@@ -196,6 +201,9 @@ public class JFugueMusicPlayer extends MusicPlayer implements Runnable
 	@Override
 	public long getMusicPosition()
 	{
+		if (player == null)
+			return 0;
+		
 		return player.getSequencer().getTickPosition();
 	}
 	
@@ -206,6 +214,9 @@ public class JFugueMusicPlayer extends MusicPlayer implements Runnable
 	@Override
 	public boolean isPlaying()
 	{
+		if (player == null)
+			return false;
+		
 		return player.isPlaying();
 	}
 	
@@ -216,6 +227,9 @@ public class JFugueMusicPlayer extends MusicPlayer implements Runnable
 	@Override
 	public boolean isPaused()
 	{
+		if (player == null)
+			return false;
+		
 		return player.isPaused();
 	}
 	
@@ -226,6 +240,9 @@ public class JFugueMusicPlayer extends MusicPlayer implements Runnable
 	@Override
 	public boolean isStopped()
 	{
+		if (player == null)
+			return false;
+		
 		return player.isFinished();
 	}
 

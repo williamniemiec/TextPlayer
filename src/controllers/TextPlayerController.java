@@ -75,14 +75,11 @@ public class TextPlayerController extends Controller
 		try {
 			textPlayerView = new TextPlayerView(this, mainFrame);
 			
-			// Updates top bar buttons
-			setMenuBarItemStatus("mb_file_close", true);
-			setMenuBarItemStatus("mb_ctrl_playPause", true);
-			setMenuBarItemStatus("mb_ctrl_stop", false);
-			
 			// Creates music player
 			musicPlayer = new JFugueMusicPlayer(musicalText);
 			musicPlayer.attach(textPlayerView);
+			
+			updateMenuBarItems();
 			
 			// Displays TextPlayerView
 			addView("TextPlayerView", textPlayerView);
@@ -93,7 +90,7 @@ public class TextPlayerController extends Controller
 			Controller.loadView("HomeView");
 		}
 	}
-	
+
 	/**
 	 * Plays the music that was generated from a text.
 	 */
@@ -217,6 +214,26 @@ public class TextPlayerController extends Controller
 				"Error", 
 				JOptionPane.ERROR_MESSAGE
 		);
+	}
+	
+	private void updateMenuBarItems()
+	{
+		JMenuItem mbCtrlPlayPause = ((JMenuItem)getComponent("mb_ctrl_playPause"));
+		JMenuItem mbCtrlStop = ((JMenuItem)getComponent("mb_ctrl_stop"));
+		
+		
+		setMenuBarItemStatus("mb_file_close", true);
+		setMenuBarItemStatus("mb_ctrl_playPause", true);
+		setMenuBarItemStatus("mb_ctrl_stop", false);
+		
+		mbCtrlPlayPause.addActionListener(event -> {
+			if (musicPlayer.isPlaying())
+				pause();
+			else 
+				play();
+		});
+		
+		mbCtrlStop.addActionListener(event -> stop());
 	}
 	
 	

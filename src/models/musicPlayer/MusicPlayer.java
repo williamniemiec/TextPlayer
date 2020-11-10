@@ -84,6 +84,8 @@ public abstract class MusicPlayer implements Model
 	 * @param		outputFile Output file with MIDI extension
 	 * 
 	 * @return		Itself to allow chained calls
+	 * 
+	 * @throws		IOException If the MIDI file cannot be generated
 	 */
 	public abstract MusicPlayer saveMidi(File outputFile) throws IOException;
 	
@@ -99,35 +101,35 @@ public abstract class MusicPlayer implements Model
 	/**
 	 * Returns total length of the current music.
 	 * 
-	 * @return		Total length of the current music
+	 * @return		Music length
 	 */
 	public abstract long getMusicLength();
 	
 	/**
 	 * Returns how many of the length of the music was played.
 	 * 
-	 * @return		Music length of the music that was played
+	 * @return		Music length that has been played
 	 */
 	public abstract long getMusicPosition();
 	
 	/**
 	 * Checks if the player is playing a music.
 	 * 
-	 * @return		If the player is playing a music.
+	 * @return		If the player is playing a music
 	 */
 	public abstract boolean isPlaying();
 	
 	/**
 	 * Checks if the player is paused.
 	 * 
-	 * @return		If the player is paused.
+	 * @return		If the player is paused
 	 */
 	public abstract boolean isPaused();
 	
 	/**
 	 * Checks if the player is stopped.
 	 * 
-	 * @return		If the player is stopped.
+	 * @return		If the player is stopped
 	 */
 	public abstract boolean isStopped();
 

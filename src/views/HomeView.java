@@ -198,15 +198,17 @@ public class HomeView extends JPanel implements View
 	 */
 	private void makeMenuOptionTextEntry(JMenu menu)
 	{
-		JMenuItem mbItemTextEntry;
+		JMenuItem mbItemTextEntry = new JMenuItem(lang.getString("TEXT_ENTRY"));
 		
 		
-		mbItemTextEntry = new JMenuItem(lang.getString("TEXT_ENTRY"));
+		mbItemTextEntry.setFocusable(false);
 		mbItemTextEntry.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
 		mbItemTextEntry.addActionListener(event -> 
 				homeController.openPlayer(new TextInputDialog(window))
 		);
+		
 		menu.add(mbItemTextEntry);
+		
 		homeController.addMainFrameComponent("mb_file_textEntry", mbItemTextEntry);
 	}
 	
@@ -217,15 +219,17 @@ public class HomeView extends JPanel implements View
 	 */
 	private void makeMenuOptionOpenFile(JMenu menu)
 	{
-		JMenuItem mbItemOpenFile;
+		JMenuItem mbItemOpenFile = new JMenuItem(lang.getString("OPEN_FILE"));
 		
 		
-		mbItemOpenFile = new JMenuItem(lang.getString("OPEN_FILE"));
+		mbItemOpenFile.setFocusable(false);
 		mbItemOpenFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
 		mbItemOpenFile.addActionListener(event -> 
 				homeController.openPlayer(new FileInputDialog(window, "txt", FileInputType.LOAD))
 		);
+		
 		menu.add(mbItemOpenFile);
+		
 		homeController.addMainFrameComponent("mb_file_openFile", mbItemOpenFile);
 	}
 	
@@ -236,14 +240,16 @@ public class HomeView extends JPanel implements View
 	 */
 	private void makeMenuOptionClose(JMenu menu)
 	{
-		JMenuItem mbItemCloseFileFile;
+		JMenuItem mbItemCloseFileFile = new JMenuItem(lang.getString("CLOSE"));
 		
 		
-		mbItemCloseFileFile = new JMenuItem(lang.getString("CLOSE"));
+		mbItemCloseFileFile.setFocusable(false);
 		mbItemCloseFileFile.setEnabled(false);
 		mbItemCloseFileFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
 		mbItemCloseFileFile.addActionListener(event -> Controller.loadView("HomeView"));
+		
 		menu.add(mbItemCloseFileFile);
+		
 		homeController.addMainFrameComponent("mb_file_close", mbItemCloseFileFile);
 	}
 	
@@ -254,10 +260,8 @@ public class HomeView extends JPanel implements View
 	 */
 	private void makeMenuOptionExit(JMenu menu)
 	{
-		JMenuItem mbItemExit;
-		
-		
-		mbItemExit = new JMenuItem(lang.getString("EXIT"));
+		JMenuItem mbItemExit = new JMenuItem(lang.getString("EXIT"));
+		mbItemExit.setFocusable(false);
 		mbItemExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_DOWN_MASK));
 		mbItemExit.addActionListener(event -> window.dispose());
 		menu.add(mbItemExit);
@@ -270,10 +274,8 @@ public class HomeView extends JPanel implements View
 	 */
 	private void makeMenuOptionPlayPause(JMenu menu)
 	{
-		JMenuItem mbItemPlayPause;
-		
-		
-		mbItemPlayPause = new JMenuItem(lang.getString("PLAY") + "/" + lang.getString("PAUSE"));
+		JMenuItem mbItemPlayPause = new JMenuItem(lang.getString("PLAY") + "/" + lang.getString("PAUSE"));
+		mbItemPlayPause.setFocusable(false);
 		mbItemPlayPause.setEnabled(false);
 		mbItemPlayPause.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0));
 		menu.add(mbItemPlayPause);
@@ -287,10 +289,10 @@ public class HomeView extends JPanel implements View
 	 */
 	private void makeMenuOptionStop(JMenu menu)
 	{
-		JMenuItem mbItemStop;
+		JMenuItem mbItemStop = new JMenuItem(lang.getString("STOP"));
 		
 		
-		mbItemStop = new JMenuItem(lang.getString("STOP"));
+		mbItemStop.setFocusable(false);
 		mbItemStop.setEnabled(false);
 		mbItemStop.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, 0));
 		menu.add(mbItemStop);
@@ -354,11 +356,13 @@ public class HomeView extends JPanel implements View
 		JButton btnTextEntry = new JButton(lang.getString("TEXT_ENTRY"));
 		
 		
-		panel.add(btnTextEntry);
+		btnTextEntry.setFocusable(false);
 		btnTextEntry.setFocusPainted(false);
 		btnTextEntry.addActionListener(event -> 
 				homeController.openPlayer(new TextInputDialog(window))
 		);
+		
+		panel.add(btnTextEntry);
 	}
 	
 	/**
@@ -374,11 +378,12 @@ public class HomeView extends JPanel implements View
 		JButton btnOpenFile = new JButton(lang.getString("FILE_OPEN"));
 		
 
-		panel.add(btnOpenFile);
 		btnOpenFile.setFocusPainted(false);
 		btnOpenFile.addActionListener(event -> 
 				homeController.openPlayer(new FileInputDialog(window, "txt", FileInputType.LOAD))
 		);
+		
+		panel.add(btnOpenFile);
 	}
 	
 	/**
