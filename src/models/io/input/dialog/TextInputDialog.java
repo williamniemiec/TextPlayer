@@ -5,6 +5,7 @@ import java.awt.Dialog.ModalityType;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -195,15 +196,15 @@ public class TextInputDialog extends InputDialog
 	private JScrollPane createTextArea()
 	{
 		JScrollPane txtAreaWithScroll = new JScrollPane();
-		JTextArea txtArea = new JTextArea();
+		txtContent = new JTextArea();
 		
 		
-		txtArea.setLineWrap(true);
-		txtArea.setWrapStyleWord(true);
-		txtArea.setMargin(new Insets(10, 10, 10, 10));
+		txtContent.setLineWrap(true);
+		txtContent.setWrapStyleWord(true);
+		txtContent.setMargin(new Insets(10, 10, 10, 10));
 		
 		// Sets scroll bar on text area
-		txtAreaWithScroll.setViewportView(txtArea);
+		txtAreaWithScroll.setViewportView(txtContent);
 		
 		return txtAreaWithScroll;
 	}
@@ -241,6 +242,8 @@ public class TextInputDialog extends InputDialog
 	@Override
 	public List<String> getContent()
 	{
-		return wasProcessButtonPressed ? Arrays.asList(txtContent.getText().split("\\n")) : null;
+		return wasProcessButtonPressed ? 
+				Arrays.asList(txtContent.getText().split("\\n")) 
+				: new ArrayList<>();
 	}
 }

@@ -5,7 +5,7 @@ import java.util.List;
 
 import core.Model;
 import core.View;
-import models.musicPlayer.MusicPlayer;
+import models.music.player.MusicPlayer;
 
 
 /**

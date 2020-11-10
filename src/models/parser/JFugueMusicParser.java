@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import models.parser.jfugue.JFugueMusicalNote;
+import models.music.note.JFugueMusicalNote;
 
 
 /**
@@ -167,7 +167,7 @@ public class JFugueMusicParser implements ParseType
 					currentChar = parseConsonant(currentChar, previousChar);
 					currentChar = parseElse(currentChar, previousChar);
 					
-					if (isNote(currentChar.charAt(0))) {
+					if (isNote(currentChar)) {
 						workingLine.replace(i, i+1, currentChar);
 					}
 				}
@@ -207,8 +207,8 @@ public class JFugueMusicParser implements ParseType
 	 */
 	private String parseMusicalNotes(String currentChar)
 	{
-		if (isNote(currentChar.charAt(0))) {
-			int musicalNote = musicalNotes.get(currentChar.charAt(0)).getNote().second;
+		if (isNote(currentChar)) {
+			int musicalNote = musicalNotes.get(currentChar.charAt(0)).getNote().getSecond();
 			
 			currentChar = generateCommand("[" + musicalNote + "]");
 		}	
@@ -233,7 +233,7 @@ public class JFugueMusicParser implements ParseType
 
 		
 		if (currentChar.matches(REGEX_aTOg)) {
-			if (isNote(previousChar.charAt(0))) {
+			if (isNote(previousChar)) {
 				currentChar = previousChar;
 			}
 			else {
@@ -315,7 +315,7 @@ public class JFugueMusicParser implements ParseType
 				
 				
 		if (isConsonant) {
-			if (isNote(previousChar.charAt(0))) {
+			if (isNote(previousChar)) {
 				currentChar = previousChar + "";						
 			}
 			else {
@@ -394,7 +394,7 @@ public class JFugueMusicParser implements ParseType
 		
 		
 		if (currentChar.matches(REGEX_ELSE)) {
-			if (isNote(previousChar.charAt(0))) {
+			if (isNote(previousChar)) {
 				currentChar = previousChar + "";
 			}
 			else {
@@ -534,9 +534,12 @@ public class JFugueMusicParser implements ParseType
 	 * 
 	 * @implNote	It does not consider accents
 	 */
-	private boolean isNote(char letter)
+	private boolean isNote(String letter)
 	{
-		return letter >= 'A' && letter <= 'G';
+		final String REGEX_MUSICAL_NOTE = "^[A-G]{1}$";
+		
+		
+		return letter.matches(REGEX_MUSICAL_NOTE);
 	}
 	
 	/**

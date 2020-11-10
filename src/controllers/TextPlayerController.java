@@ -11,8 +11,8 @@ import core.Controller;
 import models.io.input.dialog.FileInputDialog;
 import models.io.input.dialog.FileInputType;
 import models.io.input.dialog.InputDialog;
-import models.musicPlayer.JFugueMusicPlayer;
-import models.musicPlayer.MusicPlayer;
+import models.music.player.JFugueMusicPlayer;
+import models.music.player.MusicPlayer;
 import models.parser.JFugueMusicParser;
 import models.parser.Parser;
 import views.TextPlayerView;
@@ -128,14 +128,16 @@ public class TextPlayerController extends Controller
 		if (dialog == null)
 			throw new IllegalArgumentException("Input dialog cannot be null");
 		
-		if (!dialog.openDialog())
+		boolean wasFileChosen = dialog.openDialog();
+		List<String> parsedFile;
+		Parser parser;
+		
+		
+		if (!wasFileChosen || dialog.getContent().isEmpty())
 			return;
 		
-		List<String> parsedFile;
-		Parser parser = new Parser(new JFugueMusicParser());
-		
-		
 		// Process the file
+		parser = new Parser(new JFugueMusicParser());
 		parsedFile = parser.parse(dialog.getContent());
 		
 		// Loads processed file into the player
@@ -189,7 +191,7 @@ public class TextPlayerController extends Controller
 	 */
 	public void setMenuBarItemStatus(String menuBarItemLabel, boolean enable) 
 	{
-		JMenuItem menuBarItem = ((JMenuItem)getComponent(menuBarItemLabel));
+		JMenuItem menuBarItem = (JMenuItem) getComponent(menuBarItemLabel);
 		
 		
 		if (menuBarItem != null)

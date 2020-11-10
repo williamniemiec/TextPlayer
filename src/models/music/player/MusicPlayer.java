@@ -1,4 +1,4 @@
-package models.musicPlayer;
+package models.music.player;
 
 import java.io.File;
 import java.io.IOException;

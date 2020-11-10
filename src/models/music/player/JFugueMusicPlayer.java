@@ -1,4 +1,4 @@
-package models.musicPlayer;
+package models.music.player;
 
 import java.io.File;
 import java.io.IOException;
@@ -252,6 +252,11 @@ public class JFugueMusicPlayer extends MusicPlayer implements Runnable
 		return finished && !stop;
 	}
 	
+	/**
+	 * Changes current text.
+	 * 
+	 * @param		processedText New text
+	 */
 	private void updateText(List<String> processedText)
 	{
 		String text = String.join("", processedText);

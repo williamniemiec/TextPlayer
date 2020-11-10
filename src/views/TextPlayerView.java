@@ -30,7 +30,7 @@ import core.View;
 import models.io.input.dialog.FileInputDialog;
 import models.io.input.dialog.FileInputType;
 import models.io.input.dialog.TextInputDialog;
-import models.musicPlayer.MusicPlayer;
+import models.music.player.MusicPlayer;
 
 
 /**
@@ -99,30 +99,11 @@ public class TextPlayerView extends JPanel implements View
 			return;
 		
 		MusicPlayer mp = (MusicPlayer) model;
-		long musicLength = mp.getMusicLength(); 
-		long musicPosition = mp.getMusicPosition(); 
+
 		
-		
-		// Updates progress bar
-		if (musicLength == 0) {
-			if (mp.isFinished())
-				pbMusic.setValue(100);
-			else
-				pbMusic.setValue(0);
-		}
-		else {
-			pbMusic.setValue((int)(100 * musicPosition/musicLength));
-		}
-				
-		// Updates control player buttons
-		btnCtrlPlay.setEnabled(!mp.isPlaying());
-		btnCtrlPause.setEnabled(!mp.isPaused());
-		btnCtrlStop.setEnabled(!mp.isStopped());
-		
-		// Updates menu bar items
-		textPlayerController.setMenuBarItemStatus("mb_ctrl_playPause", mp.isPlaying() || mp.isPaused());
-		textPlayerController.setMenuBarItemStatus("mb_ctrl_stop", !mp.isStopped());
-		textPlayerController.setMenuBarItemStatus("mb_file_close", true);
+		updateProgressBar(mp);
+		updateControlButtons(mp);
+		updateMenuBarItems(mp);
 	}
 	
 	/**
@@ -139,6 +120,52 @@ public class TextPlayerView extends JPanel implements View
 		textArea.setText(content);
 		textArea.setCaretPosition(0);
 		lblFilename.setText(textPlayerController.getFilename());
+	}
+	
+	/**
+	 * Updates menu bar elements according to the state of a music player.
+	 * 
+	 * @param		mp Music player
+	 */
+	private void updateMenuBarItems(MusicPlayer mp)
+	{
+		textPlayerController.setMenuBarItemStatus("mb_ctrl_playPause", mp.isPlaying() || mp.isPaused());
+		textPlayerController.setMenuBarItemStatus("mb_ctrl_stop", !mp.isStopped());
+		textPlayerController.setMenuBarItemStatus("mb_file_close", true);
+	}
+
+	/**
+	 * Updates player control buttons according to the state of a music player.
+	 * 
+	 * @param		mp Music player
+	 */
+	private void updateControlButtons(MusicPlayer mp)
+	{
+		btnCtrlPlay.setEnabled(!mp.isPlaying());
+		btnCtrlPause.setEnabled(!mp.isPaused());
+		btnCtrlStop.setEnabled(!mp.isStopped());
+	}
+
+	/**
+	 * Updates progress bar according to the state of a music player.
+	 * 
+	 * @param		mp Music player
+	 */
+	private void updateProgressBar(MusicPlayer mp)
+	{
+		long musicLength = mp.getMusicLength(); 
+		long musicPosition = mp.getMusicPosition();
+		
+		
+		if (musicLength == 0) {
+			if (mp.isFinished())
+				pbMusic.setValue(100);
+			else
+				pbMusic.setValue(0);
+		}
+		else {
+			pbMusic.setValue((int)(100 * musicPosition/musicLength));
+		}
 	}
 	
 	/**
@@ -160,9 +187,6 @@ public class TextPlayerView extends JPanel implements View
 	{
 		JPanel pnlTop = new JPanel();
 		FlowLayout flowLayout;
-		BufferedImage imgHeader;
-		JLabel lblMusicPlayer;
-		ImageIcon img;
 		
 		
 		pnlTop.setBackground(new Color(64, 64, 64));
@@ -170,7 +194,20 @@ public class TextPlayerView extends JPanel implements View
 		flowLayout.setVgap(0);
 		flowLayout.setHgap(0);
 		
-		// Places the banner in the header
+		pnlTop.add(getLogo(), BorderLayout.NORTH);
+		
+		// Adds logo to the view
+		add(pnlTop, BorderLayout.NORTH);
+	}
+
+
+	private JLabel getLogo() throws IOException
+	{
+		ImageIcon img;
+		BufferedImage imgHeader;
+		JLabel lblLogo;
+		
+		
 		try {
 			imgHeader = ImageIO.read(new File(System.getProperty("user.dir")+"/src/assets/img/player/header_logo.jpg"));
 		}
@@ -178,14 +215,16 @@ public class TextPlayerView extends JPanel implements View
 			throw new IOException("Error while reading header image");
 		}
 		
-		lblMusicPlayer = new JLabel();
-		pnlTop.add(lblMusicPlayer, BorderLayout.NORTH);
+		img = new ImageIcon(imgHeader.getScaledInstance(
+				frame.getWidth(), 
+				frame.getHeight()/3, 
+				Image.SCALE_SMOOTH
+		));
 		
-		img = new ImageIcon(imgHeader.getScaledInstance(frame.getWidth(), frame.getHeight()/3, Image.SCALE_SMOOTH));
-		lblMusicPlayer.setIcon(img);
+		lblLogo = new JLabel();
+		lblLogo.setIcon(img);
 		
-		// Adds banner to the view
-		add(pnlTop, BorderLayout.NORTH);
+		return lblLogo;
 	}
 	
 	/**
@@ -223,9 +262,7 @@ public class TextPlayerView extends JPanel implements View
 				panel, 
 				System.getProperty("user.dir")+"/src/assets/img/player/play.png"
 		);
-		
 		btnCtrlPlay.addActionListener(event -> textPlayerController.play());
-		
 		btnCtrlPlay.setEnabled(true);
 		btnCtrlPlay.setFocusable(false);
 	}
@@ -247,7 +284,6 @@ public class TextPlayerView extends JPanel implements View
 				panel, 
 				System.getProperty("user.dir")+"/src/assets/img/player/pause.png"
 		);
-		
 		btnCtrlPause.addActionListener(event ->	textPlayerController.pause());
 		btnCtrlPause.setFocusable(false);
 	}
@@ -269,7 +305,6 @@ public class TextPlayerView extends JPanel implements View
 				panel, 
 				System.getProperty("user.dir")+"/src/assets/img/player/stop.png"
 		);
-		
 		btnCtrlStop.addActionListener(event -> textPlayerController.stop());
 		btnCtrlStop.setFocusable(false);
 	}
@@ -337,9 +372,11 @@ public class TextPlayerView extends JPanel implements View
 		// Panel that will be in the center of the center section panel
 		pnlCenterCenter = new JPanel(new BorderLayout(0,0));
 		pnlCenterCenter.setLayout(new BorderLayout(0, 0));
+		
 		pnlCenter.add(pnlCenterCenter, BorderLayout.CENTER);
 		
 		pnlOptions = makePnlOptions();
+		
 		pnlCenterCenter.add(pnlOptions, BorderLayout.NORTH);
 		
 		makeFileInfo(pnlCenter, BorderLayout.NORTH);
@@ -396,16 +433,16 @@ public class TextPlayerView extends JPanel implements View
 		JLabel lblFilenameTitle;
 		
 		
-		pnlFilename.setLayout(new BorderLayout(0, 0));
+		lblFilename = new JLabel(textPlayerController.getFilename());
+		lblFilename.setHorizontalAlignment(SwingConstants.CENTER);
+		lblFilename.setFont(new Font("Tahoma", Font.PLAIN, 15));		
 		
 		lblFilenameTitle = new JLabel(lang.getString("FILENAME") + ": ");
 		lblFilenameTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		lblFilenameTitle.setFont(new Font("Tahoma", Font.BOLD, 15));
-		pnlFilename.add(lblFilenameTitle, BorderLayout.WEST);
 		
-		lblFilename = new JLabel(textPlayerController.getFilename());
-		lblFilename.setHorizontalAlignment(SwingConstants.CENTER);
-		lblFilename.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		pnlFilename.setLayout(new BorderLayout(0, 0));
+		pnlFilename.add(lblFilenameTitle, BorderLayout.WEST);
 		pnlFilename.add(lblFilename, BorderLayout.CENTER);
 		
 		panel.add(pnlFilename, constraints);

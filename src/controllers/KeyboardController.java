@@ -73,15 +73,15 @@ public class KeyboardController extends Controller
 				if (e.isControlDown()) {
 					switch (e.getKeyCode()) {
 						case KeyEvent.VK_N:
-							component = (JMenuItem)getComponent("mb_file_textEntry");
+							component = (JMenuItem) getComponent("mb_file_textEntry");
 							component.doClick();
 							break;
 						case KeyEvent.VK_O:
-							component = (JMenuItem)getComponent("mb_file_openFile");
+							component = (JMenuItem) getComponent("mb_file_openFile");
 							component.doClick();
 							break;
 						case KeyEvent.VK_W:
-							component = (JMenuItem)getComponent("mb_file_close");
+							component = (JMenuItem) getComponent("mb_file_close");
 							component.doClick();
 							break;
 					}
@@ -89,11 +89,11 @@ public class KeyboardController extends Controller
 				else {
 					switch (e.getKeyCode()) {
 						case KeyEvent.VK_SPACE:
-							component = (JMenuItem)getComponent("mb_ctrl_playPause");
+							component = (JMenuItem) getComponent("mb_ctrl_playPause");
 							component.doClick();
 							break;
 						case KeyEvent.VK_H:
-							component = (JMenuItem)getComponent("mb_ctrl_stop");
+							component = (JMenuItem) getComponent("mb_ctrl_stop");
 							component.doClick();
 							break;
 					}
