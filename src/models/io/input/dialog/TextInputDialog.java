@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dialog.ModalityType;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -131,27 +132,40 @@ public class TextInputDialog extends InputDialog
 	 */
 	private JPanel createControlPanel()
 	{
-		JButton btnAction = new JButton(lang.getString("DONE"));
-		JButton btnClear = new JButton(lang.getString("CLEAR"));
 		JPanel pnlControl = new JPanel();
+		JButton btnClear = createCtrlButton(lang.getString("CLEAR"), event -> clearText());
+		JButton btnAction = createCtrlButton(lang.getString("DONE"), event -> {
+			wasProcessButtonPressed = true;
+			textInputWindow.dispose();
+		});		
 		
-		
-		btnAction.setFocusPainted(false);
-		btnAction.setFocusable(false);
-		btnAction.addActionListener(event -> {
-				wasProcessButtonPressed = true;
-				textInputWindow.dispose();
-		});
-		
-		btnClear.setFocusPainted(false);
-		btnClear.addActionListener(event -> clearText());
-		btnClear.setFocusable(false);
 		
 		pnlControl.setLayout(new GridLayout(0, 2, 0, 0));
 		pnlControl.add(btnClear);
 		pnlControl.add(btnAction);
 		
 		return pnlControl;
+	}
+	
+	/**
+	 * Creates a control button.
+	 * 
+	 * @param		btnLabel Button label
+	 * @param		onClick Action that will be performed when clicking the 
+	 * button
+	 * 
+	 * @return		Control button
+	 */
+	private JButton createCtrlButton(String btnLabel, ActionListener onClick)
+	{
+		JButton btnCtrl = new JButton(btnLabel);
+		
+		
+		btnCtrl.setFocusPainted(false);
+		btnCtrl.setFocusable(false);
+		btnCtrl.addActionListener(onClick);
+		
+		return btnCtrl;
 	}
 	
 	/**
@@ -165,27 +179,33 @@ public class TextInputDialog extends InputDialog
 		if (pnlControl == null)
 			throw new IllegalArgumentException("Panel cannot be null");
 		
-		JScrollPane scrlTxtContent = new JScrollPane();
-		
+		JScrollPane txtArea = createTextArea();
 
-		// Creates text area		
-		txtContent = new JTextArea();
-		txtContent.setLineWrap(true);
-		txtContent.setWrapStyleWord(true);
-		txtContent.setMargin(new Insets(10, 10, 10, 10));
-		
-		// Sets scroll bar on text area
-		scrlTxtContent.setViewportView(txtContent);
-		
-		// Creates dialog
+
 		textInputWindow = new JDialog(window, lang.getString("DIALOG_TITLE"));
 		textInputWindow.setLayout(new BorderLayout(0, 0));
-		textInputWindow.add(scrlTxtContent, BorderLayout.CENTER);
+		textInputWindow.add(txtArea, BorderLayout.CENTER);
 		textInputWindow.add(pnlControl, BorderLayout.SOUTH);
 		textInputWindow.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		textInputWindow.setBounds(windowX, windowY, windowWidth, windowHeight);
 		textInputWindow.setModalityType(ModalityType.APPLICATION_MODAL);
 		textInputWindow.setVisible(true);
+	}
+	
+	private JScrollPane createTextArea()
+	{
+		JScrollPane txtAreaWithScroll = new JScrollPane();
+		JTextArea txtArea = new JTextArea();
+		
+		
+		txtArea.setLineWrap(true);
+		txtArea.setWrapStyleWord(true);
+		txtArea.setMargin(new Insets(10, 10, 10, 10));
+		
+		// Sets scroll bar on text area
+		txtAreaWithScroll.setViewportView(txtArea);
+		
+		return txtAreaWithScroll;
 	}
 	
 	/**
