@@ -169,10 +169,15 @@ public class JFugueMusicPlayer extends MusicPlayer implements Runnable
 	/**
 	 * {@inheritDoc}
 	 * @see			MusicPlayer#change(String)
+	 * 
+	 * @throws		IllegalArgumentException If text is null
 	 */
 	@Override
 	public MusicPlayer change(List<String> text)
 	{
+		if (text == null)
+			throw new IllegalArgumentException("Text cannot be null");
+		
 		stop();
 		updateText(text);
 		
