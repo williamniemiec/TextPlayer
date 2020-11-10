@@ -5,6 +5,7 @@ import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 
 import core.Controller;
 

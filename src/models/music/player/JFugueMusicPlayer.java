@@ -85,8 +85,8 @@ public class JFugueMusicPlayer extends MusicPlayer implements Runnable
 		stop = false;
 		
 		if (pause) {
-			pause = false;
 			player.resume();
+			pause = false;
 		}
 		else {
 			Thread threadPlay = new Thread(this);

@@ -1,5 +1,6 @@
 package controllers;
 
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -79,7 +80,7 @@ public class TextPlayerController extends Controller
 			musicPlayer = new JFugueMusicPlayer(musicalText);
 			musicPlayer.attach(textPlayerView);
 			
-			updateMenuBarItems();
+			initMenuBarItems();
 			
 			// Displays TextPlayerView
 			addView("TextPlayerView", textPlayerView);
@@ -130,15 +131,16 @@ public class TextPlayerController extends Controller
 		
 		boolean wasFileChosen = dialog.openDialog();
 		List<String> parsedFile;
+		List<String> content = dialog.getContent();
 		Parser parser;
 		
 		
-		if (!wasFileChosen || dialog.getContent().isEmpty())
+		if (!wasFileChosen || content.isEmpty())
 			return;
 		
 		// Process the file
 		parser = new Parser(new JFugueMusicParser());
-		parsedFile = parser.parse(dialog.getContent());
+		parsedFile = parser.parse(content);
 		
 		// Loads processed file into the player
 		musicPlayer.change(parsedFile);
@@ -218,24 +220,33 @@ public class TextPlayerController extends Controller
 		);
 	}
 	
-	private void updateMenuBarItems()
+	private void initMenuBarItems()
 	{
-		JMenuItem mbCtrlPlayPause = ((JMenuItem)getComponent("mb_ctrl_playPause"));
-		JMenuItem mbCtrlStop = ((JMenuItem)getComponent("mb_ctrl_stop"));
+		JMenuItem mbCtrlPlayPause = ((JMenuItem) getComponent("mb_ctrl_playPause"));
+		JMenuItem mbCtrlStop = ((JMenuItem) getComponent("mb_ctrl_stop"));
 		
 		
 		setMenuBarItemStatus("mb_file_close", true);
 		setMenuBarItemStatus("mb_ctrl_playPause", true);
 		setMenuBarItemStatus("mb_ctrl_stop", false);
 		
-		mbCtrlPlayPause.addActionListener(event -> {
+		onMenuBarClick(mbCtrlPlayPause, event -> {
 			if (musicPlayer.isPlaying())
-				pause();
+				musicPlayer.pause();
 			else 
-				play();
+				musicPlayer.play();
 		});
 		
-		mbCtrlStop.addActionListener(event -> stop());
+		onMenuBarClick(mbCtrlStop, event -> stop());
+	}
+
+	private void onMenuBarClick(JMenuItem menuBarElement, ActionListener onClick)
+	{
+		for(ActionListener action : menuBarElement.getActionListeners()) {
+			menuBarElement.removeActionListener(action);
+		}
+		
+		menuBarElement.addActionListener(onClick);
 	}
 	
 	

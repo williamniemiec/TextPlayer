@@ -73,9 +73,9 @@ public class HomeController extends Controller
 	 */
 	public void updateMenuBar()
 	{	
-		((JMenuItem)getComponent("mb_ctrl_playPause")).setEnabled(false);
-		((JMenuItem)getComponent("mb_ctrl_stop")).setEnabled(false);
-		((JMenuItem)getComponent("mb_file_close")).setEnabled(false);
+		((JMenuItem) getComponent("mb_ctrl_playPause")).setEnabled(false);
+		((JMenuItem) getComponent("mb_ctrl_stop")).setEnabled(false);
+		((JMenuItem) getComponent("mb_file_close")).setEnabled(false);
 	}
 	
 	/**
@@ -91,10 +91,14 @@ public class HomeController extends Controller
 		
 		Parser parser = new Parser(new JFugueMusicParser());
 		List<String> processedText;
+		List<String> content = dialog.getContent();
 		TextPlayerController textPlayerController;
 		
 		
-		processedText = parser.parse(dialog.getContent());
+		if (content.isEmpty())
+			return;
+		
+		processedText = parser.parse(content);
 		
 		textPlayerController = new TextPlayerController(
 				processedText, 

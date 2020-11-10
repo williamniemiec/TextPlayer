@@ -129,7 +129,7 @@ public class TextPlayerView extends JPanel implements View
 	 */
 	private void updateMenuBarItems(MusicPlayer mp)
 	{
-		textPlayerController.setMenuBarItemStatus("mb_ctrl_playPause", mp.isPlaying() || mp.isPaused());
+		textPlayerController.setMenuBarItemStatus("mb_ctrl_playPause", true);
 		textPlayerController.setMenuBarItemStatus("mb_ctrl_stop", !mp.isStopped());
 		textPlayerController.setMenuBarItemStatus("mb_file_close", true);
 	}
@@ -472,6 +472,7 @@ public class TextPlayerView extends JPanel implements View
 		
 		// Creates text area
 		textArea = new JTextArea();
+		textArea.setFocusable(false);
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
 		textArea.setText(text);
@@ -481,6 +482,7 @@ public class TextPlayerView extends JPanel implements View
 		
 		// Sets scroll bar on text area
 		scrollPane.setViewportView(textArea);
+		scrollPane.setFocusable(false);
 		
 		panel.add(scrollPane, constraints);
 	}
@@ -504,6 +506,7 @@ public class TextPlayerView extends JPanel implements View
 		pbMusic.setStringPainted(true);
 		pbMusic.setForeground(new Color(238,90,9));
 		pbMusic.setValue(0);
+		pbMusic.setFocusable(false);
 		
 		panel.add(pbMusic, constraints);
 	}
@@ -563,6 +566,7 @@ public class TextPlayerView extends JPanel implements View
 		
 		panel.add(btnTextEntry);
 		btnTextEntry.setFocusPainted(false);
+		btnTextEntry.setFocusable(false);
 		btnTextEntry.addActionListener(event -> 
 				textPlayerController.changeText(new TextInputDialog(frame))
 		);
