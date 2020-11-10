@@ -80,7 +80,7 @@ public class TextPlayerController extends Controller
 			musicPlayer = new JFugueMusicPlayer(musicalText);
 			musicPlayer.attach(textPlayerView);
 			
-			initMenuBarItems();
+			updateMenuBarItems();
 			
 			// Displays TextPlayerView
 			addView("TextPlayerView", textPlayerView);
@@ -220,7 +220,10 @@ public class TextPlayerController extends Controller
 		);
 	}
 	
-	private void initMenuBarItems()
+	/**
+	 * Updates the state of menu items when opening the player.
+	 */
+	private void updateMenuBarItems()
 	{
 		JMenuItem mbCtrlPlayPause = ((JMenuItem) getComponent("mb_ctrl_playPause"));
 		JMenuItem mbCtrlStop = ((JMenuItem) getComponent("mb_ctrl_stop"));
@@ -240,13 +243,20 @@ public class TextPlayerController extends Controller
 		onMenuBarClick(mbCtrlStop, event -> stop());
 	}
 
-	private void onMenuBarClick(JMenuItem menuBarElement, ActionListener onClick)
+	/**
+	 * Defines an action when clicking on a menu item.
+	 * 
+	 * @param		menuElement Menu item
+	 * @param		onClick Action that will be performed when clicking on the
+	 * menu item
+	 */
+	private void onMenuBarClick(JMenuItem menuElement, ActionListener onClick)
 	{
-		for(ActionListener action : menuBarElement.getActionListeners()) {
-			menuBarElement.removeActionListener(action);
+		for(ActionListener action : menuElement.getActionListeners()) {
+			menuElement.removeActionListener(action);
 		}
 		
-		menuBarElement.addActionListener(onClick);
+		menuElement.addActionListener(onClick);
 	}
 	
 	

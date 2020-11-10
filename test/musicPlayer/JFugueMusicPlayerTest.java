@@ -10,13 +10,13 @@ import java.util.List;
 
 import org.junit.Test;
 
-import models.musicPlayer.JFugueMusicPlayer;
+import models.music.player.JFugueMusicPlayer;
 import models.parser.JFugueMusicParser;
 import util.FileUtil;
 
 public class JFugueMusicPlayerTest 
 {
-	private static final Path sourceFile = Path.of("test/parser/jfugue/files/source/phrase.txt");
+	private static final Path sourceFile = Path.of("test/parser/jfugue/files/source/text_big.txt");
 	private static List<String> processedFile;
 	
 	
@@ -62,9 +62,10 @@ public class JFugueMusicPlayerTest
 		
 		
 		player.play();
-		Thread.sleep(1500);
+		Thread.sleep(200);
 		
 		player.stop();
+		Thread.sleep(200);
 		assertEquals(true, player.isStopped());
 	}
 	
@@ -77,14 +78,13 @@ public class JFugueMusicPlayerTest
 	
 				
 		player.play();
-		Thread.sleep(1500);
+		Thread.sleep(200);
 		
 		player.change(processedFile2);
-		
 		player.play();
-		Thread.sleep(1500);
+		Thread.sleep(200);
 		
-		assertEquals(true, player.isStopped());
+		assertEquals(true, player.isPlaying());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
