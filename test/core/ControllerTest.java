@@ -40,9 +40,16 @@ public class ControllerTest
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testAddComponentNull() 
+	public void testAddComponentNullNameNull() 
 	{
 		Controller.addComponent(null, null);
+		fail();
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testAddComponentNull() 
+	{
+		Controller.addComponent("foo", null);
 		fail();
 	}
 	
@@ -119,5 +126,74 @@ public class ControllerTest
 	public void testGetBlankViewName()
 	{
 		Controller.loadView("");
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testSetSizeNegativeWidthNegativeHeight()
+	{
+		Controller.setSize(-1, -1);
+		
+		fail();
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testSetSizeNegativeWidthZeroHeight()
+	{
+		Controller.setSize(-1, 0);
+		
+		fail();
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testSetSizeNegativeWidthPositiveHeight()
+	{
+		Controller.setSize(-1, 1);
+		
+		fail();
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testSetSizeZeroWidthNegativeHeight()
+	{
+		Controller.setSize(0, -1);
+		
+		fail();
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testSetSizeZeroWidthZeroHeight()
+	{
+		Controller.setSize(0, 0);
+		
+		fail();
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testSetSizeZeroWidthPositiveHeight()
+	{
+		Controller.setSize(0, 1);
+		
+		fail();
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testSetSizPositiveWidthNegativeHeight()
+	{
+		Controller.setSize(1, -1);
+		
+		fail();
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testSetSizPositiveWidthZeroHeight()
+	{
+		Controller.setSize(1, 0);
+		
+		fail();
+	}
+	
+	public void testSetSizePositiveWidthPositiveHeight()
+	{
+		Controller.setSize(1, 1);
 	}
 }
