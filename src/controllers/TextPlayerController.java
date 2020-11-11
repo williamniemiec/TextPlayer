@@ -61,6 +61,13 @@ public class TextPlayerController extends Controller
 		this.filename = (filename == null) ? "N/A" : filename;
 	}
 	
+	/**
+	 * Controller for {@link TextPlayerView}.
+	 * 
+	 * @param		musicalText Text containing musical commands obtained 
+	 * after processing the file text
+	 * @param		originalText File text before processing
+	 */
 	public TextPlayerController(List<String> musicalText, List<String> originalText)
 	{
 		this(musicalText, originalText, null);

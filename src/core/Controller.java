@@ -146,4 +146,24 @@ public abstract class Controller
 		
 		return mainFrameComponents.get(name);
 	}
+	
+	/**
+	 * Sets main frame width and height.
+	 * 
+	 * @param		w Width
+	 * @param		h Height
+	 * 
+	 * @throws		IllegalArgumentException If width or height is less than or
+	 * equal to zero
+	 */
+	public static final void setSize(int w, int h)
+	{
+		if (w <= 0)
+			throw new IllegalArgumentException("Width cannot be less than or equal to zero");
+		
+		if (h <= 0)
+			throw new IllegalArgumentException("Height cannot be less than or equal to zero");
+		
+		mainFrame.setSize(w, h);
+	}
 }

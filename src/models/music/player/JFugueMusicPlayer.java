@@ -45,7 +45,7 @@ public class JFugueMusicPlayer extends MusicPlayer implements Runnable
 			throw new IllegalArgumentException("Processed text cannot be null");
 			
 		views = new ArrayList<>();
-		
+				
 		updateText(processedText);
 	}
 	
@@ -248,7 +248,7 @@ public class JFugueMusicPlayer extends MusicPlayer implements Runnable
 		if (player == null)
 			return false;
 		
-		return player.isFinished();
+		return stop || player.isFinished();
 	}
 
 	@Override

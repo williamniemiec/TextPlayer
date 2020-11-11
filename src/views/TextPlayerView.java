@@ -571,4 +571,23 @@ public class TextPlayerView extends JPanel implements View
 				textPlayerController.changeText(new TextInputDialog(frame))
 		);
 	}
+	
+	
+	//-------------------------------------------------------------------------
+	//		Getters
+	//-------------------------------------------------------------------------
+	public int getProgressBarValue()
+	{
+		return (pbMusic == null) ? 0 : pbMusic.getValue();
+	}
+	
+	public String getTextAreaContent()
+	{
+		return (textArea == null) ? "" : textArea.getText();
+	}
+	
+	public String getFilename()
+	{
+		return (lblFilename == null) ? "" : lblFilename.getText();
+	}
 }
